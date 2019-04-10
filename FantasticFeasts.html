@@ -3,33 +3,52 @@
 		<title>Fantastic Feasts</title>
 	</head>
 
-	<body onload="toMainMenu">
+	<body onload="toMainMenu()">
 		<div id="MainMenu">
-		
+			<h1>Fantastic Feasts</h1>
+			<button onclick="toMatchmaking()">Spielen</button>
+			<button onclick="openFileChooser()">Team ändern</button>
+			<button onclick="toHelp()">Hilfe</button>
 		</div>
 
 		<div id="Matchmaking">
-		
+			<input placeholder="Serveradresse"></input>
+			<input placeholder="Portnummer"></input>
+			<input type="checkbox">Als Gast beitreten</input>
+			<button onclick="toMainMenu()">Zurück</button>
+			<button onclick="toInGame()">Start</button>
 		</div>
 
 		<div id="Help">
-		
+			<h1>Fantastic Feasts</h1>
+			<h5>Aufschlussreicher Hilfe-Text</h5>
+			<button onclick="toMainMenu()">Zurück</button>
+			<button onclick="toHotkeys()">Hotkeys</button>
 		</div>
 
 		<div id="Hotkeys">
-		
+			<table>
+				<tr>
+					<th>Aktion</th>
+					<th>Hotkey</th>
+				</tr>
+				<button onclick="toHelp()">Zurück</button>
+			</table>
 		</div>
 
-		<div id="TeamConfiguration">
+		<div id="ConnectionLost">
 		
 		</div>
 
 		<div id="GameEnd">
-		
+			<h2>Spielende</h2>
+			<button onclick="toMainMenu()">Zum Startbildschirm</button>
 		</div>
 
 		<div id="InGame">
-		
+			<canvas>
+
+			</canvas>
 		</div>
 
 		<script type="text/javascript" src="FantasticFeastsClient.js"></script>

@@ -3,7 +3,7 @@ function toMainMenu(){
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="none";
 }
@@ -13,7 +13,7 @@ function toMatchmaking(){
     document.getElementById("Matchmaking").style.display="initial";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="none";
 }
@@ -23,7 +23,7 @@ function toHelp(){
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="initial";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="none";
 }
@@ -33,17 +33,17 @@ function toHotkeys(){
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="initial";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="none";
 }
 
-function toTeamConfiguration(){
+function toConnectionLost(){
     document.getElementById("MainMenu").style.display="none";
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="initial";
+    document.getElementById("ConnectionLost").style.display="initial";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="none";
 }
@@ -53,7 +53,7 @@ function toGameEnd(){
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="initial";
     document.getElementById("InGame").style.display="none";
 }
@@ -63,8 +63,12 @@ function toInGame(){
     document.getElementById("Matchmaking").style.display="none";
     document.getElementById("Help").style.display="none";
     document.getElementById("Hotkeys").style.display="none";
-    document.getElementById("TeamConfiguration").style.display="none";
+    document.getElementById("ConnectionLost").style.display="none";
     document.getElementById("GameEnd").style.display="none";
     document.getElementById("InGame").style.display="initial";
+}
+
+function openFileChooser(){
+    //TODO: Open a file chooser popup
 }
 
