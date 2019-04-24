@@ -7,7 +7,12 @@
 
 <script>
 export default {
-    props: ['game']
+    props: ['game'],
+    data() {
+        return {
+            // hier Spieldaten in JSON reinschreiben, um Spielfeldaufbau zu testen
+        }
+    }
 }
 </script>
 

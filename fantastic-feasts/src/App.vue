@@ -37,5 +37,8 @@ export default {
 </script>
 
 <style>
+  h1 {
+    font-family: 'Oleo Script', cursive;
+  }
 
 </style>
