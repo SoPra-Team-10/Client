@@ -2,13 +2,14 @@
     <div>
         <h1>Team auswählen</h1>
         <button>Dateien</button>
-        <button>Zurück zum Menü</button>
+        <hr>
+        <button @click="game.currentState = 'inMenu'">Zurück zum Menü</button>
     </div>
 </template>
 
 <script>
 export default {
-    
+    props: ['game']
 }
 </script>
 

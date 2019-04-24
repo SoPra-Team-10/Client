@@ -7,12 +7,16 @@
         <label for="server">Server</label>
         <input id="server" type="text">
         <button>Connect</button>
+        <hr>
+        <div class="row">
+            <button @click="game.currentState = 'inMenu'">Zurück zum Menu</button>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    
+    props: ['game']
 }
 </script>
 

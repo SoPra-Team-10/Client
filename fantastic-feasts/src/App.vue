@@ -1,11 +1,10 @@
 <template>
   <div>
-    <h1>Hello World</h1>
-    <app-menu v-if="gameState.inMenu"></app-menu>
-    <app-lobby v-if="gameState.inLobby"></app-lobby>
-    <app-help v-if="gameState.inHelp"></app-help>
-    <app-team v-if="gameState.inTeam"></app-team>
-    <app-game v-if="gameState.inGame"></app-game>
+    <app-menu v-if="game.currentState === 'inMenu'" :game="game"></app-menu>
+    <app-lobby v-if="game.currentState === 'inLobby'" :game="game"></app-lobby>
+    <app-help v-if="game.currentState === 'inHelp'" :game="game"></app-help>
+    <app-team v-if="game.currentState === 'inTeam'" :game="game"></app-team>
+    <app-game v-if="game.currentState === 'inGame'" :game="game"></app-game>
 
   </div>
 </template>
@@ -21,12 +20,8 @@ export default {
   name: 'app',
   data () {
     return {
-      gameState: {
-        inMenu: true,
-        inLobby: false,
-        inHelp: false,
-        inTeam: false,
-        inGame: false
+      game: {
+        currentState: 'inMenu'
       }
     }
   },
