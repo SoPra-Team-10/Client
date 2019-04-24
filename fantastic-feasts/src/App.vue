@@ -5,6 +5,7 @@
     <app-help v-if="gameState.inHelp"></app-help>
     <app-team v-if="gameState.inTeam"></app-team>
     <app-game v-if="gameState.inGame"></app-game>
+    
   </div>
 </template>
 
