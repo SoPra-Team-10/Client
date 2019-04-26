@@ -6,34 +6,33 @@
         <input id="port" type="text">
         <label for="server">Server</label>
         <input id="server" type="text">
-        <button v-on:click="connect()">Connect</button>
+        <button @click="connect()">Connect</button>
         <hr>
         <div class="row">
             <button @click="game.currentState = 'inMenu'">Zurück zum Menu</button>
+            <button @click="game.currentState = 'inGame'">Spielfeld</button>
         </div>
     </div>
 </template>
 
 <script>
-import game from "../App.vue"
+import web from "../App.vue"
 export default {
-    data(){
-        return{
-
-        }
-    },
+    
+    
     methods: {
         connect : function () {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
-            game.websocket = new WebSocket(server);
-            game.websocket.onerror = function (error) {
-                alert('WebSocket Error ' + error);
+            web.websocket = new WebSocket(server+":"+port);
+            web.websocket.onerror = function (error) {
+                alert('Connection failed: ' + error.data);
             };
-            game.websocket.onopen = function(){
-                game.websocket.send("echo");
+            web.websocket.onopen = function(){
+                web.websocket.send("hallo welt");
+                //game.currentState = 'inGame';
             }
-            game.websocket.onmessage = function(msg){
+            web.websocket.onmessage = function(msg){
                 alert(msg.data);
             }
         }

@@ -22,6 +22,9 @@ export default {
     return {
       game: {
         currentState: 'inMenu',
+        
+      },
+      web:{
         websocket: WebSocket
       }
     }
