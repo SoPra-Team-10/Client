@@ -21,7 +21,8 @@ export default {
   data () {
     return {
       game: {
-        currentState: 'inMenu'
+        currentState: 'inMenu',
+        websocket: WebSocket
       }
     }
   },
