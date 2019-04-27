@@ -1,5 +1,7 @@
 .DS_Store
-node_modules
+fantastic-feasts/node_modules/
+fantastic-feasts/src/node_modules/
+node_modules/
 /dist
 
 # local env files
@@ -18,4 +20,4 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.sw
