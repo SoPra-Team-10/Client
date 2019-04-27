@@ -41,8 +41,16 @@ export default {
 </script>
 
 <style>
-  h1 {
-    font-family: 'Oleo Script', cursive;
+  html {
+    margin: 0;
   }
 
+  body {
+    margin: 0;
+    display: fixed; 
+  }
+
+  * {
+    box-sizing: border-box;
+  }
 </style>
