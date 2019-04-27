@@ -2,6 +2,9 @@
 fantastic-feasts/node_modules/
 fantastic-feasts/src/node_modules/
 node_modules/
+node_modules
+/node_modules/
+/node_modules
 /dist
 
 # local env files
