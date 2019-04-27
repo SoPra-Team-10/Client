@@ -1,11 +1,22 @@
 <template>
     <div>
-        <h1>Menü</h1>
-        <button @click="game.currentState = 'inLobby'">Spielen</button>
-        <button @click="game.currentState = 'inTeam'">Team wählen</button>
-        <button @click="game.currentState = 'inHelp'">Hilfe</button>
-        <hr>
-        <button @click="game.currentState = 'inGame'">Spielfeld anzeigen</button>
+        <h1 class="main-title">Fantastic Feasts</h1>
+        <h2 class="subtitle">Hauptmenü</h2>
+        <div class="main-menu__button-container">
+            <button @click="game.currentState = 'inLobby'" class="main-menu__button">Spielen</button>
+        </div>
+        <div class="main-menu__button-container">
+            <button @click="game.currentState = 'inTeam'" class="main-menu__button">Team wählen</button>
+        </div>
+        <div class="main-menu__button-container">
+            <button @click="game.currentState = 'inHelp'" class="main-menu__button">Hilfe</button>
+        </div>
+        
+        <div class="main-menu__button-container footer-bar">
+            <hr>
+            <button @click="game.currentState = 'inGame'" class="main-menu__button">Spielfeld anzeigen</button>
+        </div>
+        
     </div>
 </template>
 
@@ -16,6 +27,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

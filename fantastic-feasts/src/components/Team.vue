@@ -1,9 +1,12 @@
 <template>
     <div>
-        <h1>Team auswählen</h1>
+        <h1 class="subtitle">Team auswählen</h1>
         <input type="file" id="fileChooser" @change="readFile()"/>
-        <hr>
-        <button @click="game.currentState = 'inMenu'">Zurück zum Menü</button>
+        <button class="main-menu__button">Dateien</button>
+        <div class="main-menu__button-container footer-bar">
+            <hr>
+            <button @click="game.currentState = 'inMenu'" class="main-menu__button">Zurück zum Menü</button>
+        </div>
     </div>
 </template>
 
