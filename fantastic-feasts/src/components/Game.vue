@@ -45,7 +45,8 @@
 </template>
 
 <script>
-import web from "../App.vue"
+import web from "../App.vue";
+
 export default {
     props: ['game'],
     data() {
@@ -55,7 +56,27 @@ export default {
     },
     methods: {
         sendMsg: function(){
+            web.websocket.onmessage = function(msg){
+                var newText = "Gamelog";
+                var jsonObject = JSON.parse(msg.data);
+                Object.keys(jsonObject).forEach(key =>{
+                var val = jsonObject[key];
+               
+                newText = newText + "\n" + key + ": " + val; 
+                });
+                document.getElementById("game-log-panel").innerHTML = newText;
+                alert(newText);
+            }
+            
             web.websocket.send(document.getElementById("in").value);
+        },
+
+        
+
+        startGame: function(){
+            web.websocket.onmessage = function(msg){
+                updateLog(msg);
+            }
         }
     }
 }

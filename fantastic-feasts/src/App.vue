@@ -27,6 +27,7 @@ export default {
       },
       web:{
         websocket: WebSocket
+        
       },
       configs: {
         matchConfigs: [],
