@@ -9,9 +9,12 @@
             <button @click="game.currentState = 'inTeam'" class="main-menu__button">Team wählen</button>
         </div>
         <div class="main-menu__button-container">
+<<<<<<< HEAD
             <button @click="game.currentState = 'inConfig'" class="main-menu__button">Konfigurator</button>
         </div>
         <div class="main-menu__button-container">
+=======
+>>>>>>> Develop
             <button @click="game.currentState = 'inHelp'" class="main-menu__button">Hilfe</button>
         </div>
         
