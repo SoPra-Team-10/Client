@@ -152,7 +152,7 @@ export default {
     
 </script>
 
-<style scoped>
+<style>
 .team-overview__team-preview-item {
     list-style: none;
     text-align: left;

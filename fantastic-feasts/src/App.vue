@@ -3,7 +3,7 @@
     <app-menu id="main-menu" class="menu" v-if="game.currentState === 'inMenu'" :game="game"></app-menu>
     <app-lobby class="menu" v-if="game.currentState === 'inLobby'" :game="game"></app-lobby>
     <app-help class="menu" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
-    <app-team class="menu" v-if="game.currentState === 'inTeam'" :game="game"></app-team>
+    <app-team class="menu" v-if="game.currentState === 'inTeam'" :game="game" :configs="configs"></app-team>
     <app-config class="menu" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs"></app-config>
     <app-game v-if="game.currentState === 'inGame'" :game="game"></app-game>
 
@@ -141,10 +141,9 @@ export default {
 
   .text-content-container {
     background: radial-gradient(#ffffff, #ebd18a);
-    display: auto;
     display: inline-block;
     width: 80%;
-    max-width: 800px;
+    max-width: 1000px;
     border-radius: 5px;
     color: #795a46;
     padding: 30px;
