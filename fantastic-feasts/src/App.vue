@@ -4,6 +4,10 @@
     <app-lobby class="menu" v-if="game.currentState === 'inLobby'" :game="game"></app-lobby>
     <app-help class="menu" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
     <app-team class="menu" v-if="game.currentState === 'inTeam'" :game="game"></app-team>
+<<<<<<< HEAD
+    <app-config class="menu" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs"></app-config>
+=======
+>>>>>>> Develop
     <app-game v-if="game.currentState === 'inGame'" :game="game"></app-game>
 
   </div>
@@ -15,17 +19,31 @@ import Help from './components/Help.vue';
 import Lobby from './components/Lobby.vue';
 import Team from './components/Team.vue';
 import Menu from './components/Menu.vue';
+import Config from './components/Configurator.vue';
 
 export default {
   name: 'app',
   data () {
     return {
       game: {
+<<<<<<< HEAD
+        currentState: 'inConfig'
+      },
+      web:{
+        websocket: WebSocket
+      },
+      configs: {
+        matchConfigs: [],
+        teamConfigs: [],
+        selectedTeamConfig: {},
+        selectedMatchConfig: {}
+=======
         currentState: 'inMenu',
         
       },
       web:{
         websocket: WebSocket
+>>>>>>> Develop
       }
     }
   },
@@ -34,8 +52,18 @@ export default {
     'app-menu': Menu,
     'app-help': Help,
     'app-lobby': Lobby,
-    'app-team': Team
-  }
+    'app-team': Team,
+    'app-config': Config
+  },
+  mounted() {
+    if (localStorage.getItem('configs')) {
+      try {
+        this.configs = JSON.parse(localStorage.getItem('configs'));
+      } catch(e) {
+        localStorage.removeItem('configs');
+      }
+    }
+  },
   
 }
 </script>
@@ -57,7 +85,11 @@ export default {
   }
 
   .menu {
+<<<<<<< HEAD
+    background: radial-gradient(#bb3434, #802020);
+=======
     background: #bb3434;
+>>>>>>> Develop
     position: fixed;
     width: 100%;
     height: 100%;
@@ -79,6 +111,15 @@ export default {
     display: auto;
     color: #e0a500;
     font-family: 'Alice';
+<<<<<<< HEAD
+    font-size: 1em;
+    border: 1px solid #e0a500;
+    border-radius: 4px;
+    margin: 10px;
+    width: 200px;
+    height: 30px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+=======
     font-size: 1.5em;
     border: 1px solid #e0a500;
     border-radius: 8px;
@@ -86,10 +127,35 @@ export default {
     width: 300px;
     height: 55px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+>>>>>>> Develop
 
   }
 
   .main-menu__button:hover {
+<<<<<<< HEAD
+    box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
+    color: #f8c22d;
+  }
+
+  .main-menu__button:focus {
+    background: #5f361a;
+    box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
+    color: #f8c22d;
+  }
+
+  textarea:focus, input:focus{
+    outline: none;
+  }
+
+  button:focus{
+    outline: none;
+  }
+
+  .main-title {
+    font-family: 'Alice';
+    color: #e0a500;
+    font-size: 5em;
+=======
     box-shadow: 0 0 20px 0 rgba(255, 228, 110, 0.534);
     color: #f8c22d;
   }
@@ -98,13 +164,19 @@ export default {
     font-family: 'Alice';
     color: #e0a500;
     font-size: 6em;
+>>>>>>> Develop
     text-shadow: 0px 0px 3px #FFD938;
   }
 
   .subtitle {
     font-family: 'Alice';
+<<<<<<< HEAD
+    color: #ffd64e;
+    font-size: 3em;
+=======
     color: #dbb856;
     font-size: 4em;
+>>>>>>> Develop
     text-shadow: 0px 0px 2px #ebd18a;
   }
 
@@ -112,7 +184,12 @@ export default {
     background: radial-gradient(#ffffff, #ebd18a);
     display: auto;
     display: inline-block;
+<<<<<<< HEAD
+    width: 80%;
+    max-width: 800px;
+=======
     width: 700px;
+>>>>>>> Develop
     border-radius: 5px;
     color: #795a46;
     padding: 30px;
@@ -141,6 +218,21 @@ export default {
     margin-left: 34px;
   }
 
+<<<<<<< HEAD
+  #file-chooser {
+    padding: 2px 4px;
+  }
+
+  .main-menu__small-button {
+    background: #f8f1df;
+    display: auto;
+    color: #8d6951;
+    font-family: 'Alice';
+    font-size: 1em;
+    border: 1px solid #99735a;
+    border-radius: 3px;
+    margin: 10px 5px 0 5px;
+=======
   .main-menu__small-button {
     background: #f8f1df;
     display: auto;
@@ -152,6 +244,7 @@ export default {
     margin: 25px;
     width: 140px;
     height: 45px;
+>>>>>>> Develop
   }
 
   .main-menu__small-button:hover {
@@ -167,7 +260,11 @@ export default {
     position: fixed;
     bottom: 0;
     width: 100%;
+<<<<<<< HEAD
+    height: 150px;
+=======
     height: 190px;
+>>>>>>> Develop
   }
 
 </style>
