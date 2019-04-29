@@ -2,41 +2,48 @@
     <div id="game-container">
         <section id="game-panel">
             <header class="header">
-                <div class="header__panel" id="main-menu-panel" @click="game.currentState='inMenu'">
-                    Menü
+                <div class="header__panel" id="main-menu-panel">
+                    <div  id="main-menu-button" @click="game.currentState='inMenu'">
+                        Menü
+                    </div>
                 </div>
-                <div class="header__panel" id="team-panel-left">
-                    Team 1
-                </div>
-                <div class="header__panel" id="score-panel">
-                    Punktestand
-                </div>
-                <div class="header__panel" id="team-panel-right">
-                    Team 2
+                <div class="header__game-info">
+                    <div class="game-info-panel">
+                        <div class="header__panel" id="team-panel-left">
+                            <div class="header__team-panel-content">
+                                Griffindor
+                            </div>
+                        </div>
+                        <div class="header__panel" id="score-panel">
+                            <div class="score-panel-content">
+                                40 : 15
+                            </div>
+                        </div>
+                        <div class="header__panel" id="team-panel-right">
+                            <div class="header__team-panel-content">
+                                Slitherin
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="header__panel" id="pause-panel">
-                    Pause
-                    <!-- <div class="pause-panel__pause-icon"></div>
-                    <div class="pause-panel__pause-icon"></div> -->
+                    <div id="pause-button">
+                        Pause
+                    </div>
                 </div>
 
             </header>
             <div class="sidebar-left">
-                <div id="player-info-panel"> 
+                <div class="info-panel" id="player-info-panel"> 
                     <h3 class="panel-title">Ausgewählter Spieler</h3>
                     <hr class="inner-separation-line">
                 </div>
-                <div id="banned-players-panel">
+                <hr class="normal-separation-line">
+                <div class="info-panel" id="banned-players-panel">
                     <h3 class="panel-title">Verbannte Spieler</h3>
                     <hr class="inner-separation-line">
                 </div>
-                <hr class="normal-separation-line">
-                <div id="banned-players-panel">
-                    <h3 class="panel-title">Testfunktionen</h3>
-                    <hr class="inner-separation-line">
-                    <input id="in" type="text">
-                    <button @click="sendMsg()">senden</button>
-                </div>
+                
             </div>
             <div class="center">
                 <div id="game-conainer">
@@ -44,19 +51,26 @@
                         <div v-for="tile in this.quidditch.grid" class="gras-tile" :key="tile.id" :style="{ background: tile }"></div>
                     </div>
                 </div>
-                <div class="spectator-stand-panel">
+                <!-- <div class="spectator-stand-panel">
                     <div class="spectator-stand">Zuschauer links
 
                     </div>
                     <div class="spectator-stand">Zuschauer rechts
                     
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="sidebar-right">
-                <div id="game-log-panel">
+                <div class="info-panel" id="game-log-panel">
                     <h3 class="panel-title">Gamelog</h3>
                     <hr class="inner-separation-line">
+                </div>
+                <hr class="normal-separation-line">
+                <div class="info-panel">
+                    <h3 class="panel-title">Testfunktionen</h3>
+                    <hr class="inner-separation-line">
+                    <input id="in" type="text">
+                    <button @click="sendMsg()">senden</button>
                 </div>
             </div>
         </section>
@@ -99,63 +113,131 @@ export default {
 
 }
 
+.prevent-inline {
+    display: block;
+}
+
 .header {
     position: fixed;
     height: 8%;
     width: 100%;
     background: radial-gradient(#5e3d19, #503315);
-    text-align: center;
-    padding: 10px;
     z-index: 100;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
     border-bottom: 2px solid #533515;
 }
 
-.header__panel {  
-    display: inline-block;
-    text-align: center;
-    background: #66421b;
-    color: #ddcfc0;
-    padding: 15px;
-    margin: 5px 25px;
-    border-radius: 5px;
-}
 
 #main-menu-panel {
+    position: absolute;
+    height: 100%;
+    width: 5%;
+    left: 2%;
+    
+}
+
+#team-panel-right {
+    position: absolute;
+    text-align: right;
+    width: 40%;
+    right: 0%;
+    font-size: 3vh;
+    padding: 1.2vh;
+}
+
+#team-panel-left {
+    position: absolute;
+    text-align: left;
+    width: 40%;
+    left: 0%;
+    font-size: 3vh;
+    padding: 1.2vh;
+}
+
+.header__game-info {
+    position: absolute;
+    width: 86%;
+    height: 100%;
+    left: 7%;
+}
+
+#pause-panel {
+    position: absolute;
+    height: 100%;
+    width: 5%; 
+    right: 2%;
+    top: 0;
+}
+
+#main-menu-button {
     background: radial-gradient(#bb3434, #802020);
     border: 1px solid #e0a500;
     color: #e0a500;
     position: absolute;
-    top: 10px;
-    left: 10px;
+    width: 100%;
+    top: 10%;
+    height: 80%;
+    border-radius: 5px;
+    min-width: 48px;
+    text-align: center;
+    font-size: 2vh;
+    padding: 1.5vh 0.5vh;
 }
 
-#pause-panel {
+#score-panel {
+    position: absolute;
+    width: 30%;
+    left: 35%;
+    top: -10%;
+    background: radial-gradient(#bb3434, #802020);
+    height: 120%;
+    color: #e7e7e7;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
+    line-height: 80%;
+    text-align: center;
+    font-size: 5vh;
+    padding: 1.5vh 0.5vh;
+
+}
+
+#pause-button {
     background: radial-gradient(#5e923f, #406d24);
     border: 1px solid #e0a500;
     color: #e0a500;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 10%;
+    height: 80%;
+    width: 100%;
+    border-radius: 5px;
+    min-width: 48px;
+    text-align: center;
+    font-size: 2vh;
+    padding: 1.5vh 0.5vh;
 }
 
-#main-menu-panel:hover {
+#main-menu-button:hover {
     background: #81623e;
 }
 
-#pause-panel:hover {
+#pause-button:hover {
     background: #81623e;
 }
 
-.pause-panel__pause-icon {
-    height: 10px;
-    width: 3px;
-    display: inline-block;
+.game-info-panel {
     position: absolute;
-    background: #e0a500;
-    margin: 2px 5px 2px 5px;
-    
+    width: 60%;
+    height: 80%;
+    top: 10%;
+    left: 20%;
+    background: radial-gradient(#ffffff, #ece3ca);
+    border-radius: 8px;
+    border: 1px solid #e4d8b8;
+    -moz-box-shadow:    inset 0 0 3px #00000086;
+    -webkit-box-shadow: inset 0 0 3px #000000;
+    box-shadow:         inset 0 0 3px #000000;
 }
+
 
 .sidebar-left {
     display: static;
@@ -167,10 +249,23 @@ export default {
     background: radial-gradient(#684521, #583b1b);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     z-index: 90;
+    min-width: 173px;
 }
 
-.sidebar-left #player-info-panel,
-.sidebar-left #banned-players-panel {
+.sidebar-right {
+    display: static;
+    position: fixed;
+    right: 0%;
+    height: 92%;
+    top: 8%;
+    width: 17%;
+    background: radial-gradient(#684521, #583b1b);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    z-index: 90;
+    min-width: 173px;
+}
+
+.info-panel {
     display: block;
     text-align: center;
     border: 1px solid #ebd18a;
@@ -183,35 +278,15 @@ export default {
     margin: 15px;
     border-radius: 5px;
     height: 200px;
+    min-width: 142px;
 }
 
-.sidebar-right {
-    display: static;
-    position: fixed;
-    left: 83%;
-    height: 92%;
-    top: 8%;
-    width: 17%;
-    background: #6b451c;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    z-index: 90;
-}
-
-#game-log-panel {
-    display: block;
-    text-align: center;
-    background: radial-gradient(#ffffff, #ebd18a);
-    color: white;
-    padding: 15px;
-    margin: 15px;
-    border-radius: 5px;
-    height: 400px;
-}
 
 .center {
     position: absolute;
     left: 17%;
-    top: 20%;
+    top: 8%;
+    height: 92%;
     width: 66%;
     padding: 10px;
     text-align: center;
@@ -224,7 +299,7 @@ export default {
     display: static;
     position: absolute;
     left: calc(50% - 350px);
-    top: 80px;
+    top: calc(50% - 330px);
     text-align: center;
     color: white;
     display: grid;
@@ -288,4 +363,6 @@ h1 {
     margin: 0;
     padding: 0;
 }
+
+
 </style>
