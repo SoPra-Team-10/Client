@@ -1,14 +1,7 @@
 .DS_Store
-fantastic-feasts/node_modules/
-fantastic-feasts/src/node_modules/
-node_modules/
 node_modules
-/node_modules/
-/node_modules
 /dist
 node_modules/
-
-package-lock.json
 
 # local env files
 .env.local
@@ -26,4 +19,4 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw
+*.sw?
