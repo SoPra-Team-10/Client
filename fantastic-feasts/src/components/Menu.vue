@@ -14,6 +14,9 @@
         <div class="main-menu__button-container">
             <button @click="game.currentState = 'inHelp'" class="main-menu__button">Hilfe</button>
         </div>
+        <div class="main-menu__button-container">
+            <button @click="game.selectedColorScheme = (game.selectedColorScheme + 1) % 4" class="main-menu__button">Farbe ändern</button>
+        </div>
         
         <div class="main-menu__button-container footer-bar">
             <hr>
