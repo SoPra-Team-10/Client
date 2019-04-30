@@ -22,7 +22,6 @@
 
 <script>
 import TeamSelection from './TeamSelection.vue';
-import MatchSelection from './MatchSelection.vue';
 
 export default {
     data() {
@@ -55,8 +54,7 @@ export default {
     },
     props: ['game', 'configs'],
     components: {
-        'app-team-selection': TeamSelection,
-        'app-match-selection': MatchSelection
+        'app-team-selection': TeamSelection
     }
 }
 </script>

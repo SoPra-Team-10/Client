@@ -19,6 +19,16 @@
                                 40 : 15
                             </div>
                         </div>
+                        <div class="header__panel" id="round-panel">
+                            <div class="round-panel-content">
+                                Runde 17
+                            </div>
+                        </div>
+                        <!-- <div class="header__panel" id="round-phase-panel">
+                            <div class="round-phase-panel-content">
+                                Ziehen
+                            </div>
+                        </div> -->
                         <div class="header__panel" id="team-panel-right">
                             <div class="header__team-panel-content">
                                 Slitherin
@@ -180,7 +190,7 @@ export default {
     border-radius: 5px;
     min-width: 48px;
     text-align: center;
-    font-size: 2vh;
+    font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
 }
 
@@ -198,7 +208,25 @@ export default {
     text-align: center;
     font-size: 5vh;
     padding: 1.5vh 0.5vh;
+    z-index: 91;
 
+}
+
+#round-panel {
+    position: absolute;
+    width: 20%;
+    left: 40%;
+    top: 100%;
+    background: radial-gradient(#ffffff, #e7e7e7);
+    height: 70%;
+    color: #4d4d4d;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
+    line-height: 80%;
+    text-align: center;
+    font-size: 2.7vh;
+    padding: 1.5vh 0.5vh;
+    z-index: 90;
 }
 
 #pause-button {
@@ -212,7 +240,7 @@ export default {
     border-radius: 5px;
     min-width: 48px;
     text-align: center;
-    font-size: 2vh;
+    font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
 }
 
@@ -279,6 +307,8 @@ export default {
     border-radius: 5px;
     height: 200px;
     min-width: 142px;
+    font-size: 2.5vh;
+    padding: 1.5vh 0.5vh;
 }
 
 
@@ -294,12 +324,12 @@ export default {
 
 #game-grid-panel {
     background: #6ea34f;
-    width: 700px;
-    height: 535px;
+    width: calc(70vh * 17 / 13);
+    height: 70vh;
     display: static;
-    position: absolute;
-    left: calc(50% - 350px);
-    top: calc(50% - 330px);
+    position: fixed;
+    top: 15vh;
+    left: calc((100vw - (70vh * 17 / 13)) / 2);
     text-align: center;
     color: white;
     display: grid;
@@ -324,7 +354,7 @@ export default {
     background: #b8b8b8;
     margin-top: 20px;
     width: 50%;
-    height: 100px;
+
     text-align: center;
     color: white;
     padding: 15px;

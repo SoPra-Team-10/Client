@@ -56,10 +56,10 @@ export default {
                     return 'Zunderfauch';
                 case 'cleansweep-11':
                     return 'Sauberwisch 11';
-                case 'thinderblast':
-                    return 'comet-260';
-                case 'thinderblast':
-                    return 'nimbus-2001';
+                case 'comet-260':
+                    return 'Comet-2-60';
+                case 'nimbus-2001':
+                    return 'Nimbus-2001';
                 case 'firebolt':
                     return 'Feuerblitz';
                 default: undefined

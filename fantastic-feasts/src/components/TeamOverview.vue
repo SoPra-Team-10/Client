@@ -56,8 +56,6 @@ export default {
             localStorage.setItem('configs', parsed);
         },
         editTeamConfig(index) {
-            console.log(index);
-            console.log(this.configs.teamConfigs[index]);
             this.state.index = index;
             this.state.isNew = false;
             this.state.currentState = 'inTeamConfig';
@@ -136,7 +134,6 @@ export default {
                 var my_vue = this;
                 reader.onload = function(){
                     data = JSON.parse(reader.result);
-                    console.log(data);
                     my_vue.configs.teamConfigs.unshift(data);
                     my_vue.storeConfigs();
                 }
