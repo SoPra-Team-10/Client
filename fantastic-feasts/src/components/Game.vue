@@ -74,6 +74,7 @@
                 <div class="info-panel" id="game-log-panel">
                     <h3 class="panel-title">Gamelog</h3>
                     <hr class="inner-separation-line">
+					<h5 id="game-log"></h5>
                 </div>
                 <hr class="normal-separation-line">
                 <div class="info-panel">
@@ -101,18 +102,6 @@ export default {
     },
     methods: {
         sendMsg: function(){
-            web.websocket.onmessage = function(msg){
-                var newText = "Gamelog";
-                var jsonObject = JSON.parse(msg.data);
-                Object.keys(jsonObject).forEach(key =>{
-                var val = jsonObject[key];
-               
-                newText = newText + "\n" + key + ": " + val; 
-                });
-                document.getElementById("game-log-panel").innerHTML = newText;
-                alert(newText);
-            }
-            
             web.websocket.send(document.getElementById("in").value);
         },
 
@@ -120,11 +109,19 @@ export default {
 
         startGame: function(){
             web.websocket.onmessage = function(msg){
-                updateLog(msg);
+                var newText = "";
+                var jsonObject = JSON.parse(msg.data);
+                Object.keys(jsonObject).forEach(key =>{
+                var val = jsonObject[key];
+               
+                newText = newText + "\n" + key + ": " + val; 
+                });
+                document.getElementById("game-log").innerHTML = newText;
             }
         }
     },
     mounted() {
+		this.startGame();
         var grid = [];
         for(var i = 0; i < 221; i++) {
             if (i % 2 === 0) {

@@ -39,12 +39,9 @@ export default {
                 alert('Connection failed: ' + error.data);
             };
             web.websocket.onopen = function(){
-                web.websocket.send("hallo welt");
-                //game.currentState = 'inGame';
+                
             }
-            web.websocket.onmessage = function(msg){
-                alert(msg.data);
-            }
+            
         }
     },
     props: ['game'],
