@@ -31,7 +31,7 @@
                         </div> -->
                         <div class="header__panel" id="team-panel-right">
                             <div class="header__team-panel-content">
-                                Slitherin
+                                Slytherin
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,6 @@ export default {
         }
     },
     mounted() {
-		this.startGame();
         var grid = [];
         for(var i = 0; i < 221; i++) {
             if (i % 2 === 0) {
@@ -131,6 +130,7 @@ export default {
             }
         }
         this.quidditch.grid = grid;
+		this.startGame();
     }
 }
 </script>
@@ -410,6 +410,7 @@ h1 {
     color: #583b1b;
     margin: 0;
     padding: 0;
+    font-size: 2vh;
 }
 
 
