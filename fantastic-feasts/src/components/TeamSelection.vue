@@ -2,14 +2,16 @@
     <div id="team-overview">
         <h3>{{ teamConfig.name }} </h3>
         <em id="team-motto">{{ teamConfig.motto }}</em> 
-        <hr class="team-property-separation">
+        <p>~</p>
+        <!-- <hr class="team-property-separation"> -->
         <section v-for="(player, key) in teamConfig.players" :key="player.name">
             <div class="team-property"> <b>{{ mapRole(key) }}</b> </div>
             <div class="team-property">{{ player.name }}</div>
             <div class="team-property">{{ mapBroom(player.broom) }}</div>
             <div class="team-property player-sex">{{ player.sex }}</div>
         </section>
-        <hr class="team-property-separation">
+        <p>~</p>
+        <!-- <hr class="team-property-separation"> -->
         <section v-for="(fan, key) in teamConfig.fans" :key="key">
             <div class="team-property"> <b>{{ mapFan(key) }}</b> </div>
             <div class="team-property fan-number">{{ teamConfig.fans[key] }}</div>
@@ -91,13 +93,19 @@ export default {
 }
 
 #team-overview {
-    border: 1px solid #d6cb8d;
     margin: 15px;
     padding: 5px 0 20px 0;
-    border-radius: 10px;
+    border-radius: 5px;
     display: inline-block;
     width: 60%;
+    background: radial-gradient(#ffffff, #f3eddd);
+    border-radius: 25px;
+    border: 1px solid #e4d8b8;
+    -moz-box-shadow:    inset 0 0 3px #00000086;
+    -webkit-box-shadow: inset 0 0 3px #000000;
+    box-shadow:         inset 0 0 3px #000000;
 }
+
 
 #team-motto {
     display: inline-block;
@@ -121,7 +129,8 @@ export default {
 
 .team-property-separation {
     border: none;
-    border-top: 1px solid #d6cb8d;
+    border-top: 0.5px solid #d6cb8d;
+    width: 60%;
 }
 
 </style>
