@@ -58,7 +58,7 @@
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="tile in this.quidditch.grid" class="gras-tile" :key="tile.id" :style="{ background: tile }"></div>
+                        <button v-for="tile in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile[1])" :style="{ background: tile } "></button>
                     </div>
                 </div>
                 <!-- <div class="spectator-stand-panel">
@@ -96,13 +96,19 @@ export default {
     data() {
         return {
             quidditch: {
-                grid: ['#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63']
+                grid: [],
             }
         }
     },
     methods: {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
+        },
+
+        feedback: function(id){
+            var x = id % 17;
+            var y = (id - x)/17
+            alert("x: " + x + " y: " + y);
         },
 
         
@@ -118,15 +124,16 @@ export default {
                 });
                 document.getElementById("game-log").innerHTML = newText;
             }
+            
         }
     },
     mounted() {
         var grid = [];
         for(var i = 0; i < 221; i++) {
             if (i % 2 === 0) {
-                grid.push('#6ea34f');
+                grid.push(['#6ea34f', i]);
             } else {
-                grid.push('#8acc63');
+                grid.push(['#8acc63', i]);
             }
         }
         this.quidditch.grid = grid;
@@ -406,11 +413,18 @@ h1 {
     border: 1px solid #6b6b6b;
 }
 
+.gras-tile {
+    border:none;
+    padding:0;
+    background:none;
+}
+
 .panel-title {
     color: #583b1b;
     margin: 0;
     padding: 0;
     font-size: 2vh;
+    
 }
 
 
