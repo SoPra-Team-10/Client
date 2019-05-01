@@ -10,6 +10,10 @@
             <div class="main-menu__button-container">
                 <label for="port" class="menu__input-label">Port:</label>
                 <input id="port" type="text" class="menu__input">
+                <label for="user-name" class="menu__input-label">Benutzername:</label>
+                <input id="user-name" type="text" class="menu__input">
+                <label for="password" class="menu__input-label">Passwort:</label>
+                <input id="password" type="text" class="menu__input">
             </div>
             <div class="main-menu__button-container">
                 <button @click="connect()" class="main-menu__small-button">Verbinden</button>
@@ -39,7 +43,23 @@ export default {
                 alert('Connection failed: ' + error.data);
             };
             web.websocket.onopen = function(){
-                
+                var userName = document.getElementById("user-name").value;
+                var pw = document.getElementById("password").value;
+                var timestamp = Date.now();
+                var lobby = "";
+                var joinRequest = {
+                    "timestamp": timestamp,
+                    "payloadType": "joinRequest",
+                    "payload": {
+                        "lobby": lobby,
+                        "userName": userName,
+                        "password": pw,
+                        "isArtificialIntelligence": "false",
+                        "mods":[]
+                    }
+                }
+                var msg = JSON.stringify(joinRequest);
+                web.websocket.send(msg);
             }
             
         }
