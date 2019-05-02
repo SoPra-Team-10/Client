@@ -58,20 +58,38 @@
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile[1])" :style="{ background: tile }">({{ index % 17 }} | {{ Math.floor(index / 17) }}) <br> {{ index }} </div>
+                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile.xPos, tile.yPos)" :style="{ background: tile.color }">({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} </div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[ball, key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                        </transition-group>
+                        <transition-group name="game-players" tag="div">
+                            <div v-for="(player, key) in snapShot.leftTeam.players" 
+                                :key="key" :class="['player-tile', 'left-team-player', key]" 
+                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
+                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                        </transition-group>
+                        <transition-group name="game-players" tag="div">
+                            <div v-for="(player, key) in snapShot.rightTeam.players" 
+                                :key="key" :class="['player-tile', 'right-team-player', key]" 
+                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
+                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                     </div>
                 </div>
-                <!-- <div class="spectator-stand-panel">
-                    <div class="spectator-stand">Zuschauer links
-
+                <div class="spectator-stand-panel">
+                    <div class="spectator-stand-left">
+                        <div v-for="(fan, index) in snapShot.leftTeam.fans" 
+                            :key="index"
+                            :class="['fan', 'fan-left-team']"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
+                        </div>
                     </div>
-                    <div class="spectator-stand">Zuschauer rechts
-                    
+                    <div class="spectator-stand-right">
+                        <div v-for="(fan, index) in snapShot.rightTeam.fans" 
+                            :key="index"
+                            :class="['fan', 'fan-right-team']"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
+                        </div> 
                     </div>
-                </div> -->
+                </div>
             </div>
             <div class="sidebar-right">
                 <div class="info-panel" id="game-log-panel">
@@ -84,11 +102,15 @@
                     <h3 class="panel-title">Testfunktionen</h3>
                     <hr class="inner-separation-line">
                     <input id="in" type="text">
-                    <button @click="sendMsg()">senden</button>
+                    <button @click="sendMsg()" class="info-panel-button">Senden</button>
                     <hr class="inner-separation-line">
-                    <button @click="shuffleBalls()">Bälle mischen</button>
-                    <button @click="scorePoints(5, 'leftTeam')">Punkte links</button>
-                    <button @click="scorePoints(5, 'rightTeam')">Punkte rechts</button>
+                    <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
+                    <br>
+                    <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
+                    <br>
+                    <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
+                    <hr class="inner-separation-line">
+                    <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}</div>
                 </div>
             </div>
         </section>
@@ -105,6 +127,8 @@ export default {
             quidditch: {
                 grid: []
             },
+            clickedTile: [],
+            clickedPlayer: undefined,
             snapShot: {    
                 phase: 'ballPhase',
                 spectatorUserName: ['Gast'],
@@ -115,53 +139,77 @@ export default {
                         {
                             fanType: 'troll',
                             banned: false
+                        },
+                        {
+                            fanType: 'troll',
+                            banned: false
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: false
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: false
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: false
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: false
+                        },
+                        {
+                            fanType: 'niffler',
+                            banned: false
                         }
                     ],
                     players: {
                         seeker: {
-                            xPos: 4,
+                            xPos: 2,
                             yPos: 5,
                             banned: false,
                             turnUsed : false
                         },
                         keeper: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 7,
+                            yPos: 3,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser1: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 7,
+                            yPos: 8,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser2: {
                             xPos: 4,
-                            yPos: 5,
+                            yPos: 2,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser3: {
                             xPos: 4,
-                            yPos: 5,
+                            yPos: 11,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         beater1: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 8,
+                            yPos: 9,
                             banned: false,
                             holdsBludger : false,
                             turnUsed : false
                         },
                         beater2: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 3,
+                            yPos: 8,
                             banned: false,
                             holdsBludger : false,
                             turnUsed : false
@@ -172,55 +220,79 @@ export default {
                     points: 0,
                     fans: [
                         {
+                            fanType: 'troll',
+                            banned: false
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: false
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: false
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: false
+                        },
+                        {
                             fanType: 'goblin',
+                            banned: false
+                        },
+                        {
+                            fanType: 'niffler',
+                            banned: false
+                        },
+                        {
+                            fanType: 'niffler',
                             banned: false
                         }   
                     ],
                     players: {
                         seeker: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 10,
+                            yPos: 2,
                             banned: false,
                             turnUsed : false
                         },
                         keeper: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 13,
+                            yPos: 3,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser1: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 10,
+                            yPos: 10,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser2: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 14,
+                            yPos: 8,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         chaser3: {
-                            xPos: 4,
+                            xPos: 16,
                             yPos: 5,
                             banned: false,
                             holdsQuaffle : false,
                             turnUsed : false
                         },
                         beater1: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 9,
+                            yPos: 11,
                             banned: false,
                             holdsBludger : false,
                             turnUsed : false
                         },
                         beater2: {
-                            xPos: 4,
-                            yPos: 5,
+                            xPos: 11,
+                            yPos: 6,
                             banned: false,
                             holdsBludger : false,
                             turnUsed : false
@@ -252,10 +324,12 @@ export default {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
         },
-        feedback: function(id){
-            var x = id % 17;
-            var y = (id - x)/17
-            alert("x: " + x + " y: " + y);
+        feedback: function(xPos, yPos){
+            this.clickedTile = [xPos, yPos];
+            if(this.clickedPlayer) {
+                this.clickedPlayer.xPos = xPos;
+                this.clickedPlayer.yPos = yPos;
+            }
         },
         startGame: function(){
             web.websocket.onmessage = function(msg){
@@ -273,11 +347,15 @@ export default {
             var grid = [];
             for(var i = 0; i < 221; i++) {
                 if ([0, 1,2,3, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169].includes(i)) {
-                    grid.push('#89cc63b2');
-                } else if (i % 2 === 0) {
-                    grid.push('#6ea34f');
+                    grid.push({color: '#89cc63b2'});
                 } else {
-                    grid.push('#8acc63');
+                    var xPos = i % 17;
+                    var yPos = (i - xPos) / 17;
+                    if( i % 2 === 0) {
+                        grid.push({color: '#6ea34f', xPos: xPos, yPos: yPos});
+                    } else {
+                        grid.push({color: '#8acc63', xPos: xPos, yPos: yPos});
+                    }
                 }
             }
             return grid;
@@ -288,7 +366,6 @@ export default {
                 ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
                 ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
             }
-
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
@@ -439,7 +516,7 @@ export default {
 .game-info-panel {
     position: absolute;
     width: 60%;
-    height: 80%;
+    min-height: 80%;
     top: 10%;
     left: 20%;
     background: radial-gradient(#ffffff, #ece3ca);
@@ -489,11 +566,40 @@ export default {
     padding: 15px;
     margin: 15px;
     border-radius: 5px;
-    height: 200px;
+    min-height: 40%;
     min-width: 142px;
     font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
 }
+
+.info-text {
+    font-size: 1.8vh;
+}
+
+.info-panel-button {
+    background: radial-gradient(#f0dfb2, #f0dfb2);
+    display: auto;
+    color: #8d6951;
+    font-family: 'Alice';
+    font-size: 1.8vh;
+    border: 1px solid #99735a;
+    border-radius: 3px;
+    margin: 10px 5px 0 5px;
+}
+
+.info-panel-button:hover {
+    background: radial-gradient(#fdfdfd, #eee2c3);
+    color: #755945;
+    border: 1px solid #755945;
+}
+
+.info-panel-button:active {
+    background: radial-gradient(#fdfdfd, #eee2c3);
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+
 
 
 .center {
@@ -534,29 +640,51 @@ export default {
 
 
 
-.spectator-stand-panel {
-    background: #b8b8b8;
-    margin-top: 20px;
-    width: 50%;
 
-    text-align: center;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    display: static;
+
+.spectator-stand-panel {
+    background:radial-gradient(#797979, #525252);
     position: fixed;
-    left: 25%;
-    bottom: 10px;
+    height: 10%;
+    width: 60%;
+    left: 20%;
+    bottom: 0;
+    border: 1px solid #adadad;
+    border-bottom: none;
+    border-radius: 1vh 1vh 0 0;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), 0 0 19px 0 rgba(0, 0, 0, 0.19);
 }
 
-.spectator-stand {
-    display: inline-block;
+.spectator-stand-left {
+    position: absolute;
     text-align: center;
-    background: #6b6b6b;
+    background:radial-gradient(#6b6b6b, #525252);
     color: white;
-    padding: 25px 50px;
-    margin: 0 4%;
-    border-radius: 5px;
+    border-radius: 1vh;
+    width: 42.5%;
+    height: 70%;
+    top: 15%;
+    left: 5%;
+    border: 1px solid #7e7e7e;
+    -moz-box-shadow:    inset 0 0 3px #00000086;
+    -webkit-box-shadow: inset 0 0 3px #000000;
+    box-shadow:         inset 0 0 3px #000000;
+}
+
+.spectator-stand-right {
+    position: absolute;
+    text-align: center;
+    background:radial-gradient(#6b6b6b, #525252);
+    color: white;
+    border-radius: 1vh;
+    width: 42.5%;
+    height: 70%;
+    top: 15%;
+    right: 5%;
+    border: 1px solid #7e7e7e;
+    -moz-box-shadow:    inset 0 0 3px #00000086;
+    -webkit-box-shadow: inset 0 0 3px #000000;
+    box-shadow:         inset 0 0 3px #000000;
 }
 
 .ball {
@@ -574,7 +702,22 @@ export default {
 }
 
 .fan {
+    display: inline-block;
     z-index: 50;
+    position: relative;
+    width: 11.3%;
+    height: 80%;
+    margin: 5px;
+    border: 1.5px solid #e0a500;
+    border-radius: 1vh;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
+    font-size: 3vh;
+    z-index: 50;
+    padding-top: .65vh; 
+}
+
+.fan:hover {
+    background: radial-gradient(#e7c87300, #e9cf8894);
 }
 
 h1 {
@@ -590,17 +733,40 @@ h1 {
     font-size: 1.2vh;
     padding: 1vh 0;
     color:#ffffff60;
+    border:none;
+    padding:0;
+    background:none;
+}
+
+.player-tile {
+    position: absolute;
+    width: calc(5.88% * 0.9);
+    height: calc(7.69% * 0.9);
+    margin: calc(7.69% * 0.035) calc(5.88% * 0.05);
+    border: 1.5px solid #e0a500;
+    border-radius: 1vh;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
+    font-size: 3vh;
+    z-index: 50;
+    padding-top: .65vh;
+}
+
+.player-tile:hover {
+    border: 1.5px solid #ffffff;
+}
+
+.right-team-player {
+    background: radial-gradient(#4bb176, #1d8649);
+}
+
+.left-team-player {
+    background: radial-gradient(#5677be, #1d50be);
 }
 
 .gras-tile:hover {
     border: 1px solid #6b6b6b;
 }
 
-.gras-tile {
-    border:none;
-    padding:0;
-    background:none;
-}
 
 .panel-title {
     color: #583b1b;
@@ -615,6 +781,7 @@ h1 {
     height: 7.69%;
     width: 5.88%;
     position: absolute;
+    z-index: 63;
 }
 
 .snitch:hover {
@@ -629,6 +796,7 @@ h1 {
     background-repeat: no-repeat;
     background-position: center;
     position: absolute;
+    z-index: 60;
 }
 
 .quaffle:hover {
@@ -643,6 +811,7 @@ h1 {
     background-repeat: no-repeat;
     background-position: center;
     position: absolute;
+    z-index: 61;
 }
 
 .bludger1:hover {
@@ -658,6 +827,7 @@ h1 {
     background-repeat: no-repeat;
     background-position: center;
     position: absolute;
+    z-index: 62;
 }
 
 .bludger2:hover {
@@ -665,6 +835,10 @@ h1 {
 }
 
 .game-balls-move {
+    transition: transform 1s;
+}
+
+.game-players-move {
     transition: transform 1s;
 }
 
