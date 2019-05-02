@@ -76,30 +76,38 @@
                     v-model="player.sex"> w
                 </label>
             </div>
-            <h3>Fans</h3>
+            <h3>Fans (<span :class="[{valid: fanSum == 7},{invalid: fanSum > 7}]">{{ fanSum }}</span> / 7)</h3>
             <div class="fan-selection">
                 <label class="team-config__fan-label" for="team-goblins">Goblins</label>
                 <input
                     type="number"
                     id="team-goblins"
+                    min='1'
+                    max='3'
                     class="team-config__fan-counter"
                     v-model="teamConfig.fans.goblins">
                 <label class="team-config__fan-label" for="team-trolls">Trolle</label>
                 <input
                     type="number"
                     id="team-trolls"
+                    min='1'
+                    max='3'
                     class="team-config__fan-counter"
                     v-model="teamConfig.fans.trolls">
                 <label class="team-config__fan-label" for="team-elfs">Elfen</label>
                 <input
                     type="number"
                     id="team-elfs"
+                    min='1'
+                    max='3'
                     class="team-config__fan-counter"
                     v-model="teamConfig.fans.elfs">
                 <label class="team-config__fan-label" for="team-nifflers">Niffler</label>
                 <input
                     type="number"
                     id="team-nifflers"
+                    min='1'
+                    max='3'
                     class="team-config__fan-counter"
                     v-model="teamConfig.fans.nifflers">
                 <div class="main-menu__button-container">
@@ -115,7 +123,7 @@ export default {
     data() {
         return {
             playerRoles: [
-                'Sucher', 'Hüter', 'Jäger', 'Jäger', 'Jäger', 'Klopper', 'Klopper'
+                'Sucher', 'Hüter', 'Jäger', 'Jäger', 'Jäger', 'Treiber', 'Treiber'
             ],
             brooms: [
                 'thinderblast', 'cleansweep-11', 'comet-260', 'nimbus-2001', 'firebolt'
@@ -123,6 +131,15 @@ export default {
             teamConfig: this.configs.teamConfigs[this.state.index]
         }
     },
+    computed: {
+        fanSum() {
+            var sum = 0;
+            for(var key in this.teamConfig.fans) {
+                sum += parseInt(this.teamConfig.fans[key], 10);
+            }
+            return sum;
+        }
+    }, 
     methods: {
         mapRole(index) {
             switch (index) {
@@ -137,9 +154,9 @@ export default {
                 case 'chaser3':
                     return 'Jäger 3';
                 case 'beater1':
-                    return 'Klopper 1';
+                    return 'Treiber 1';
                 case 'beater2':
-                    return 'Klopper 2';
+                    return 'Treiber 2';
                 default: 
                 return undefined;
             }
@@ -181,5 +198,14 @@ export default {
     margin: 0;
     padding: 0;
 }
+
+.valid {
+    color: #54bd62;
+}
+
+.invalid {
+    color: #b84747;
+}
+
 
 </style>

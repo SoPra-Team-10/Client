@@ -1,0 +1,27 @@
+{
+    "phase":"(string/phaseType)",
+    "spectatorUserName": [
+  "(string)"
+    ],
+    "round":"(int)",
+    "leftTeam":"(json/teamSnapshot)",
+    "rightTeam":"(json/teamSnapshot)",
+    "balls": {
+      "snitch": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)"
+      },
+      "quaffle": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)"
+      },
+      "bludger1": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)"
+      },
+      "bludger2": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)"
+      }
+    }
+}

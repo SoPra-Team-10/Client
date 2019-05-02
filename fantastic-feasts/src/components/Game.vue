@@ -16,12 +16,12 @@
                         </div>
                         <div class="header__panel" id="score-panel">
                             <div class="score-panel-content">
-                                40 : 15
+                                {{ this.snapShot.leftTeam.points }} : {{ this.snapShot.rightTeam.points }}
                             </div>
                         </div>
                         <div class="header__panel" id="round-panel">
                             <div class="round-panel-content">
-                                Runde 17
+                                Runde {{ this.snapShot.round }}
                             </div>
                         </div>
                         <!-- <div class="header__panel" id="round-phase-panel">
@@ -58,7 +58,10 @@
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="tile in this.quidditch.grid" class="gras-tile" :key="tile.id" :style="{ background: tile }"></div>
+                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" :style="{ background: tile }">({{ index % 17 }} | {{ Math.floor(index / 17) }}) <br> {{ index }} </div>
+                        <transition-group name="game-balls" tag="div">
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[ball, key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                        </transition-group>
                     </div>
                 </div>
                 <!-- <div class="spectator-stand-panel">
@@ -82,6 +85,10 @@
                     <hr class="inner-separation-line">
                     <input id="in" type="text">
                     <button @click="sendMsg()">senden</button>
+                    <hr class="inner-separation-line">
+                    <button @click="shuffleBalls()">Bälle mischen</button>
+                    <button @click="scorePoints(5, 'leftTeam')">Punkte links</button>
+                    <button @click="scorePoints(5, 'rightTeam')">Punkte rechts</button>
                 </div>
             </div>
         </section>
@@ -96,7 +103,148 @@ export default {
     data() {
         return {
             quidditch: {
-                grid: ['#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63', '#6ea34f', '#8acc63']
+                grid: {}
+            },
+            snapShot: {    
+                phase: 'ballPhase',
+                spectatorUserName: ['Gast'],
+                round: 5,
+                leftTeam: {
+                    points: 0,
+                    fans: [
+                        {
+                            fanType: 'troll',
+                            banned: false
+                        }
+                    ],
+                    players: {
+                        seeker: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            turnUsed : false
+                        },
+                        keeper: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser1: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser2: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser3: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        beater1: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        },
+                        beater2: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        } 
+                    }
+                },
+                rightTeam:{
+                    points: 0,
+                    fans: [
+                        {
+                            fanType: 'goblin',
+                            banned: false
+                        }   
+                    ],
+                    players: {
+                        seeker: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            turnUsed : false
+                        },
+                        keeper: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser1: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser2: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser3: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        beater1: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        },
+                        beater2: {
+                            xPos: 4,
+                            yPos: 5,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        } 
+                    }
+                },
+                balls: {
+                    snitch: {
+                        xPos: 4,
+                        yPos: 5
+                    },
+                    quaffle: {
+                        xPos: 7,
+                        yPos: 9
+                    },
+                    bludger1: {
+                        xPos: 10,
+                        yPos: 4
+                    },
+                    bludger2: {
+                        xPos: 6,
+                        yPos: 7
+                    }
+                }
             }
         }
     },
@@ -104,8 +252,6 @@ export default {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
         },
-
-        
 
         startGame: function(){
             web.websocket.onmessage = function(msg){
@@ -118,19 +264,35 @@ export default {
                 });
                 document.getElementById("game-log").innerHTML = newText;
             }
+        },
+        generateGrid() {
+            var grid = [];
+            for(var i = 0; i < 221; i++) {
+                if ([0, 1,2,3, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169].includes(i)) {
+                    grid.push('#89cc63b2');
+                } else if (i % 2 === 0) {
+                    grid.push('#6ea34f');
+                } else {
+                    grid.push('#8acc63');
+                }
+            }
+            return grid;
+        },
+        shuffleBalls() {
+            for (var key in this.snapShot.balls) {
+                var ball = this.snapShot.balls[key];
+                ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
+                ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
+            }
+
+        },
+        scorePoints(increment, team) {
+            this.snapShot[team].points += increment;
         }
     },
     mounted() {
-        var grid = [];
-        for(var i = 0; i < 221; i++) {
-            if (i % 2 === 0) {
-                grid.push('#6ea34f');
-            } else {
-                grid.push('#8acc63');
-            }
-        }
-        this.quidditch.grid = grid;
-		this.startGame();
+        this.quidditch.grid = this.generateGrid();
+		//this.startGame();
     }
 }
 </script>
@@ -342,12 +504,12 @@ export default {
 
 #game-grid-panel {
     background: #6ea34f;
-    width: calc(70vh * 17 / 13);
-    height: 70vh;
+    width: calc(75vh * 17 / 13);
+    height: 75vh;
     display: static;
     position: fixed;
-    top: 15vh;
-    left: calc((100vw - (70vh * 17 / 13)) / 2);
+    top: 13vh;
+    left: calc((100vw - (75vh * 17 / 13)) / 2);
     text-align: center;
     color: white;
     display: grid;
@@ -393,6 +555,24 @@ export default {
     border-radius: 5px;
 }
 
+.ball {
+    z-index: 60;
+    background: white;
+
+}
+
+.ball:hover {
+    border: 1px solid #424242;
+}
+
+.player {
+    z-index: 50;
+}
+
+.fan {
+    z-index: 50;
+}
+
 h1 {
   color: transparent;
   text-shadow: 0px 2px 3px rgba(255,255,255,0.5);
@@ -401,6 +581,12 @@ h1 {
           background-clip: text;
 }
 
+
+.gras-tile {
+    font-size: 1.2vh;
+    padding: 1vh 0;
+    color:#ffffff60;
+}
 
 .gras-tile:hover {
     border: 1px solid #6b6b6b;
@@ -411,6 +597,64 @@ h1 {
     margin: 0;
     padding: 0;
     font-size: 2vh;
+}
+
+.snitch {
+    background: url(../resources/snitch.svg);
+    height: 7.69%;
+    width: 5.88%;
+    position: absolute;
+}
+
+.snitch:hover {
+    border: 1px solid #dddddd;
+}
+
+.quaffle {
+    background: url(../resources/quaffle.svg);
+    height: 7.69%;
+    width: 5.88%;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+}
+
+.quaffle:hover {
+    border: 1px solid #dddddd;
+}
+
+.bludger1 {
+    background: url(../resources/bludger.svg);
+    height: 7.69%;
+    width: 5.88%;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+}
+
+.bludger1:hover {
+    border: 1px solid #dddddd;
+    
+}
+
+.bludger2 {
+    background: url(../resources/bludger.svg);
+    height: 7.69%;
+    width: 5.88%;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+}
+
+.bludger2:hover {
+    border: 1px solid #dddddd;
+}
+
+.game-balls-move {
+    transition: transform 1s;
 }
 
 
