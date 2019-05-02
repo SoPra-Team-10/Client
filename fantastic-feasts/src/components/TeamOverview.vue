@@ -211,7 +211,6 @@ label.main-menu__small-button {
 }
 
 .team-container {
-    vertical-align: top;
     display: block;
     padding: 0 10%;
 }
