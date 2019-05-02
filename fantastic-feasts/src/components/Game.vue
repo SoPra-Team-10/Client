@@ -58,7 +58,7 @@
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" :style="{ background: tile }">({{ index % 17 }} | {{ Math.floor(index / 17) }}) <br> {{ index }} </div>
+                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile[1])" :style="{ background: tile }">({{ index % 17 }} | {{ Math.floor(index / 17) }}) <br> {{ index }} </div>
                         <transition-group name="game-balls" tag="div">
                             <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[ball, key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
@@ -103,7 +103,7 @@ export default {
     data() {
         return {
             quidditch: {
-                grid: {}
+                grid: []
             },
             snapShot: {    
                 phase: 'ballPhase',
@@ -252,7 +252,11 @@ export default {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
         },
-
+        feedback: function(id){
+            var x = id % 17;
+            var y = (id - x)/17
+            alert("x: " + x + " y: " + y);
+        },
         startGame: function(){
             web.websocket.onmessage = function(msg){
                 var newText = "";
@@ -592,11 +596,18 @@ h1 {
     border: 1px solid #6b6b6b;
 }
 
+.gras-tile {
+    border:none;
+    padding:0;
+    background:none;
+}
+
 .panel-title {
     color: #583b1b;
     margin: 0;
     padding: 0;
     font-size: 2vh;
+    
 }
 
 .snitch {
