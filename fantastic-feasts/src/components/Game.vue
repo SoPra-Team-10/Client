@@ -373,7 +373,7 @@ export default {
     },
     mounted() {
         this.quidditch.grid = this.generateGrid();
-		//this.startGame();
+		this.startGame();
     }
 }
 </script>

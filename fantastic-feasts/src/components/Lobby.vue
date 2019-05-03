@@ -26,11 +26,14 @@
             <button @click="game.currentState = 'inMenu'" class="main-menu__button">Zurück zum Menu</button>
             <button @click="game.currentState = 'inGame'" class="main-menu__button">Spielfeld</button>
         </div>
+        
     </div>
+    
 </template>
 
 <script>
 import web from "../App.vue"
+import game from "../App.vue"
 export default {
     
     
@@ -60,7 +63,17 @@ export default {
                 }
                 var msg = JSON.stringify(joinRequest);
                 web.websocket.send(msg);
+                web.websocket.onmessage = function(msg){
+                    game.currentState = "inGame";
+                
+                    var obj = JSON.parse(msg.data);
+                    if(obj.payloadType === "loginGreeting"){
+                        game.currentState = "inGame";
+                    }
+                
+                }
             }
+            
             
         }
     },

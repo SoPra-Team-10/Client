@@ -23,7 +23,7 @@ export default {
   data () {
     return {
       game: {
-        currentState: 'inGame',
+        currentState: 'inMenu',
         colorSchemes: ['griffindor-color-scheme', 'slytherin-color-scheme', 'hufflepuff-color-scheme', 'ravenclaw-color-scheme'],
         selectedColorScheme: 1
       },
