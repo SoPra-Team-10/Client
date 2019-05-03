@@ -39,7 +39,7 @@ import game from "../App.vue"
 import configs from "../App.vue"
 export default {
     
-    
+    props: ['game'],
     methods: {
         connect : function () {
             var server = document.getElementById("server").value;
@@ -48,6 +48,7 @@ export default {
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);
             };
+            var vm = this;
             web.websocket.onopen = function(){
                 var userName = document.getElementById("user-name").value;
                 var pw = document.getElementById("password").value;
@@ -67,19 +68,19 @@ export default {
                 var msg = JSON.stringify(joinRequest);
                 web.websocket.send(msg);
                 web.websocket.onmessage = function(msg){
-                    game.currentState = "inGame";
+                vm.game.currentState = "inGame";
                 
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value === false){
                             var timestamp = Date.now();
-                            var obj = {
+                            var teamConf = {
                                 "timestamp": timestamp,
                                 "payloadType": "teamConfig",
                                 "payload": configs.selectedTeamConfig
                             }
                         }
-                        game.currentState = "inGame";
+                        vm.game.currentState = "inGame";
                     }
                 
                 }
