@@ -5,7 +5,7 @@
     <app-help class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
     <app-team class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inTeam'" :game="game" :configs="configs"></app-team>
     <app-config class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs"></app-config>
-    <app-game v-if="game.currentState === 'inGame'" :game="game"></app-game>
+    <app-game v-if="game.currentState === 'inGame'" :game="game" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-game>
 
   </div>
 </template>
@@ -34,8 +34,7 @@ export default {
       configs: {
         matchConfigs: [],
         teamConfigs: [],
-        selectedTeamConfig: {},
-        selectedMatchConfig: {}
+        selectedTeam: undefined
       }
     }
   },

@@ -4,7 +4,7 @@
         <em id="team-motto">{{ teamConfig.motto }}</em> 
         <p>~</p>
         <!-- <hr class="team-property-separation"> -->
-        <section v-for="(player, key) in teamConfig.players" :key="player.name">
+        <section v-for="(player, key) in teamConfig.players" :key="key">
             <div class="team-property"> <b>{{ mapRole(key) }}</b> </div>
             <div class="team-property">{{ player.name }}</div>
             <div class="team-property">{{ mapBroom(player.broom) }}</div>

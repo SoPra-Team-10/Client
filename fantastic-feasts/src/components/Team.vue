@@ -3,13 +3,14 @@
         <h1 class="subtitle">Team auswählen</h1>
         <div class="text-content-container">
             <div class="team-overview__team-list" id="team-selection__team-list">
-                <div v-for="(team, index) in configs.teamConfigs" :key="team.id" :class="{ selectedTeam: index ===  selectedTeam}" class="team-overview__team-preview">
-                    <li @click="selectedTeam = index" class="team-overview__team-preview-item">{{ team.name }}</li>
+                <div v-for="(team, index) in configs.teamConfigs" :key="team.name + team.motto" :class="[index === configs.selectedTeam ? 'selected-team' : '']" class="team-overview__team-preview">
+                    <li @click="selectTeam(index)" class="team-overview__team-preview-item">{{ team.name }}</li>
                 </div>
             </div>
-            <app-team-selection :configs=configs :teamConfig="configs.teamConfigs[selectedTeam]"></app-team-selection> 
+            <app-team-selection v-if="configs.selectedTeam != undefined" :configs="configs" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-team-selection> 
             <div class="main-menu__button-container">
-                <button @click="discardChanges()" class="main-menu__small-button">Importieren</button>
+                <!-- function for import is yet to be implemented!! -->
+                <button class="main-menu__small-button">Importieren</button>
             </div>   
         </div>
         
@@ -24,11 +25,6 @@
 import TeamSelection from './TeamSelection.vue';
 
 export default {
-    data() {
-        return {
-            selectedTeam: 0
-        }
-    },
     methods:{
         readFile : function(){
             var files = document.getElementById("fileChooser").files;
@@ -50,6 +46,12 @@ export default {
                 
                 
             }
+        },
+        selectTeam(index) {
+            this.configs.selectedTeam = index;
+            console.log(this.configs.selectedTeam);
+            const parsed = JSON.stringify(this.configs);
+            localStorage.setItem('configs', parsed);
         }
     },
     props: ['game', 'configs'],
@@ -67,7 +69,7 @@ export default {
     width: 20%;
 }
 
-.selectedTeam {
+.selected-team {
     background: #ddc78a;
     border-radius: 3px;
     color: #5a4222;

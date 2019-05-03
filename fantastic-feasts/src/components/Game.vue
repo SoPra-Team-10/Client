@@ -11,7 +11,7 @@
                     <div class="game-info-panel">
                         <div class="header__panel" id="team-panel-left">
                             <div class="header__team-panel-content">
-                                Griffindor
+                                {{ teamConfig.name }}
                             </div>
                         </div>
                         <div class="header__panel" id="score-panel">
@@ -31,7 +31,7 @@
                         </div> -->
                         <div class="header__panel" id="team-panel-right">
                             <div class="header__team-panel-content">
-                                Slytherin
+                                –
                             </div>
                         </div>
                     </div>
@@ -47,26 +47,48 @@
                 <div class="info-panel" id="player-info-panel"> 
                     <h3 class="panel-title">Ausgewählter Spieler</h3>
                     <hr class="inner-separation-line">
+                    <div v-if="clickedPlayerType">
+                        {{ renderPlayerInfo(teamConfig.players[clickedPlayerType]) }}
+                    </div>
                 </div>
                 <hr class="normal-separation-line">
                 <div class="info-panel" id="banned-players-panel">
                     <h3 class="panel-title">Verbannte Spieler</h3>
                     <hr class="inner-separation-line">
+                    <div v-for="(player, key) in bannedPlayersTeamLeft" 
+                        :class="['banned-player-tile']" 
+                        :key="key">{{ key.slice(0,1).toUpperCase() }}
+                    </div>
+
                 </div>
                 
             </div>
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile.xPos, tile.yPos)" :style="{ background: tile.color }">({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} </div>
+                        <div v-for="(tile, index) in this.quidditch.grid" 
+                            class="gras-tile" :key="tile.id" 
+                            @click="feedback(tile.xPos, tile.yPos)" 
+                            :style="{ background: tile.color }">
+                            ({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} 
+                        </div>
+                        <div class="goal-post-right-top"></div>
+                        <div class="goal-post-right-center"></div>
+                        <div class="goal-post-right-bottom"></div>
+                        <div class="goal-post-left-top"></div>
+                        <div class="goal-post-left-center"></div>
+                        <div class="goal-post-left-bottom"></div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="feedback(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
-                            <div v-for="(player, key) in snapShot.leftTeam.players" 
+                            <div v-for="(player, key) in activePlayersTeamLeft" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="clickedPlayer = player, clickedPlayerType = key"
+                                @mouseenter="clickedPlayerType = key"
+                                @mouseleave="clickedPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
+                                </div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in snapShot.rightTeam.players" 
@@ -109,6 +131,7 @@
                     <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
                     <br>
                     <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
+                    <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
                     <hr class="inner-separation-line">
                     <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}</div>
                 </div>
@@ -121,13 +144,14 @@
 import web from "../App.vue";
 
 export default {
-    props: ['game'],
+    props: ['game', 'teamConfig'],
     data() {
         return {
             quidditch: {
                 grid: []
             },
             clickedTile: [],
+            clickedPlayerType: undefined,
             clickedPlayer: undefined,
             snapShot: {    
                 phase: 'ballPhase',
@@ -320,6 +344,30 @@ export default {
             }
         }
     },
+    computed: {
+        activePlayersTeamLeft() {
+            var players = this.snapShot.leftTeam.players;
+            var activePlayers = {};
+            for ( var key in players ) {
+                if(!players[key].banned) {
+                    activePlayers[key] = players[key];
+                    
+                }
+            }
+            console.log(activePlayers);
+            return activePlayers;
+        },
+        bannedPlayersTeamLeft() {
+            var players = this.snapShot.leftTeam.players;
+            var bannedPlayers = {};
+            for ( var key in players ) {
+                if(players[key].banned) {
+                    bannedPlayers[key] = players[key];
+                }
+            }
+            return bannedPlayers; 
+        }
+    },
     methods: {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
@@ -331,6 +379,10 @@ export default {
                 this.clickedPlayer.yPos = yPos;
             }
         },
+
+        renderPlayerInfo(player) {
+            return 'Name: ' + player.name + ', '  + player.sex +', ' + player.broom;
+        },
         startGame: function(){
             web.websocket.onmessage = function(msg){
                 var newText = "";
@@ -341,6 +393,12 @@ export default {
                 newText = newText + "\n" + key + ": " + val; 
                 });
                 document.getElementById("game-log").innerHTML = newText;
+            }
+        },
+        banLeftTeam() {
+            var players = this.snapShot.leftTeam.players;
+            for (var key  in players) {
+                players[key].banned = !players[key].banned;
             }
         },
         generateGrid() {
@@ -379,6 +437,13 @@ export default {
 </script>
 
 <style scoped>
+
+*{
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;  
+}
 
 .prevent-inline {
     display: block;
@@ -537,6 +602,23 @@ export default {
     min-width: 173px;
 }
 
+.banned-player-tile {
+    display: inline-block;
+    width: calc(100vh * 0.0769 * 0.9 * 0.8);
+    height: calc(100vh * 0.0769 * 0.9 * 0.8);
+    margin: calc(100vh * 0.0769 * 0.035 * 0.8) calc(100vh * 0.0588 * 0.05 * 0.8);
+    border: 1.5px solid #e0a500;
+    border-radius: 1vh;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
+    font-size: 3vh;
+    z-index: 50;
+    padding-top: .65vh;
+    background: radial-gradient(#5677be, #1d50be);
+    color: white;
+    text-align: center;
+    
+}
+
 .sidebar-right {
     display: static;
     position: fixed;
@@ -552,7 +634,7 @@ export default {
 
 .info-panel {
     display: block;
-    text-align: center;
+    text-align: left;
     border: 1px solid #ebd18a;
     background: radial-gradient(#ffffff, #ebd18a);
     -moz-box-shadow:    inset 0 0 4px #00000086;
@@ -685,7 +767,8 @@ export default {
 
 .ball {
     z-index: 60;
-    background: white;
+
+    pointer-events: none;
 
 }
 
@@ -709,7 +792,7 @@ export default {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
     font-size: 3vh;
     z-index: 50;
-    padding-top: .8vh; 
+    padding-top: .6vh; 
 }
 
 .fan:hover {
@@ -763,12 +846,93 @@ h1 {
     border: 1px solid #6b6b6b;
 }
 
+.goal-post-right-center {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 6);
+    right: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: perspective(130px) rotateY(-45deg);
+}
+
+.goal-post-right-top {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 4 + 1.3%);
+    right: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: skewY(-15deg) perspective(130px) rotateY(-45deg) ;
+}
+
+.goal-post-right-bottom {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 8 - 1.3%);
+    right: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: skewY(15deg) perspective(130px) rotateY(-45deg) ;
+}
+
+.goal-post-left-top {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 4 + 1.3%);
+    left: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: skewY(15deg) perspective(130px) rotateZ(180deg) rotateY(-45deg);
+}
+
+.goal-post-left-center {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 6);
+    left: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: perspective(130px) rotateZ(180deg) rotateY(-45deg);
+}
+
+.goal-post-left-bottom {
+    background: url(../resources/pole-center-ohne.svg);
+    height: 7.69%;
+    width: calc(5.88% * 2.001);
+    position: absolute;
+    top: calc(7.69% * 8 - 1.4%);
+    left: calc(5.88% * 2);
+    z-index: 40;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    transform: skewY(-15deg) perspective(130px) rotateZ(180deg) rotateY(-45deg) ;
+}
+
+
+
 
 .panel-title {
     color: #583b1b;
     margin: 0;
     padding: 0;
     font-size: 2vh;
+    text-align: center;
     
 }
 
@@ -778,6 +942,7 @@ h1 {
     width: 5.88%;
     position: absolute;
     z-index: 63;
+    pointer-events: none;
 }
 
 .snitch:hover {
@@ -793,6 +958,7 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 60;
+    pointer-events: none;
 }
 
 .quaffle:hover {
@@ -808,6 +974,7 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 61;
+    pointer-events: none;
 }
 
 .bludger1:hover {
@@ -824,6 +991,7 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 62;
+    pointer-events: none;
 }
 
 .bludger2:hover {
