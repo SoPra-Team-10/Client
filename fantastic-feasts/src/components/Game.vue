@@ -380,10 +380,6 @@ export default {
 
 <style scoped>
 
-#game-container {
-
-}
-
 .prevent-inline {
     display: block;
 }
@@ -705,15 +701,15 @@ export default {
     display: inline-block;
     z-index: 50;
     position: relative;
-    width: 11.3%;
-    height: 80%;
-    margin: 5px;
+    width: 5vh;
+    height: 5vh;
+    margin: 0.85vh 0.3vh;
     border: 1.5px solid #e0a500;
     border-radius: 1vh;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
     font-size: 3vh;
     z-index: 50;
-    padding-top: .65vh; 
+    padding-top: .8vh; 
 }
 
 .fan:hover {
