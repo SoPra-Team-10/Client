@@ -14,6 +14,8 @@
                 <input id="user-name" type="text" class="menu__input">
                 <label for="password" class="menu__input-label">Passwort:</label>
                 <input id="password" type="text" class="menu__input">
+                <label for="spectator" class="menu__input-label">Als Gast beitreten:</label>
+                <input id="spectator" type="Checkbox" class="menu__input">
             </div>
             <div class="main-menu__button-container">
                 <button @click="connect()" class="main-menu__small-button">Verbinden</button>
@@ -34,6 +36,7 @@
 <script>
 import web from "../App.vue"
 import game from "../App.vue"
+import configs from "../App.vue"
 export default {
     
     
@@ -57,7 +60,7 @@ export default {
                         "lobby": lobby,
                         "userName": userName,
                         "password": pw,
-                        "isArtificialIntelligence": "false",
+                        "isArtificialIntelligence": false,
                         "mods":[]
                     }
                 }
@@ -68,6 +71,14 @@ export default {
                 
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
+                        if(document.getElementById("spectator").value === false){
+                            var timestamp = Date.now();
+                            var obj = {
+                                "timestamp": timestamp,
+                                "payloadType": "teamConfig",
+                                "payload": configs.selectedTeamConfig
+                            }
+                        }
                         game.currentState = "inGame";
                     }
                 
