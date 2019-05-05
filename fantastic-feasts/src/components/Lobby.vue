@@ -79,6 +79,7 @@ export default {
                                 "payloadType": "teamConfig",
                                 "payload": configs.selectedTeamConfig
                             }
+                            web.websocket.send(JSON.stringify(teamConf));
                         }
                         vm.game.currentState = "inGame";
                     }

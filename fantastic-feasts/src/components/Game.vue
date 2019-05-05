@@ -11,7 +11,7 @@
                     <div class="game-info-panel">
                         <div class="header__panel" id="team-panel-left">
                             <div class="header__team-panel-content">
-                                {{ teamConfig.name }}
+                                Griffindor
                             </div>
                         </div>
                         <div class="header__panel" id="score-panel">
@@ -31,7 +31,7 @@
                         </div> -->
                         <div class="header__panel" id="team-panel-right">
                             <div class="header__team-panel-content">
-                                –
+                                Slytherin
                             </div>
                         </div>
                     </div>
@@ -47,76 +47,29 @@
                 <div class="info-panel" id="player-info-panel"> 
                     <h3 class="panel-title">Ausgewählter Spieler</h3>
                     <hr class="inner-separation-line">
-                    <transition name="fade">
-                    <div v-if="clickedPlayerType" class='player-detail-container'>
-                        <div class="player-detail-icon">{{ clickedPlayerType.slice(0, 1).toUpperCase() }}</div>
-                        <div class="player-detail-name-container">
-                            <div class="player-detail-name"> <b>{{ teamConfig.players[clickedPlayerType].name }}</b> ({{ teamConfig.players[clickedPlayerType].sex }})</div>
-                            <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[clickedPlayerType].broom) }}</div>
-                            <div class="player-detail-type">{{ mapRole(clickedPlayerType) }} – ({{ clickedPlayer.xPos }} | {{ clickedPlayer.yPos }})</div>
-                        </div>
-                    
-                        <div class="player-detail-body">
-                            <button class="action-button werfen-button">Werfen</button>
-                            <button class="action-button klatscher-kloppen-button">Kloppen</button>
-
-                        </div>
-                    </div>
-                    </transition>
                 </div>
                 <hr class="normal-separation-line">
                 <div class="info-panel" id="banned-players-panel">
-                    <h3 class="panel-title">{{ lowerLeftHeader }}</h3>
+                    <h3 class="panel-title">Auf der Bank</h3>
                     <hr class="inner-separation-line">
-                    <div class="banned-players-container">
-                        <div v-for="(player, key) in bannedPlayersTeamLeft.players" 
-                            :class="['banned-player-tile', {'selected-banned-player-tile': player === playerToPosition}]" 
-                            :key="key"
-                            @click="selectBannedPlayer(player)"
-                        >{{ key.slice(0,1).toUpperCase() }}
-                        </div>
-                    </div>
                 </div>
                 
             </div>
             <div class="center">
                 <div id="game-conainer">
                     <div id="game-grid-panel">
-                        <div v-for="(tile, index) in this.grid" 
-                            class="gras-tile" :key="tile.id" 
-                            @click="feedback(tile.xPos, tile.yPos)" 
-                            :class="[tile.class,
-                                {'highlighted-gras-tile': highlightedTiles.includes(index)
-                            }]"
-
-                            >
-                            ({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} 
-                        </div>
-                        <!-- <div v-for="(tile, index) in this.grid" 
-                            :key="tile.id" 
-                            :class="highlightedTiles.includes(index) ? 'highlighted-gras-tile' : 'hidden-tile'"
-                            >
-                        </div> -->
-                        <div class="goal-post-right-top"></div>
-                        <div class="goal-post-right-center"></div>
-                        <div class="goal-post-right-bottom"></div>
-                        <div class="goal-post-left-top"></div>
-                        <div class="goal-post-left-center"></div>
-                        <div class="goal-post-left-bottom"></div>
+                        <div v-for="(tile, index) in this.quidditch.grid" class="gras-tile" :key="tile.id" @click="feedback(tile.xPos, tile.yPos)" :style="{ background: tile.color }">({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} </div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="feedback(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
-                            <div v-for="(player, key) in activePlayersTeamLeft" 
+                            <div v-for="(player, key) in snapShot.leftTeam.players" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player), clickedPlayerType = key"
-                                @mouseenter="hoveredPlayerType = key"
-                                @mouseleave="hoveredPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
-                                </div>
+                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
-                            <div v-for="(player, key) in activePlayersTeamRight" 
+                            <div v-for="(player, key) in snapShot.rightTeam.players" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
                                 @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
@@ -125,14 +78,13 @@
                 </div>
                 <div class="spectator-stand-panel">
                     <div class="spectator-stand-left">
-                        <div v-for="(fan, index) in activeFansTeamLeft" 
+                        <div v-for="(fan, index) in snapShot.leftTeam.fans" 
                             :key="index"
-                            :class="['fan', 'fan-left-team']"
-                            @click="fan.banned = true"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
+                            :class="['fan', 'fan-left-team']"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
                         </div>
                     </div>
                     <div class="spectator-stand-right">
-                        <div v-for="(fan, index) in activeFansTeamRight" 
+                        <div v-for="(fan, index) in snapShot.rightTeam.fans" 
                             :key="index"
                             :class="['fan', 'fan-right-team']"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
                         </div> 
@@ -157,11 +109,8 @@
                     <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
                     <br>
                     <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
-                    <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
                     <hr class="inner-separation-line">
-                    <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}
-                    <br> {{ this.clickedPlayer }}, {{ this.gameState }}, {{ bannedPlayersTeamLeft.number }}
-                    </div>
+                    <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}</div>
                 </div>
             </div>
         </section>
@@ -172,21 +121,16 @@
 import web from "../App.vue";
 
 export default {
-    props: ['game', 'teamConfig'],
+    props: ['game'],
     data() {
         return {
-            gameState: 'inGame',
-            grid: [],
+            quidditch: {
+                grid: [],
+                started: false,
+                mySide: null
+            },
             clickedTile: [],
-            clickedPlayerType: undefined,
             clickedPlayer: undefined,
-            highlightedTiles: [],
-            hoveredPlayerType: undefined,
-            playerToPosition: undefined,
-
-
-            // server message data formats
-
             snapShot: {    
                 phase: 'ballPhase',
                 spectatorUserName: ['Gast'],
@@ -375,396 +319,114 @@ export default {
                         yPos: 7
                     }
                 }
-            },
-
-            matchStart: {
-                matchConfig: {},
-                leftTeamConfig: {},
-                rightTeamConfig: {},
-                leftTeamUserName: "Linkes Team",
-                rightTeamUserNameg: "Rechtes Team"
-            },
-            matchFinish: {
-                endRound: undefined,
-                leftPoints: undefined,
-                rightPoints: undefined,
-                winnerUserName: undefined,
-                victoryReason: undefined
-            },
-            next: {
-                turn: undefined,
-                type: undefined,
-                timeout: undefined
-            },
-            centerTiles: [92, 93, 94, 109, 110, 111, 126, 127, 128],
-            leftAttackTiles: [19, 35, 36, 37, 52, 53, 54, 68, 69, 70, 71, 72, 85, 86, 87, 88, 89, 102, 103, 104, 
-                    105, 106, 119, 120, 121, 122, 123, 136, 137, 138, 139, 140, 154, 155, 156, 171, 172, 173, 189
-                    ],
-            rightAttackTiles: [
-                    31, 47, 48, 49, 64, 65, 66, 80, 81, 82, 83, 84, 97, 98, 99, 100, 101, 114, 115, 116,
-                    117, 118, 129, 131, 132, 133, 134, 135, 147, 148, 149, 150, 151, 152, 166, 167, 168, 183,
-                    184, 185, 201
-                    ],
-            cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],          
-            deltaRequest: {
-                deltaType: undefined,
-                success: undefined,
-                xPosOld: undefined,
-                yPosOld: undefined,
-                xPosNew: undefined,
-                yPosNew: undefined,
-                activeEntity: undefined,
-                passiveEntity: undefined
-            },
-            snitchCatch: {
-                deltaType: "snitchCatch",
-                success: undefined,
-                xPosOld: null,
-                yPosOld: null,
-                xPosNew: null,
-                yPosNew: null,
-                activeEntity: undefined,
-                passiveEntity: "snitch"
-            },
-            bludgerBeating: {
-                deltaType: "bludgerBeating",
-                success: null,
-                xPosOld: undefined, //Old position of bludger
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of bludger
-                yPosNew: undefined,
-                activeEntity: undefined, //Beater that beats the bludger "passiveEntity": undefined //Bludger that gets beaten
-            },
-            quaffleThrow: {
-                deltaType: "quaffleThrow",
-                success: undefined, //If the quaffle does reach the desired field xPosOld: undefined, //Old position of the quaffle
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle
-                yPosNew: undefined,
-                activeEntity: undefined, //Player that throws the quaffle "passiveEntity": undefined or null //The new owner of the quaffle
-            },
-            snitchSnatch: {
-                deltaType: "snitchSnatch",
-                success: null,
-                xPosOld: undefined, //Old position of the snitch
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the snitch
-                yPosNew: undefined,
-                activeEntity: undefined, //Niffler that snatches after the snitch "passiveEntity": "snitch"
-            },
-            trollRoar: {
-                deltaType: "trollRoar",
-                success: null,
-                xPosOld: undefined, //Old position of the quaffle yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle yPosNew: undefined,
-                activeEntity: undefined, //Troll that roars "passiveEntity": "quaffle"
-            },
-            elfTeleportation: {
-                deltaType: "elfTeleportation",
-                success: null,
-                xPosOld: undefined, //Old position of the passive entity
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the passive entity
-                yPosNew: undefined,
-                activeEntity: undefined, //Elf that does the teleportation "passiveEntity": undefined //Entity that gets teleported by the elf
-            },
-            goblinShock: {
-                deltaType: "goblinShock",
-                success: null,
-                xPosOld: undefined, //Old position of the quaffle
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle
-                yPosNew: undefined,
-                activeEntity: undefined, //Goblin that shocks the passive entity "passiveEntity": "quaffle"
-            },
-            ban: {
-                deltaType: "ban",
-                success: null,
-                xPosOld: undefined,
-                yPosOld: undefined,
-                xPosNew: undefined,
-                yPosNew: undefined,
-                activeEntity: null,
-                "passiveEntity": undefined //Entity that gets banned                
-            },
-            bldugerKnockout: {
-                deltaType: "bludgerKnockout", success: null,
-                xPosOld: null,
-                yPosOld: null,
-                xPosNew: null,
-                yPosNew: null,
-                activeEntity: undefined, //The bludger that knocks the passive entity out "passiveEntity": undefined //The passive entity that gets knocked out           
-            },
-            move: {
-                deltaType: "move",
-                success: null,
-                xPosOld: undefined, //Old position of the active entity yPosOld: undefined,
-                xPosNew: undefined, //New position of the active entity yPosNew: undefined,
-                activeEntity: undefined, //Entity that gets a new position "passiveEntity": null
-            },
-            pauseRequest: {
-                message: undefined
-            },
-            continueRequest: {
-                message: undefined
-            },
-            pauseResponse: {
-                message: undefined,
-                userName: undefined,
-                pause: undefined
-            },
-            reconnect: {
-                matchStart: undefined,
-                snapshot: undefined
-            },
-            teamFormation: {
-                players: {
-                        seeker: {
-                            xPos: 0,
-                            yPos: 5,
-                        },
-                        keeper: {
-                            xPos: 7,
-                            yPos: 3,
-                        },
-                        chaser1: {
-                            xPos: 7,
-                            yPos: 8,
-                        },
-                        chaser2: {
-                            xPos: 4,
-                            yPos: 2,
-                        },
-                        chaser3: {
-                            xPos: 4,
-                            yPos: 11,
-                        },
-                        beater1: {
-                            xPos: 8,
-                            yPos: 9,
-                        },
-                        beater2: {
-                            xPos: 3,
-                            yPos: 8,
-                        } 
-                    }
-
             }
-        }
-    },
-    computed: {
-        leftHalfTiles() {
-            var tiles = [];
-            for (var i = 0; i < 221;  i++) {
-                var column = i % 17;
-                if(column < 8) {
-                    if(!this.centerTiles.includes(i)) {
-                        if(!this.cornerTiles.includes(i)) {
-                            tiles.push(i);
-                        }
-                    }
-                }
-            }
-            return tiles;
-        },
-        rightHalfTiles() {
-            var tiles = [];
-            for (var i = 0; i < 221;  i++) {
-                var column = i % 17;
-                if(column > 8) {
-                    if(!this.centerTiles.includes(i)) {
-                        if(!this.cornerTiles.includes(i)) {
-                            tiles.push(i);
-                        }
-                    }
-                }
-            }
-            return tiles;
-        },
-        lowerLeftHeader() {
-            if (this.gameState === 'teamFormation') {
-                return 'Verfügbare Spieler'
-            } else if (this.gameState === 'inGame') {
-                return 'Verbannte Spieler'
-            }
-
-        },
-        activePlayersTeamLeft() {
-            var players = this.snapShot.leftTeam.players;
-            var activePlayers = {};
-            for ( var key in players ) {
-                if(!players[key].banned) {
-                    activePlayers[key] = players[key];
-                    
-                }
-            }
-            return activePlayers;
-        },
-        activeFansTeamLeft() {
-            var fans = this.snapShot.leftTeam.fans;
-            var activeFans = {};
-            for ( var key in fans ) {
-                if(!fans[key].banned) {
-                    activeFans[key] = fans[key];
-                    
-                }
-            }
-            return activeFans;
-        },
-        activePlayersTeamRight() {
-            var players = this.snapShot.rightTeam.players;
-            var activePlayers = {};
-            for ( var key in players ) {
-                if(!players[key].banned) {
-                    activePlayers[key] = players[key];
-                    
-                }
-            }
-            return activePlayers;
-        },
-        activeFansTeamRight() {
-            var fans = this.snapShot.rightTeam.fans;
-            var activeFans = {};
-            for ( var key in fans ) {
-                if(!fans[key].banned) {
-                    activeFans[key] = fans[key];
-                    
-                }
-            }
-            return activeFans;
-        },
-        getEntity(entityID) {
-
-            if(entityID.startsWith('left')) {
-                var key = entityID.slice(4).toLowerCase();
-                return this.snapShot.leftTeam.players[key];
-            } else if (entityID.startsWith('right')) {
-                var key = entityID.slice(5).toLowerCase();
-                return this.snapShot.rightTeam.players[key];
-            } else {
-                switch(entityID) {
-                    case 'snitch':
-                        return this.snapShot.balls.snitch;
-                    case 'bludger1':
-                        return this.snapShot.balls.bludger1;
-                    case 'bludger2':
-                        return this.snapShot.balls.bludger2;
-                    case 'quaffle':
-                        return this.snapShot.balls.quaffle;
-
-                    // cases for fans have yet to be included !!!       
-                    default:
-                        return null;
-                }
-            }
-        },
-        bannedPlayersTeamLeft() {
-            var players = this.snapShot.leftTeam.players;
-            var bannedPlayers = {};
-            var i = 0;
-            for ( var key in players ) {
-                if(players[key].banned) {
-                    bannedPlayers[key] = players[key];
-                    i++;
-                }
-            }
-            return {players: bannedPlayers, number: i}; 
         }
     },
     methods: {
-        selectBannedPlayer(player) {
-            if(this.gameState === 'teamFormation') {
-                this.highlightedTiles = this.leftHalfTiles;
-                console.log(this.leftHalfTiles);
-                this.playerToPosition = player;
-            }
-
-        },
-        selectPlayer(player) {
-            this.clickedPlayer = player;
-            this.highlightTiles(player.xPos, player.yPos, 1);
-        },
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
+            
         },
         feedback: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
-            if (this.gameState === 'teamFormation') {
-                this.playerToPosition.xPos = xPos;
-                this.playerToPosition.yPos = yPos;
-                this.highlightedTiles = [];
-                if (this.bannedPlayersTeamLeft.number === 1) {
-                    this.gameState = 'inGame';
-                };
-                this.playerToPosition.banned = false;
-                this.playerToPosition = null;
-            } else if(this.clickedPlayer) {
-                this.clickedPlayer.xPos = xPos;
-                this.clickedPlayer.yPos = yPos;
-                this.highlightedTiles = [];
-            }
-        },
-
-        renderPlayerInfo(player) {
-            return 'Name: ' + player.name + ', '  + player.sex +', ' + player.broom;
-        },
-        startGame: function(){
-            if(web.websocket) {
-                web.websocket.onmessage = function(msg) {
-                    var newText = "";
-                    var jsonObject = JSON.parse(msg.data);
-                    Object.keys(jsonObject).forEach(key =>{
-                    var val = jsonObject[key];
-                
-                    newText = newText + "\n" + key + ": " + val; 
-                    });
-                    document.getElementById("game-log").innerHTML = newText;
-                }
-            }  
-        },
-        highlightTiles(xPos, yPos, radius) {
-            this.highlightedTiles = [];
-            for(var x = xPos-radius;x<= xPos + radius;  x++) {
-                for(var y= yPos - radius; y <= yPos + radius; y ++) {
-                    if(true) {
-                        var tileID = y*17 + x;
-                        this.highlightedTiles.push(tileID);
+            if(!this.started){
+                var myTeam;
+                if(this.mySide === "left"){
+                    myTeam = this.snapShot.leftTeam;
+                    for(let player in this.snapShot.leftTeam.players){
+                        if(this.snapShot.leftTeam.players[player].banned){
+                            this.snapShot.leftTeam.players[player].banned = false;
+                            this.snapShot.leftTeam.players[player].xPos = xPos;
+                            this.snapShot.leftTeam.players[player].yPos = yPos;
+                            break;
+                        }
                     }
                 }
+                else if(this.mySide === "right"){
+                    myTeam = this.snapShot.rightTeam;
+                    for(let player in this.snapShot.rightTeam.players){
+                        if(this.snapShot.rightTeam.players[player].banned){
+                            this.snapShot.rightTeam.players[player].banned = false;
+                            this.snapShot.rightTeam.players[player].xPos = xPos;
+                            this.snapShot.rightTeam.players[player].yPos = yPos;
+                            break;
+                        }
+                    }
+                }
+                
+                if(!myTeam.players.beater2.banned){
+                    this.started = true;
+                    var payload = {
+                        "players":{
+                            "seeker":{
+                                "xPos": myTeam.players.seeker.xPos,
+                                "yPos": myTeam.players.seeker.yPos,
+                            },
+                            "keeper":{
+                                "xPos": myTeam.players.keeper.xPos,
+                                "yPos": myTeam.players.keeper.yPos,
+                            },
+                            "chaser1":{
+                                "xPos": myTeam.players.chaser1.xPos,
+                                "yPos": myTeam.players.chaser1.yPos,
+                            },
+                            "chaser2":{
+                                "xPos": myTeam.players.chaser2.xPos,
+                                "yPos": myTeam.players.chaser2.yPos,
+                            },
+                            "chaser3":{
+                                "xPos": myTeam.players.chaser3.xPos,
+                                "yPos": myTeam.players.chaser3.yPos,
+                            },
+                            "beater1":{
+                                "xPos": myTeam.players.beater1.xPos,
+                                "yPos": myTeam.players.beater1.yPos,
+                            },
+                            "beater2":{
+                                "xPos": myTeam.players.beater2.xPos,
+                                "yPos": myTeam.players.beater2.yPos,
+                            }
+                        }
+
+                    }
+                    var timestamp = Date.now();
+                    var teamFormation = {
+                         "timestamp": timestamp,
+                         "payloadType": "teamConfig",
+                         "payload": payload
+                     }
+                    web.websocket.send(JSON.stringify(teamFormation));
+                }
             }
-        }
-        ,
-        banLeftTeam() {
-            var players = this.snapShot.leftTeam.players;
-            for (var key  in players) {
-                players[key].banned = !players[key].banned;
+            if(this.clickedPlayer) {
+                this.clickedPlayer.xPos = xPos;
+                this.clickedPlayer.yPos = yPos;
             }
-            this.gameState = 'teamFormation';
+        },
+        startGame: function(){
+            web.websocket.onmessage = function(msg){
+                var newText = "";
+                var jsonObject = JSON.parse(msg.data);
+                Object.keys(jsonObject).forEach(key =>{
+                var val = jsonObject[key];
+               
+                newText = newText + "\n" + key + ": " + val; 
+                });
+                document.getElementById("game-log").innerHTML = newText;
+            }
         },
         generateGrid() {
             var grid = [];
             for(var i = 0; i < 221; i++) {
-                if (this.cornerTiles.includes(i)) {
-                    grid.push({class: 'corner-tile'});
+                if ([0, 1,2,3, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169].includes(i)) {
+                    grid.push({color: '#89cc63b2'});
                 } else {
                     var xPos = i % 17;
                     var yPos = (i - xPos) / 17;
-                    if(this.centerTiles.includes(i)) {
-                        if (i % 2 === 0) {
-                            grid.push({class: 'darker-center-gras-tile', xPos: xPos, yPos: yPos});
-                        } else {
-                            grid.push({class: 'lighter-center-gras-tile', xPos: xPos, yPos: yPos});
-                        }
-                    } else if (this.leftAttackTiles.includes(i) || this.rightAttackTiles.includes(i)) {
-                        if (i % 2 === 0) {
-                            grid.push({class: 'darker-attack-gras-tile', xPos: xPos, yPos: yPos});
-                        } else {
-                            grid.push({class: 'lighter-attack-gras-tile', xPos: xPos, yPos: yPos});
-                        }
-                    } else if( i % 2 === 0) {
-                        grid.push({class: 'darker-gras-tile', xPos: xPos, yPos: yPos});
+                    if( i % 2 === 0) {
+                        grid.push({color: '#6ea34f', xPos: xPos, yPos: yPos});
                     } else {
-                        grid.push({class: 'lighter-gras-tile', xPos: xPos, yPos: yPos});
+                        grid.push({color: '#8acc63', xPos: xPos, yPos: yPos});
                     }
                 }
             }
@@ -779,71 +441,23 @@ export default {
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
-        },
-        mapRole(index) {
-            switch (index) {
-                case 'seeker':
-                    return 'Sucher';
-                case 'keeper':
-                    return 'Hüter';
-                case 'chaser1':
-                    return 'Jäger 1';
-                case 'chaser2':
-                    return 'Jäger 2';
-                case 'chaser3':
-                    return 'Jäger 3';
-                case 'beater1':
-                    return 'Klopper 1';
-                case 'beater2':
-                    return 'Klopper 2';
-                default: 
-                return undefined;
-            }
-        },
-        mapBroom(broom) {
-            switch(broom) {
-                case 'thinderblast':
-                    return 'Zunderfauch';
-                case 'cleansweep-11':
-                    return 'Sauberwisch 11';
-                case 'comet-260':
-                    return 'Comet-2-60';
-                case 'nimbus-2001':
-                    return 'Nimbus-2001';
-                case 'firebolt':
-                    return 'Feuerblitz';
-                default: undefined
-            }    
-        },
-        mapFan(key) {
-            switch(key) {
-                case 'goblins':
-                    return 'Goblins';
-                case 'elfs':
-                    return 'Elfen';
-                case 'nifflers':
-                    return 'Niffler';
-                case 'trolls':
-                    return 'Trolle';
-                default: undefined
-            } 
         }
     },
     mounted() {
-        this.grid = this.generateGrid();
-		this.startGame();
+        this.quidditch.grid = this.generateGrid();
+        this.startGame();
+        for(let player in this.snapShot.leftTeam.players){
+            this.snapShot.leftTeam.players[player].banned = true;
+        }
+        for(let player in this.snapShot.rightTeam.players){
+            this.snapShot.rightTeam.players[player].banned = true;
+        }
+        this.mySide = "right";
     }
 }
 </script>
 
 <style scoped>
-
-*{
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;  
-}
 
 .prevent-inline {
     display: block;
@@ -1002,137 +616,6 @@ export default {
     min-width: 173px;
 }
 
-.player-detail-container {
-    display: block;
-    height: 90%;
-    font-size: 1.8vh;
-    color: #3a3a3a;
-    margin: 5% 5%;
-    width: 90%;
-    padding: 10%;
-    background: radial-gradient(#ffffff, #eeeded);
-    border-radius: 0.4vw;
-    border: 1px solid #e4d8b8;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-    text-align: center;
-}
-
-.player-detail-name-container {
-    padding: 0.3vw;
-    padding-left: .6vw;
-    text-align: center;
-}
-
-.player-detail-icon {
-    display: inline-block;
-    width: 10vw;
-    height: 10vw;
-    border: 0.4vw solid #e0a500;
-    margin-bottom: 0.3vw;
-    border-radius: 1vh;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-    font-size: 12vh;
-    z-index: 50;
-    padding-top: .65vh;
-    background: radial-gradient(#5677be, #1d50be);
-    color: white;
-    text-align: center;
-}
-
-.action-button {
-    padding-top: .1vw;
-    margin: .6vw .6vw 0 .6vw;
-    display: inline-block;
-    font-family: 'Alice';
-    width: 7vw;
-    height: 2vw;
-    border-radius: 0.5vw;
-    text-align: center;
-    font-size: 1.8vh;
-    background: radial-gradient(#eeeeee, #e4e4e4);
-    border: .1vw solid #eeeeee;
-    -moz-box-shadow:    inset 0 0 2px #00000086;
-    -webkit-box-shadow: inset 0 0 2px #000000a1;
-    box-shadow:         inset 0 0 2px #000000a1;
-}
-
-.action-button:hover {
-    -moz-box-shadow:    inset 0 0 4px #000000b6;
-    -webkit-box-shadow: inset 0 0 4px #000000be;
-    box-shadow:         inset 0 0 4px #000000bb;
-}
-
-
-/* .werfen-button {
-    background: radial-gradient(#7396d6, #114cbb);
-    background: radial-gradient(#e2868e, #bb111f);
-    border: .2vw solid #3b73dd;
-    border: .2vw solid #d62231;
-    color: #ffffff;
-}
-
-.werfen-button:hover {
-   background: radial-gradient(#98b1e2, #114cbb);
-   background: radial-gradient(#e98f97, #d32231);
-   border: .2vw solid #5789e4;
-   border: .2vw solid #e03443;
-
-    color: #ffffff; 
-    -moz-box-shadow:    inset 0 0 8px #000000b6;
-    -webkit-box-shadow: inset 0 0 8px #000000be;
-    box-shadow:         inset 0 0 8px #000000bb;
-}
-
-.klatscher-kloppen-button {
-    background: radial-gradient(#eee017, #d49d26);
-    border: .2vw solid #e0be00;
-    color: #ffffff;
-}
-
-.klatscher-kloppen-button:hover {
-    background: radial-gradient(#eee786, #d47f3a);
-    color: #ffffff;
-     -moz-box-shadow:    inset 0 0 8px #000000b6;
-    -webkit-box-shadow: inset 0 0 8px #000000be;
-    box-shadow:         inset 0 0 8px #000000bb;
-} */
-
-
-.banned-players-container {
-    padding: 1vw;
-}
-
-.banned-player-tile {
-    display: inline-block;
-    width: calc(100vh * 0.0769 * 0.9 * 0.8);
-    height: calc(100vh * 0.0769 * 0.9 * 0.8);
-    margin: calc(100vh * 0.0769 * 0.035 * 0.8) calc(100vh * 0.0588 * 0.05 * 0.8);
-    border: 1.5px solid #e0a500;
-    border-radius: 1vh;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
-    font-size: 3vh;
-    z-index: 50;
-    padding-top: .65vh;
-    background: radial-gradient(#5677be, #1d50be);
-    color: white;
-    text-align: center;
-    
-}
-
-.banned-player-tile:hover {
-    border: 1.5px solid #ffffff;
-    
-}
-
-.selected-banned-player-tile {
-    border: 1.5px solid #ffffff;
-    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.555);  
-}
-
 .sidebar-right {
     display: static;
     position: fixed;
@@ -1148,7 +631,7 @@ export default {
 
 .info-panel {
     display: block;
-    text-align: left;
+    text-align: center;
     border: 1px solid #ebd18a;
     background: radial-gradient(#ffffff, #ebd18a);
     -moz-box-shadow:    inset 0 0 4px #00000086;
@@ -1202,10 +685,10 @@ export default {
     width: 66%;
     padding: 10px;
     text-align: center;
-    background: radial-gradient(#e4f5d9, #bbe2a1);
 }
 
 #game-grid-panel {
+    background: #6ea34f;
     width: calc(75vh * 17 / 13);
     height: 75vh;
     display: static;
@@ -1229,6 +712,8 @@ export default {
     border-top: 1px solid #9b7955;
     margin: 5px 0;
 }
+
+
 
 
 
@@ -1279,8 +764,7 @@ export default {
 
 .ball {
     z-index: 60;
-
-    pointer-events: none;
+    background: white;
 
 }
 
@@ -1304,7 +788,7 @@ export default {
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
     font-size: 3vh;
     z-index: 50;
-    padding-top: .6vh; 
+    padding-top: .8vh; 
 }
 
 .fan:hover {
@@ -1319,10 +803,6 @@ h1 {
           background-clip: text;
 }
 
-.hidden-tile {
-    background: none;
-    pointer-events: none;
-}
 
 .gras-tile {
     font-size: 1.2vh;
@@ -1331,55 +811,6 @@ h1 {
     border:none;
     padding:0;
     background:none;
-}
-
-.gras-tile:hover {
-    border: 1px solid #6b6b6b;
-}
-
-.corner-tile {
-   display: hidden;
-   pointer-events: none;
-}
-
-.corner-tile:hover {
-   border: none;
-   background: #ffffff4b;
-   
-}
-
-.lighter-gras-tile {
-    background: radial-gradient(#99cf79, #8acc63);
-}
-
-.darker-gras-tile {
-    background: radial-gradient(#85b36b, #6ea34f);
-}
-
-.lighter-attack-gras-tile {
-    background: radial-gradient(#8cbe6f, #7fbd5b);
-}
-
-.darker-attack-gras-tile {
-    background: radial-gradient(#78a161, #608f45);
-}
-
-.lighter-center-gras-tile {
-    background: radial-gradient(#a3db82, #8fd467);
-}
-
-.darker-center-gras-tile {
-    background: radial-gradient(#97ca79, #7cb859);
-}
-
-.highlighted-gras-tile {
-    background: radial-gradient(#fbfccf00, #fafc8960);
-    border: 1px solid #fdff6d;
-}
-
-.highlighted-gras-tile:hover {
-    background: radial-gradient(#feffc72a, #f4f777e3);
-    border: 1px solid #fdff6d;
 }
 
 .player-tile {
@@ -1395,8 +826,6 @@ h1 {
     padding-top: .65vh;
 }
 
-
-
 .player-tile:hover {
     border: 1.5px solid #ffffff;
 }
@@ -1409,87 +838,9 @@ h1 {
     background: radial-gradient(#5677be, #1d50be);
 }
 
-
-
-.goal-post-right-center {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 6);
-    right: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: perspective(130px) rotateY(-45deg);
+.gras-tile:hover {
+    border: 1px solid #6b6b6b;
 }
-
-.goal-post-right-top {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 4 + 1.3%);
-    right: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: skewY(-15deg) perspective(130px) rotateY(-45deg) ;
-}
-
-.goal-post-right-bottom {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 8 - 1.3%);
-    right: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: skewY(15deg) perspective(130px) rotateY(-45deg) ;
-}
-
-.goal-post-left-top {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 4 + 1.3%);
-    left: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: skewY(15deg) perspective(130px) rotateZ(180deg) rotateY(-45deg);
-}
-
-.goal-post-left-center {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 6);
-    left: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: perspective(130px) rotateZ(180deg) rotateY(-45deg);
-}
-
-.goal-post-left-bottom {
-    background: url(../resources/pole-center-ohne.svg);
-    height: 7.69%;
-    width: calc(5.88% * 2.001);
-    position: absolute;
-    top: calc(7.69% * 8 - 1.4%);
-    left: calc(5.88% * 2);
-    z-index: 40;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    transform: skewY(-15deg) perspective(130px) rotateZ(180deg) rotateY(-45deg) ;
-}
-
-
 
 
 .panel-title {
@@ -1497,7 +848,6 @@ h1 {
     margin: 0;
     padding: 0;
     font-size: 2vh;
-    text-align: center;
     
 }
 
@@ -1507,7 +857,6 @@ h1 {
     width: 5.88%;
     position: absolute;
     z-index: 63;
-    pointer-events: none;
 }
 
 .snitch:hover {
@@ -1523,7 +872,6 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 60;
-    pointer-events: none;
 }
 
 .quaffle:hover {
@@ -1539,7 +887,6 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 61;
-    pointer-events: none;
 }
 
 .bludger1:hover {
@@ -1556,7 +903,6 @@ h1 {
     background-position: center;
     position: absolute;
     z-index: 62;
-    pointer-events: none;
 }
 
 .bludger2:hover {
@@ -1564,25 +910,12 @@ h1 {
 }
 
 .game-balls-move {
-    transition: transform 1s ease-out;
+    transition: transform 1s;
 }
 
 .game-players-move {
     transition: transform 1s;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-.score-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.score-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 
 </style>
