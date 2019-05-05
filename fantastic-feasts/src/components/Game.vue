@@ -66,13 +66,13 @@
                             <div v-for="(player, key) in snapShot.leftTeam.players" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectedEntity=player"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in snapShot.rightTeam.players" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectedEntity=player"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                     </div>
                 </div>
@@ -131,7 +131,8 @@ export default {
                 mySide: null
             },
             clickedTile: [],
-            clickedPlayer: undefined,
+            selectedEntity: undefined,
+            possibleAction: String,
             snapShot: {    
                 phase: 'ballPhase',
                 spectatorUserName: ['Gast'],
@@ -339,6 +340,7 @@ export default {
                             this.snapShot.leftTeam.players[player].banned = false;
                             this.snapShot.leftTeam.players[player].xPos = xPos;
                             this.snapShot.leftTeam.players[player].yPos = yPos;
+                            this.selectedEntity = this.snapShot.leftTeam.players[player];
                             break;
                         }
                     }
@@ -350,13 +352,16 @@ export default {
                             this.snapShot.rightTeam.players[player].banned = false;
                             this.snapShot.rightTeam.players[player].xPos = xPos;
                             this.snapShot.rightTeam.players[player].yPos = yPos;
+                            this.selectedEntity = this.snapShot.rightTeam.players[player];
                             break;
                         }
                     }
                 }
                 
+                //when all players a placed on the field
                 if(!myTeam.players.beater2.banned){
                     this.started = true;
+                    this.selectedEntity = undefined;
                     var payload = {
                         "players":{
                             "seeker":{
@@ -399,24 +404,32 @@ export default {
                     web.websocket.send(JSON.stringify(teamFormation));
                 }
             }
-            if(this.clickedPlayer) {
-                this.clickedPlayer.xPos = xPos;
-                this.clickedPlayer.yPos = yPos;
+
+            else if(possibleAction === "move"){
+
+            }
+            if(this.selectedEntity) {
+                this.selectedEntity.xPos = xPos;
+                this.selectedEntity.yPos = yPos;
             }
         },
         startGame: function(){
+            var vm = this;
             web.websocket.onmessage = function(msg){
                 
                 var newText = "";
                 var jsonObject = JSON.parse(msg.data);
                 if(jsonObject.payloadType === "matchStart"){
-                    this.handleMatchStart(jsonObject);
+                    vm.handleMatchStart(jsonObject);
                 }
                 else if(jsonObject.payloadType === "matchFinish"){
-                    this.handleMatchFinish(jsonObject);
+                    vm.handleMatchFinish(jsonObject);
                 }
                 else if(jsonObject.payloadType === "snapshot"){
-                    this.handleSnapshot(jsonObject);
+                    vm.handleSnapshot(jsonObject);
+                }
+                else if(jsonObject.payloadType === "next"){
+                    vm.handleNext(jsonObject);
                 }
                 Object.keys(jsonObject).forEach(key =>{
                 var val = jsonObject[key];
@@ -441,6 +454,47 @@ export default {
         },
         handleSnapshot: function(obj){
             this.snapShot = obj.payload;
+        },
+        
+        handleNext: function(obj){
+            this.selectedEntity = undefined;
+            //if a player is chosen
+            if(obj.payload.turn === "leftSeeker") this.selectedEntity = this.snapShot.leftTeam.players.seeker;
+            else if(obj.payload.turn === "leftKeeper") this.selectedEntity = this.snapShot.leftTeam.players.keeper;
+            else if(obj.payload.turn === "leftChaser1") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
+            else if(obj.payload.turn === "leftChaser2") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
+            else if(obj.payload.turn === "leftChaser3") this.selectedEntity = this.snapShot.leftTeam.players.chaser3;
+            else if(obj.payload.turn === "leftBeater1") this.selectedEntity = this.snapShot.leftTeam.players.beater1;
+            else if(obj.payload.turn === "leftBeater2") this.selectedEntity = this.snapShot.leftTeam.players.beater2;
+            else if(obj.payload.turn === "rightSeeker") this.selectedEntity = this.snapShot.rightTeam.players.seeker;
+            else if(obj.payload.turn === "rightKeeper") this.selectedEntity = this.snapShot.rightTeam.players.keeper;
+            else if(obj.payload.turn === "rightChaser1") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
+            else if(obj.payload.turn === "rightChaser2") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
+            else if(obj.payload.turn === "rightChaser3") this.selectedEntity = this.snapShot.rightTeam.players.chaser3;
+            else if(obj.payload.turn === "rightBeater1") this.selectedEntity = this.snapShot.rightTeam.players.beater1;
+            else if(obj.payload.turn === "rightBeater2") this.selectedEntity = this.snapShot.rightTeam.players.beater2;
+            
+            //if a fan is chosen
+            else if(obj.payload.turn.includes("left")){
+                
+                for(let fan in this.snapShot.leftTeam.fans){
+                    if(obj.payload.turn.toLowerCase().includes(this.snapShot.leftTeam.fans[fan].fanType)){
+                        selectedEntity = this.snapShot.leftTeam.fans[fan];
+                        break;
+                    }
+                }
+            }
+            else if(obj.payload.turn.includes("right")){
+                
+                for(let fan in this.snapShot.rightTeam.fans){
+                    if(obj.payload.turn.toLowerCase().includes(this.snapShot.rightTeam.fans[fan].fanType)){
+                        selectedEntity = this.snapShot.rightTeam.fans[fan];
+                        break;
+                    }
+                }
+            }
+            this.possibleAction = obj.payload.type;
+            
         },
         generateGrid() {
             var grid = [];
@@ -468,6 +522,29 @@ export default {
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
+        },
+        deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
+            var timestamp = Date.now();
+            var payload = {
+                "deltaType": deltaType,
+                "success": null,
+                "xPosOld": xPosOld,
+                "yPosOld": yPosOld,
+                "xPosNew": xPosNew,
+                "yPosNew": yPosNew,
+                "activeEntity": activeEntity,
+                "passiveEntity": passiveEntity,
+                "phase": phase,
+                "leftPoints": leftPoints,
+                "rightPoints": rightPoints,
+                "round": round
+            }
+            var jsonObject = {
+                "timestamp": timestamp,
+                "payloadType": "deltaRequest",
+                "payload": payload
+            }
+            web.websocket.send(JSON.stringify(jsonObject));
         }
     },
     mounted() {

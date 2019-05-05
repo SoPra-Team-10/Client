@@ -69,7 +69,7 @@ export default {
                 var msg = JSON.stringify(joinRequest);
                 web.websocket.send(msg);
                 web.websocket.onmessage = function(msg){
-                vm.game.currentState = "inGame";
+                    vm.game.currentState = "inGame";
                 
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
