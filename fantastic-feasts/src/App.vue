@@ -25,7 +25,8 @@ export default {
       game: {
         currentState: 'inMenu',
         colorSchemes: ['griffindor-color-scheme', 'slytherin-color-scheme', 'hufflepuff-color-scheme', 'ravenclaw-color-scheme'],
-        selectedColorScheme: 1
+        selectedColorScheme: 1,
+        userName: ""
       },
       web:{
         websocket: WebSocket

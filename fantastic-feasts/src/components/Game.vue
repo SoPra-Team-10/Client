@@ -10,7 +10,7 @@
                 <div class="header__game-info">
                     <div class="game-info-panel">
                         <div class="header__panel" id="team-panel-left">
-                            <div class="header__team-panel-content">
+                            <div class="header__team-panel-content" id="leftPlayerName">
                                 Griffindor
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                             </div>
                         </div> -->
                         <div class="header__panel" id="team-panel-right">
-                            <div class="header__team-panel-content">
+                            <div class="header__team-panel-content" id="rightPlayerName">
                                 Slytherin
                             </div>
                         </div>
@@ -119,6 +119,7 @@
 
 <script>
 import web from "../App.vue";
+import game from "../App.vue";
 
 export default {
     props: ['game'],
@@ -392,7 +393,7 @@ export default {
                     var timestamp = Date.now();
                     var teamFormation = {
                          "timestamp": timestamp,
-                         "payloadType": "teamConfig",
+                         "payloadType": "teamFormation",
                          "payload": payload
                      }
                     web.websocket.send(JSON.stringify(teamFormation));
@@ -405,8 +406,18 @@ export default {
         },
         startGame: function(){
             web.websocket.onmessage = function(msg){
+                
                 var newText = "";
                 var jsonObject = JSON.parse(msg.data);
+                if(jsonObject.payloadType === "matchStart"){
+                    this.handleMatchStart(jsonObject);
+                }
+                else if(jsonObject.payloadType === "matchFinish"){
+                    this.handleMatchFinish(jsonObject);
+                }
+                else if(jsonObject.payloadType === "snapshot"){
+                    this.handleSnapshot(jsonObject);
+                }
                 Object.keys(jsonObject).forEach(key =>{
                 var val = jsonObject[key];
                
@@ -414,6 +425,22 @@ export default {
                 });
                 document.getElementById("game-log").innerHTML = newText;
             }
+        },
+        handleMatchStart: function(obj){
+            if(obj.payload.leftTeamUserName === game.userName){
+                this.mySide = "left";
+            }
+            else if(obj.payload.rightTeamUserName === game.userName){
+                this.mySide = "right";
+            }
+            document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
+            docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
+        },
+        handleMatchFinish: function(obj){
+            this.game.currentState = "inLobby";
+        },
+        handleSnapshot: function(obj){
+            this.snapShot = obj.payload;
         },
         generateGrid() {
             var grid = [];

@@ -51,6 +51,7 @@ export default {
             var vm = this;
             web.websocket.onopen = function(){
                 var userName = document.getElementById("user-name").value;
+                vm.game.userName = userName;
                 var pw = document.getElementById("password").value;
                 var timestamp = Date.now();
                 var lobby = "";
@@ -72,7 +73,7 @@ export default {
                 
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
-                        if(document.getElementById("spectator").value === false){
+                        if(!document.getElementById("spectator").value){
                             var timestamp = Date.now();
                             var teamConf = {
                                 "timestamp": timestamp,
