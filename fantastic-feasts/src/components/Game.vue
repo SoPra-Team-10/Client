@@ -132,7 +132,8 @@ export default {
             },
             clickedTile: [],
             selectedEntity: undefined,
-            possibleAction: String,
+            turnType: String,
+            activeEntityId: String,
             snapShot: {    
                 phase: 'ballPhase',
                 spectatorUserName: ['Gast'],
@@ -405,9 +406,10 @@ export default {
                 }
             }
 
-            else if(possibleAction === "move"){
-
+            else if(this.turnType === "move"){
+                this.deltaRequest("move", null, null, xPos, yPos, this.activeEntityId, null, null, null, null, null, null);
             }
+            
             if(this.selectedEntity) {
                 this.selectedEntity.xPos = xPos;
                 this.selectedEntity.yPos = yPos;
@@ -493,7 +495,8 @@ export default {
                     }
                 }
             }
-            this.possibleAction = obj.payload.type;
+            this.turnType = obj.payload.type;
+            this.activeEntityId = obj.payload.turn;
             
         },
         generateGrid() {
@@ -524,6 +527,7 @@ export default {
             this.snapShot[team].points += increment;
         },
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
+            this.turnType = null;
             var timestamp = Date.now();
             var payload = {
                 "deltaType": deltaType,
