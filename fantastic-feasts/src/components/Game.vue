@@ -1564,7 +1564,7 @@ h1 {
 }
 
 .game-balls-move {
-    transition: transform 1s ease-out;
+    transition: transform 1s;
 }
 
 .game-players-move {
@@ -1578,11 +1578,5 @@ h1 {
   opacity: 0;
 }
 
-.score-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.score-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 
 </style>
