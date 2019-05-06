@@ -1035,9 +1035,9 @@ export default {
     -moz-box-shadow:    inset 0 0 3px #00000086;
     -webkit-box-shadow: inset 0 0 3px #000000;
     box-shadow:         inset 0 0 3px #000000;
-    font-size: 12vh;
+    font-size: 8vw;
     z-index: 50;
-    padding-top: .65vh;
+    padding-top: .2vw;
     background: radial-gradient(#5677be, #1d50be);
     color: white;
     text-align: center;
