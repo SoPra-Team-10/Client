@@ -112,7 +112,7 @@ import web from "../App.vue";
 import BannedPlayers from './BannedPlayers.vue';
 import GameLog from './GameLog.vue';
 import PlayerDetails from './PlayerDetails.vue';
-import GameInfoVue from './GameInfo.vue';
+import GameInfo from './GameInfo.vue';
 
 export default {
     props: ['game', 'teamConfig'],
@@ -120,7 +120,7 @@ export default {
         'game-log': GameLog,
         'player-details': PlayerDetails,
         'banned-players': BannedPlayers,
-        'game-info': GameInfoVue
+        'game-info': GameInfo
     },
     data() {
         return {
