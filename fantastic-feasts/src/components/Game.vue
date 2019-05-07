@@ -662,8 +662,9 @@ export default {
                 this.playerToPosition = player;
             }
         },
-        selectPlayer(player, id) {
-            
+        selectPlayer(player, key) {
+            var id = this.playerIdOnTile(player.xPos, player.yPos);
+            alert(id);
             var xPos = player.xPos;
             var yPos = player.yPos;
             
@@ -762,10 +763,10 @@ export default {
                 this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
             }
             else if(this.turnType === "action"){
-                if((selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")) && this.selectedEntity.holdsQuaffle){
+                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
-                else if(this.selectedEntityId.includes("beater") && this.selectedEntity.holdsBludger){
+                else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
                     var balls = this.snapshot.balls;
                     if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
                         this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
@@ -1048,6 +1049,27 @@ export default {
         },
         skip: function(){
             this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+        },
+
+        playerIdOnTile: function(xPos, yPos){
+            var pLeft = this.snapShot.leftTeam.players;
+            var pRight = this.snapShot.rightTeam.players;
+
+            if(pLeft.seeker.xPos === xPos && pLeft.seeker.yPos === yPos) return "leftSeeker";
+            if(pLeft.keeper.xPos === xPos && pLeft.keeper.yPos === yPos) return "leftKeeper";
+            if(pLeft.chaser1.xPos === xPos && pLeft.chaser1.yPos === yPos) return "leftChaser1";
+            if(pLeft.chaser2.xPos === xPos && pLeft.chaser2.yPos === yPos) return "leftChaser2";
+            if(pLeft.chaser3.xPos === xPos && pLeft.chaser3.yPos === yPos) return "leftChaser3";
+            if(pLeft.beater1.xPos === xPos && pLeft.beater1.yPos === yPos) return "leftBeater1";
+            if(pLeft.beater2.xPos === xPos && pLeft.beater2.yPos === yPos) return "leftBeater2";
+
+            if(pRight.seeker.xPos === xPos && pRight.seeker.yPos === yPos) return "rightSeeker";
+            if(pRight.keeper.xPos === xPos && pRight.keeper.yPos === yPos) return "rightKeeper";
+            if(pRight.chaser1.xPos === xPos && pRight.chaser1.yPos === yPos) return "rightChaser1";
+            if(pRight.chaser2.xPos === xPos && pRight.chaser2.yPos === yPos) return "rightChaser2";
+            if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos) return "rightChaser3";
+            if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
+            if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
         }
     },
     mounted() {
