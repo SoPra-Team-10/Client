@@ -52,7 +52,7 @@
                             <div v-for="(player, key) in activePlayersTeamLeft" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player), selectedEntityId = key"
+                                @click="selectPlayer(player, key)"
                                 @mouseenter="hoveredPlayerType = key"
                                 @mouseleave="hoveredPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
                                 </div>
@@ -61,7 +61,7 @@
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectedEntity=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectPlayer(player, key)"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                     </div>
                 </div>
@@ -662,9 +662,47 @@ export default {
                 this.playerToPosition = player;
             }
         },
-        selectPlayer(player) {
-            this.selectedEntity = player;
-            this.highlightTiles(player.xPos, player.yPos, 1);
+        selectPlayer(player, id) {
+            
+            var xPos = player.xPos;
+            var yPos = player.yPos;
+            
+            if(this.turnType === "move"){
+                this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+            }
+            else if(this.turnType === "action"){
+                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                    this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
+                else if(selectedEntityId.includes("Chaser") && player.holdsQuaffle){
+                    this.deltaRequest("wrestQuaffle", null, null, null, null, selectedEntityId, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
+                    var balls = this.snapshot.balls;
+                    if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
+                    }
+                    else if(this.selectedEntity.xPos === balls.bludger2.xPos && this.selectedEntity.yPos === balls.bludger2.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger2.xPos, balls.bludger2.yPos, xPos, yPos, this.selectedEntityId, "bludger2", null, null, null,  null);
+                    }
+                }
+            }
+            else if(this.turnType === "fan"){
+                if(this.selectedEntityId.includes("Elf")){
+                    this.deltaRequest("elfTeleportation", null, null, null, null, null, id, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Goblin")){
+                    this.deltaRequest("goblinShock", null, null, null, null, null, id, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Niffler")){
+                    this.deltaRequest("snitchSnatch", null, null, null, null, null, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Troll")){
+                    this.deltaRequest("trollRoar", null, null, null, null, null, null, null, null, null, null);
+                }
+            }
+            //this.selectedEntity = player;
+            //this.highlightTiles(player.xPos, player.yPos, 1);
         },
         feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
@@ -724,10 +762,10 @@ export default {
                 this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
             }
             else if(this.turnType === "action"){
-                if(selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")){
+                if((selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
-                else if(this.selectedEntityId.includes("beater")){
+                else if(this.selectedEntityId.includes("beater") && this.selectedEntity.holdsBludger){
                     var balls = this.snapshot.balls;
                     if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
                         this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
@@ -737,11 +775,23 @@ export default {
                     }
                 }
             }
-            
-            if(this.selectedEntity) {
-                this.selectedEntity.xPos = xPos;
-                this.selectedEntity.yPos = yPos;
+            else if(this.turnType === "fan"){
+                if(this.selectedEntityId.includes("Niffler")){
+                    this.deltaRequest("snitchSnatch", null, null, null, null, null, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Troll")){
+                    this.deltaRequest("trollRoar", null, null, null, null, null, null, null, null, null, null);
+                }
             }
+
+            else if(this.turnType === "removeBan"){
+                this.deltaRequest("unban", null, null, xPos, yPos, selectedEntityId, null, null, null, null, null);
+            }
+            
+            //if(this.selectedEntity) {
+            //    this.selectedEntity.xPos = xPos;
+            //    this.selectedEntity.yPos = yPos;
+            //}
         },
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
@@ -995,6 +1045,9 @@ export default {
                 payload: payload
             }
             web.websocket.send(JSON.stringify(jsonObject));
+        },
+        skip: function(){
+            this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
         }
     },
     mounted() {
