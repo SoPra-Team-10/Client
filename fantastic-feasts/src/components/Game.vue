@@ -774,7 +774,17 @@ export default {
                 if(selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
+                else if(this.selectedEntityId.includes("beater")){
+                    var balls = this.snapshot.balls;
+                    if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
+                    }
+                    else if(this.selectedEntity.xPos === balls.bludger2.xPos && this.selectedEntity.yPos === balls.bludger2.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger2.xPos, balls.bludger2.yPos, xPos, yPos, this.selectedEntityId, "bludger2", null, null, null,  null);
+                    }
+                }
             }
+            
             if(this.selectedEntity) {
                 this.selectedEntity.xPos = xPos;
                 this.selectedEntity.yPos = yPos;
