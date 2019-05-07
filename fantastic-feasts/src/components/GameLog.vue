@@ -30,7 +30,7 @@ export default {
 .log-entry-container {
     overflow-y: auto;
     padding: 1vw 1vw;
-    max-height: 35vh;
+    max-height: 30vh;
 }
 
 

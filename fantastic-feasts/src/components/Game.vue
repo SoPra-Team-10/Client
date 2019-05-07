@@ -102,6 +102,9 @@
                     <br> {{ this.selectedEntity }}, {{ this.gameState }}, {{ bannedPlayersTeamLeft.number }}
                     </div>
                 </div>
+                <div class="skip-button-container">
+                    <button class="skip-button">Zug aussetzen</button>
+                </div>
             </div>
         </section>
     </div>
@@ -633,6 +636,12 @@ export default {
                 }
             }
             return {players: bannedPlayers, number: i}; 
+        },
+        playerInfo() {
+
+        },
+        gameInfo() {
+
         }
     },
     methods: {
@@ -1000,6 +1009,8 @@ export default {
     mounted() {
         this.grid = this.generateGrid();
         this.startGame();
+        this.matchStart.leftTeamConfig = this.teamConfig;
+        this.matchStart.rightTeamConfig = this.teamConfig;
         for(let player in this.snapShot.leftTeam.players){
             this.snapShot.leftTeam.players[player].banned = true;
         }
@@ -1571,6 +1582,10 @@ h1 {
     text-indent: 100%;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.skip-button-container {
+
 }
 
 </style>
