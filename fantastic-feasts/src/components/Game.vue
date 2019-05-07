@@ -7,77 +7,20 @@
                         Menü
                     </div>
                 </div>
-                <div class="header__game-info">
-                    <div class="game-info-panel">
-                        <div class="header__panel" id="team-panel-left">
-                            <div class="header__team-panel-content">
-                                {{ teamConfig.name }}
-                            </div>
-                        </div>
-                        <div class="header__panel" id="score-panel">
-                            <div class="score-panel-content">
-                                {{ this.snapShot.leftTeam.points }} : {{ this.snapShot.rightTeam.points }}
-                            </div>
-                        </div>
-                        <div class="header__panel" id="round-panel">
-                            <div class="round-panel-content">
-                                Runde {{ this.snapShot.round }}
-                            </div>
-                        </div>
-                        <!-- <div class="header__panel" id="round-phase-panel">
-                            <div class="round-phase-panel-content">
-                                Ziehen
-                            </div>
-                        </div> -->
-                        <div class="header__panel" id="team-panel-right">
-                            <div class="header__team-panel-content">
-                                –
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <game-info>
+                </game-info>
                 <div class="header__panel" id="pause-panel">
                     <div id="pause-button">
                         Pause
                     </div>
                 </div>
-
             </header>
             <div class="sidebar-left">
-                <div class="info-panel" id="player-info-panel"> 
-                    <h3 class="panel-title">Ausgewählter Spieler</h3>
-                    <hr class="inner-separation-line">
-                    <transition name="fade">
-                    <div v-if="selectedEntityId" class='player-detail-container'>
-                        <div class="player-detail-icon">{{ selectedEntityId.slice(0, 1).toUpperCase() }}</div>
-                        <div class="player-detail-name-container">
-                            <div class="player-detail-name"> <b>{{ teamConfig.players[selectedEntityId].name }}</b> ({{ teamConfig.players[selectedEntityId].sex }})</div>
-                            <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[selectedEntityId].broom) }}</div>
-                            <div class="player-detail-type">{{ mapRole(selectedEntityId) }} – ({{ selectedEntity.xPos }} | {{ selectedEntity.yPos }})</div>
-                        </div>
-                    
-                        <div class="player-detail-body">
-                            <button class="action-button werfen-button">Werfen</button>
-                            <button class="action-button klatscher-kloppen-button">Kloppen</button>
-
-                        </div>
-                    </div>
-                    </transition>
-                </div>
+                <player-details>
+                </player-details>
                 <hr class="normal-separation-line">
-                <div class="info-panel" id="banned-players-panel">
-                    <h3 class="panel-title">{{ lowerLeftHeader }}</h3>
-                    <hr class="inner-separation-line">
-                    <div class="banned-players-container">
-                        <div v-for="(player, key) in bannedPlayersTeamLeft.players" 
-                            :class="['banned-player-tile', {'selected-banned-player-tile': player === playerToPosition}]" 
-                            :key="key"
-                            @click="selectBannedPlayer(player)"
-                        >{{ key.slice(0,1).toUpperCase() }}
-                        </div>
-                    </div>
-                </div>
-                
+                <banned-players>
+                </banned-players>
             </div>
             <div class="center">
                 <div id="game-conainer">
@@ -139,11 +82,8 @@
                 </div>
             </div>
             <div class="sidebar-right">
-                <div class="info-panel" id="game-log-panel">
-                    <h3 class="panel-title">Gamelog</h3>
-                    <hr class="inner-separation-line">
-					<h5 id="game-log"></h5>
-                </div>
+                <game-log>
+                </game-log>
                 <hr class="normal-separation-line">
                 <div class="info-panel">
                     <h3 class="panel-title">Testfunktionen</h3>
@@ -169,9 +109,19 @@
 
 <script>
 import web from "../App.vue";
+import BannedPlayers from './BannedPlayers.vue';
+import GameLog from './GameLog.vue';
+import PlayerDetails from './PlayerDetails.vue';
+import GameInfoVue from './GameInfo.vue';
 
 export default {
     props: ['game', 'teamConfig'],
+    components: {
+        'game-log': GameLog,
+        'player-details': PlayerDetails,
+        'banned-players': BannedPlayers,
+        'game-info': GameInfoVue
+    },
     data() {
         return {
             gameState: 'inGame',
@@ -183,6 +133,17 @@ export default {
             playerToPosition: undefined,
             selectedEntity: undefined,
             turnType: String,
+            leftTeamScore: 0,
+            rightTeamScore: 0,
+            gameLog: [],
+            matchStart: {
+                matchConfig: {},
+                leftTeamConfig: {},
+                rightTeamConfig: {},
+                leftTeamUserName: "Linkes Team",
+                rightTeamUserNameg: "Rechtes Team"
+            },
+
 
 
             // server message data formats
@@ -376,14 +337,6 @@ export default {
                     }
                 }
             },
-
-            matchStart: {
-                matchConfig: {},
-                leftTeamConfig: {},
-                rightTeamConfig: {},
-                leftTeamUserName: "Linkes Team",
-                rightTeamUserNameg: "Rechtes Team"
-            },
             matchFinish: {
                 endRound: undefined,
                 leftPoints: undefined,
@@ -487,7 +440,7 @@ export default {
                 activeEntity: null,
                 "passiveEntity": undefined //Entity that gets banned                
             },
-            bldugerKnockout: {
+            bludgerKnockout: {
                 deltaType: "bludgerKnockout", success: null,
                 xPosOld: null,
                 yPosOld: null,
@@ -791,6 +744,7 @@ export default {
             }
         },
         sendTeamFormation(myTeam) {
+            // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
             var payload = {
                         "players":{
                             "seeker":{
@@ -894,12 +848,13 @@ export default {
                     else if(jsonObject.payloadType === "next"){
                         vm.handleNext(jsonObject);
                     }
-                    Object.keys(jsonObject.payload).forEach(key =>{
-                    var val = jsonObject.payload[key];
-                
-                    newText = newText + "\n" + key + ": " + val; 
+                    Object.keys(jsonObject.payload).forEach(key => {
+                        var val = jsonObject.payload[key];
+                        newText = newText + "\n" + key + ": " + val; 
                     });
-                    document.getElementById("game-log").innerHTML = newText;
+                    // Wird in ein array vorne hinzugefügt. Dieses Array kann man dann schön darstellen. 
+                    // Bitte nicht mit innerHTML arbeiten und man hat so gut wie keinen Spielraum beim Design.
+                    vm.gameLog.unsifht( newText );
                 }
             }  
         },
@@ -954,6 +909,8 @@ export default {
         
         // game handlers
         handleMatchStart: function(obj){
+            // store matchStart object in data
+            this.matchStart = obj.payload;
             if(obj.payload.leftTeamUserName === game.userName){
                 this.mySide = "left";
                 this.highlightedTiles = this.leftHalfTiles;
@@ -962,6 +919,7 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
+            // Was wird hier gemacht?
             document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
             docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
         },
@@ -1009,9 +967,7 @@ export default {
                     }
                 }
             }
-            
             this.turnType = obj.payload.type;
-            
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
@@ -1020,30 +976,29 @@ export default {
             this.turnType = null;
             var timestamp = Date.now();
             var payload = {
-                "deltaType": deltaType,
-                "success": null,
-                "xPosOld": xPosOld,
-                "yPosOld": yPosOld,
-                "xPosNew": xPosNew,
-                "yPosNew": yPosNew,
-                "activeEntity": activeEntity,
-                "passiveEntity": passiveEntity,
-                "phase": phase,
-                "leftPoints": leftPoints,
-                "rightPoints": rightPoints,
-                "round": round
+                deltaType: deltaType,
+                success: null,
+                xPosOld: xPosOld,
+                yPosOld: yPosOld,
+                xPosNew: xPosNew,
+                yPosNew: yPosNew,
+                activeEntity: activeEntity,
+                passiveEntity: passiveEntity,
+                phase: phase,
+                leftPoints: leftPoints,
+                rightPoints: rightPoints,
+                round: round
             }
             var jsonObject = {
-                "timestamp": timestamp,
-                "payloadType": "deltaRequest",
-                "payload": payload
+                timestamp: timestamp,
+                payloadType: "deltaRequest",
+                payload: payload
             }
             web.websocket.send(JSON.stringify(jsonObject));
         }
     },
     mounted() {
         this.grid = this.generateGrid();
-        console.log(this.grid);
         this.startGame();
         for(let player in this.snapShot.leftTeam.players){
             this.snapShot.leftTeam.players[player].banned = true;
@@ -1057,7 +1012,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 *{
     -webkit-user-select: none;  /* Chrome all / Safari all */
@@ -1107,12 +1062,6 @@ export default {
     padding: 1.2vh;
 }
 
-.header__game-info {
-    position: absolute;
-    width: 86%;
-    height: 100%;
-    left: 7%;
-}
 
 #pause-panel {
     position: absolute;
@@ -1135,41 +1084,6 @@ export default {
     text-align: center;
     font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
-}
-
-#score-panel {
-    position: absolute;
-    width: 30%;
-    left: 35%;
-    top: -10%;
-    background: radial-gradient(#bb3434, #802020);
-    height: 120%;
-    color: #e7e7e7;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
-    line-height: 80%;
-    text-align: center;
-    font-size: 5vh;
-    padding: 1.5vh 0.5vh;
-    z-index: 91;
-
-}
-
-#round-panel {
-    position: absolute;
-    width: 20%;
-    left: 40%;
-    top: 100%;
-    background: radial-gradient(#ffffff, #e7e7e7);
-    height: 70%;
-    color: #4d4d4d;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
-    line-height: 80%;
-    text-align: center;
-    font-size: 2.7vh;
-    padding: 1.5vh 0.5vh;
-    z-index: 90;
 }
 
 #pause-button {
@@ -1195,20 +1109,6 @@ export default {
     background: #81623e;
 }
 
-.game-info-panel {
-    position: absolute;
-    width: 60%;
-    min-height: 80%;
-    top: 10%;
-    left: 20%;
-    background: radial-gradient(#ffffff, #ece3ca);
-    border-radius: 8px;
-    border: 1px solid #e4d8b8;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-}
-
 
 .sidebar-left {
     display: static;
@@ -1223,136 +1123,8 @@ export default {
     min-width: 173px;
 }
 
-.player-detail-container {
-    display: block;
-    height: 90%;
-    font-size: 1.8vh;
-    color: #3a3a3a;
-    margin: 5% 5%;
-    width: 90%;
-    padding: 10%;
-    background: radial-gradient(#ffffff, #eeeded);
-    border-radius: 0.4vw;
-    border: 1px solid #e4d8b8;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-    text-align: center;
-}
-
-.player-detail-name-container {
-    padding: 0.3vw;
-    padding-left: .6vw;
-    text-align: center;
-}
-
-.player-detail-icon {
-    display: inline-block;
-    width: 10vw;
-    height: 10vw;
-    border: 0.4vw solid #e0a500;
-    margin-bottom: 0.3vw;
-    border-radius: 1vh;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-    font-size: 8vw;
-    z-index: 50;
-    padding-top: .2vw;
-    background: radial-gradient(#5677be, #1d50be);
-    color: white;
-    text-align: center;
-}
-
-.action-button {
-    padding-top: .1vw;
-    margin: .6vw .6vw 0 .6vw;
-    display: inline-block;
-    font-family: 'Alice';
-    width: 7vw;
-    height: 2vw;
-    border-radius: 0.5vw;
-    text-align: center;
-    font-size: 1.8vh;
-    background: radial-gradient(#eeeeee, #e4e4e4);
-    border: .1vw solid #eeeeee;
-    -moz-box-shadow:    inset 0 0 2px #00000086;
-    -webkit-box-shadow: inset 0 0 2px #000000a1;
-    box-shadow:         inset 0 0 2px #000000a1;
-}
-
-.action-button:hover {
-    -moz-box-shadow:    inset 0 0 4px #000000b6;
-    -webkit-box-shadow: inset 0 0 4px #000000be;
-    box-shadow:         inset 0 0 4px #000000bb;
-}
 
 
-/* .werfen-button {
-    background: radial-gradient(#7396d6, #114cbb);
-    background: radial-gradient(#e2868e, #bb111f);
-    border: .2vw solid #3b73dd;
-    border: .2vw solid #d62231;
-    color: #ffffff;
-}
-
-.werfen-button:hover {
-   background: radial-gradient(#98b1e2, #114cbb);
-   background: radial-gradient(#e98f97, #d32231);
-   border: .2vw solid #5789e4;
-   border: .2vw solid #e03443;
-
-    color: #ffffff; 
-    -moz-box-shadow:    inset 0 0 8px #000000b6;
-    -webkit-box-shadow: inset 0 0 8px #000000be;
-    box-shadow:         inset 0 0 8px #000000bb;
-}
-
-.klatscher-kloppen-button {
-    background: radial-gradient(#eee017, #d49d26);
-    border: .2vw solid #e0be00;
-    color: #ffffff;
-}
-
-.klatscher-kloppen-button:hover {
-    background: radial-gradient(#eee786, #d47f3a);
-    color: #ffffff;
-     -moz-box-shadow:    inset 0 0 8px #000000b6;
-    -webkit-box-shadow: inset 0 0 8px #000000be;
-    box-shadow:         inset 0 0 8px #000000bb;
-} */
-
-
-.banned-players-container {
-    padding: 1vw;
-}
-
-.banned-player-tile {
-    display: inline-block;
-    width: calc(100vh * 0.0769 * 0.9 * 0.8);
-    height: calc(100vh * 0.0769 * 0.9 * 0.8);
-    margin: calc(100vh * 0.0769 * 0.035 * 0.8) calc(100vh * 0.0588 * 0.05 * 0.8);
-    border: 1.5px solid #e0a500;
-    border-radius: 1vh;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
-    font-size: 3vh;
-    z-index: 50;
-    padding-top: .65vh;
-    background: radial-gradient(#5677be, #1d50be);
-    color: white;
-    text-align: center;
-    
-}
-
-.banned-player-tile:hover {
-    border: 1.5px solid #ffffff;
-    
-}
-
-.selected-banned-player-tile {
-    border: 1.5px solid #ffffff;
-    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.555);  
-}
 
 .sidebar-right {
     display: static;
@@ -1411,7 +1183,6 @@ export default {
     color: #ffffff;
     border: 1px solid #ffffff;
 }
-
 
 
 
