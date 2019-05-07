@@ -48,12 +48,12 @@
                     <h3 class="panel-title">Ausgewählter Spieler</h3>
                     <hr class="inner-separation-line">
                     <transition name="fade">
-                    <div v-if="clickedPlayerType" class='player-detail-container'>
-                        <div class="player-detail-icon">{{ clickedPlayerType.slice(0, 1).toUpperCase() }}</div>
+                    <div v-if="selectedEntityId" class='player-detail-container'>
+                        <div class="player-detail-icon">{{ selectedEntityId.slice(0, 1).toUpperCase() }}</div>
                         <div class="player-detail-name-container">
-                            <div class="player-detail-name"> <b>{{ teamConfig.players[clickedPlayerType].name }}</b> ({{ teamConfig.players[clickedPlayerType].sex }})</div>
-                            <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[clickedPlayerType].broom) }}</div>
-                            <div class="player-detail-type">{{ mapRole(clickedPlayerType) }} – ({{ clickedPlayer.xPos }} | {{ clickedPlayer.yPos }})</div>
+                            <div class="player-detail-name"> <b>{{ teamConfig.players[selectedEntityId].name }}</b> ({{ teamConfig.players[selectedEntityId].sex }})</div>
+                            <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[selectedEntityId].broom) }}</div>
+                            <div class="player-detail-type">{{ mapRole(selectedEntityId) }} – ({{ selectedEntity.xPos }} | {{ selectedEntity.yPos }})</div>
                         </div>
                     
                         <div class="player-detail-body">
@@ -84,7 +84,7 @@
                     <div id="game-grid-panel">
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
-                            @click="feedbackOld(tile.xPos, tile.yPos)" 
+                            @click="clickEmptyTile(tile.xPos, tile.yPos)" 
                             :class="[tile.class,
                                 {'highlighted-gras-tile': highlightedTiles.includes(index)
                             }]"
@@ -103,13 +103,13 @@
                         <div class="goal-post-left-center"></div>
                         <div class="goal-post-left-bottom"></div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="feedbackOld(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="Old(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player), clickedPlayerType = key"
+                                @click="selectPlayer(player), selectedEntityId = key"
                                 @mouseenter="hoveredPlayerType = key"
                                 @mouseleave="hoveredPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
                                 </div>
@@ -118,7 +118,7 @@
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="clickedPlayer=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectedEntity=player"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
                     <hr class="inner-separation-line">
                     <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}
-                    <br> {{ this.clickedPlayer }}, {{ this.gameState }}, {{ bannedPlayersTeamLeft.number }}
+                    <br> {{ this.selectedEntity }}, {{ this.gameState }}, {{ bannedPlayersTeamLeft.number }}
                     </div>
                 </div>
             </div>
@@ -177,13 +177,12 @@ export default {
             gameState: 'inGame',
             grid: [],
             clickedTile: [],
-            clickedPlayerType: undefined,
-            clickedPlayer: undefined,
+            selectedEntityId: undefined,
             highlightedTiles: [],
             hoveredPlayerType: undefined,
             playerToPosition: undefined,
             selectedEntity: undefined,
-            possibleAction: String,
+            turnType: String,
 
 
             // server message data formats
@@ -711,31 +710,31 @@ export default {
             }
         },
         selectPlayer(player) {
-            this.clickedPlayer = player;
+            this.selectedEntity = player;
             this.highlightTiles(player.xPos, player.yPos, 1);
         },
         feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
             if (this.gameState === 'teamFormation') {
                 this.playerToPosition.xPos = xPos;
-                this.playerToPosition.yPos = yPos;
-                this.highlightedTiles = [];
+                this.playerToPosition = [];
                 if (this.bannedPlayersTeamLeft.number === 1) {
                     this.gameState = 'inGame';
                 };
                 this.playerToPosition.banned = false;
                 this.playerToPosition = null;
-            } else if(this.clickedPlayer) {
-                this.clickedPlayer.xPos = xPos;
-                this.clickedPlayer.yPos = yPos;
+            } else if(this.selectedEntity) {
+                this.selectedEntity.xPos = xPos;
+                this.selectedEntity.yPos = yPos;
                 this.highlightedTiles = [];
             }
         },
-        feedback: function(xPos, yPos){
+        clickEmptyTile: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
+                    this.highlighedtTiles = this.leftHalfTiles;
                     myTeam = this.snapShot.leftTeam;
                     for(let player in this.snapShot.leftTeam.players){
                         if(this.snapShot.leftTeam.players[player].banned){
@@ -748,6 +747,7 @@ export default {
                     }
                 }
                 else if(this.mySide === "right"){
+                    this.highlightedTiles = this.rightHalfTiles;
                     myTeam = this.snapShot.rightTeam;
                     for(let player in this.snapShot.rightTeam.players){
                         if(this.snapShot.rightTeam.players[player].banned){
@@ -764,9 +764,16 @@ export default {
                     this.started = true;
                     this.selectedEntity = undefined;
                     this.sendTeamFormation(myTeam);
+                    this.highlightedTiles = [];
                 }
             }
-            else if(possibleAction === "move"){
+            else if(this.turnType === "move"){
+                this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+            }
+            else if(this.turnType === "action"){
+                if(selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")){
+                    this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
             }
             if(this.selectedEntity) {
                 this.selectedEntity.xPos = xPos;
@@ -877,8 +884,8 @@ export default {
                     else if(jsonObject.payloadType === "next"){
                         vm.handleNext(jsonObject);
                     }
-                    Object.keys(jsonObject).forEach(key =>{
-                    var val = jsonObject[key];
+                    Object.keys(jsonObject.payload).forEach(key =>{
+                    var val = jsonObject.payload[key];
                 
                     newText = newText + "\n" + key + ": " + val; 
                     });
@@ -939,9 +946,11 @@ export default {
         handleMatchStart: function(obj){
             if(obj.payload.leftTeamUserName === game.userName){
                 this.mySide = "left";
+                this.highlightedTiles = this.leftHalfTiles;
             }
             else if(obj.payload.rightTeamUserName === game.userName){
                 this.mySide = "right";
+                this.highlightedTiles = this.rightHalfTiles;
             }
             document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
             docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
@@ -954,6 +963,7 @@ export default {
         },
         handleNext: function(obj){
             this.selectedEntity = undefined;
+            this.selectedEntityId = obj.payload.turn;
             //if a player is chosen
             if(obj.payload.turn === "leftSeeker") this.selectedEntity = this.snapShot.leftTeam.players.seeker;
             else if(obj.payload.turn === "leftKeeper") this.selectedEntity = this.snapShot.leftTeam.players.keeper;
@@ -975,7 +985,7 @@ export default {
                 
                 for(let fan in this.snapShot.leftTeam.fans){
                     if(obj.payload.turn.toLowerCase().includes(this.snapShot.leftTeam.fans[fan].fanType)){
-                        selectedEntity = this.snapShot.leftTeam.fans[fan];
+                        this.selectedEntity = this.snapShot.leftTeam.fans[fan];
                         break;
                     }
                 }
@@ -984,18 +994,20 @@ export default {
                 
                 for(let fan in this.snapShot.rightTeam.fans){
                     if(obj.payload.turn.toLowerCase().includes(this.snapShot.rightTeam.fans[fan].fanType)){
-                        selectedEntity = this.snapShot.rightTeam.fans[fan];
+                        this.selectedEntity = this.snapShot.rightTeam.fans[fan];
                         break;
                     }
                 }
             }
-            this.possibleAction = obj.payload.type;
+            
+            this.turnType = obj.payload.type;
             
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
         },
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
+            this.turnType = null;
             var timestamp = Date.now();
             var payload = {
                 "deltaType": deltaType,
@@ -1030,6 +1042,7 @@ export default {
             this.snapShot.rightTeam.players[player].banned = true;
         }
         this.mySide = "right";
+        this.highlightedTiles = this.rightHalfTiles;
     }
 }
 </script>
