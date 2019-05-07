@@ -84,11 +84,10 @@
                     <div id="game-grid-panel">
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
-                            @click="feedback(tile.xPos, tile.yPos)" 
+                            @click="feedbackOld(tile.xPos, tile.yPos)" 
                             :class="[tile.class,
                                 {'highlighted-gras-tile': highlightedTiles.includes(index)
                             }]"
-
                             >
                             ({{ tile.xPos }} | {{ tile.yPos }}) <br> {{ index }} 
                         </div>
@@ -104,7 +103,7 @@
                         <div class="goal-post-left-center"></div>
                         <div class="goal-post-left-bottom"></div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="feedback(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="feedbackOld(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
@@ -183,6 +182,8 @@ export default {
             highlightedTiles: [],
             hoveredPlayerType: undefined,
             playerToPosition: undefined,
+            selectedEntity: undefined,
+            possibleAction: String,
 
 
             // server message data formats
@@ -402,11 +403,11 @@ export default {
                     ],
             rightAttackTiles: [
                     31, 47, 48, 49, 64, 65, 66, 80, 81, 82, 83, 84, 97, 98, 99, 100, 101, 114, 115, 116,
-                    117, 118, 129, 131, 132, 133, 134, 135, 147, 148, 149, 150, 151, 152, 166, 167, 168, 183,
+                    117, 118, 131, 132, 133, 134, 135, 147, 148, 149, 150, 151, 152, 166, 167, 168, 183,
                     184, 185, 201
                     ],
             cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],          
-            deltaRequest: {
+            deltaRequestType: {
                 deltaType: undefined,
                 success: undefined,
                 xPosOld: undefined,
@@ -634,7 +635,6 @@ export default {
             return activeFans;
         },
         getEntity(entityID) {
-
             if(entityID.startsWith('left')) {
                 var key = entityID.slice(4).toLowerCase();
                 return this.snapShot.leftTeam.players[key];
@@ -669,25 +669,52 @@ export default {
                 }
             }
             return {players: bannedPlayers, number: i}; 
+        },
+        bannedPlayersTeamRight() {
+            var players = this.snapShot.rightTeam.players;
+            var bannedPlayers = {};
+            var i = 0;
+            for ( var key in players ) {
+                if(players[key].banned) {
+                    bannedPlayers[key] = players[key];
+                    i++;
+                }
+            }
+            return {players: bannedPlayers, number: i}; 
         }
     },
     methods: {
+
+        // test-methods
+        sendMsg: function(){
+            web.websocket.send(document.getElementById("in").value);
+        },
+        shuffleBalls() {
+            for (var key in this.snapShot.balls) {
+                var ball = this.snapShot.balls[key];
+                ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
+                ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
+            }
+        },
+        banLeftTeam() {
+            var players = this.snapShot.leftTeam.players;
+            for (var key  in players) {
+                players[key].banned = !players[key].banned;
+            }
+            this.gameState = 'teamFormation';
+        },
+        // game-interaction methods
         selectBannedPlayer(player) {
             if(this.gameState === 'teamFormation') {
                 this.highlightedTiles = this.leftHalfTiles;
-                console.log(this.leftHalfTiles);
                 this.playerToPosition = player;
             }
-
         },
         selectPlayer(player) {
             this.clickedPlayer = player;
             this.highlightTiles(player.xPos, player.yPos, 1);
         },
-        sendMsg: function(){
-            web.websocket.send(document.getElementById("in").value);
-        },
-        feedback: function(xPos, yPos){
+        feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
             if (this.gameState === 'teamFormation') {
                 this.playerToPosition.xPos = xPos;
@@ -704,43 +731,92 @@ export default {
                 this.highlightedTiles = [];
             }
         },
-
-        renderPlayerInfo(player) {
-            return 'Name: ' + player.name + ', '  + player.sex +', ' + player.broom;
-        },
-        startGame: function(){
-            if(web.websocket) {
-                web.websocket.onmessage = function(msg) {
-                    var newText = "";
-                    var jsonObject = JSON.parse(msg.data);
-                    Object.keys(jsonObject).forEach(key =>{
-                    var val = jsonObject[key];
-                
-                    newText = newText + "\n" + key + ": " + val; 
-                    });
-                    document.getElementById("game-log").innerHTML = newText;
-                }
-            }  
-        },
-        highlightTiles(xPos, yPos, radius) {
-            this.highlightedTiles = [];
-            for(var x = xPos-radius;x<= xPos + radius;  x++) {
-                for(var y= yPos - radius; y <= yPos + radius; y ++) {
-                    if(true) {
-                        var tileID = y*17 + x;
-                        this.highlightedTiles.push(tileID);
+        feedback: function(xPos, yPos){
+            this.clickedTile = [xPos, yPos];
+            if(!this.started){
+                var myTeam;
+                if(this.mySide === "left"){
+                    myTeam = this.snapShot.leftTeam;
+                    for(let player in this.snapShot.leftTeam.players){
+                        if(this.snapShot.leftTeam.players[player].banned){
+                            this.snapShot.leftTeam.players[player].banned = false;
+                            this.snapShot.leftTeam.players[player].xPos = xPos;
+                            this.snapShot.leftTeam.players[player].yPos = yPos;
+                            this.selectedEntity = this.snapShot.leftTeam.players[player];
+                            break;
+                        }
                     }
                 }
+                else if(this.mySide === "right"){
+                    myTeam = this.snapShot.rightTeam;
+                    for(let player in this.snapShot.rightTeam.players){
+                        if(this.snapShot.rightTeam.players[player].banned){
+                            this.snapShot.rightTeam.players[player].banned = false;
+                            this.snapShot.rightTeam.players[player].xPos = xPos;
+                            this.snapShot.rightTeam.players[player].yPos = yPos;
+                            this.selectedEntity = this.snapShot.rightTeam.players[player];
+                            break;
+                        }
+                    }
+                }
+                //when all players a placed on the field
+                if(!myTeam.players.beater2.banned){
+                    this.started = true;
+                    this.selectedEntity = undefined;
+                    this.sendTeamFormation(myTeam);
+                }
             }
-        }
-        ,
-        banLeftTeam() {
-            var players = this.snapShot.leftTeam.players;
-            for (var key  in players) {
-                players[key].banned = !players[key].banned;
+            else if(possibleAction === "move"){
             }
-            this.gameState = 'teamFormation';
+            if(this.selectedEntity) {
+                this.selectedEntity.xPos = xPos;
+                this.selectedEntity.yPos = yPos;
+            }
         },
+        sendTeamFormation(myTeam) {
+            var payload = {
+                        "players":{
+                            "seeker":{
+                                "xPos": myTeam.players.seeker.xPos,
+                                "yPos": myTeam.players.seeker.yPos,
+                            },
+                            "keeper":{
+                                "xPos": myTeam.players.keeper.xPos,
+                                "yPos": myTeam.players.keeper.yPos,
+                            },
+                            "chaser1":{
+                                "xPos": myTeam.players.chaser1.xPos,
+                                "yPos": myTeam.players.chaser1.yPos,
+                            },
+                            "chaser2":{
+                                "xPos": myTeam.players.chaser2.xPos,
+                                "yPos": myTeam.players.chaser2.yPos,
+                            },
+                            "chaser3":{
+                                "xPos": myTeam.players.chaser3.xPos,
+                                "yPos": myTeam.players.chaser3.yPos,
+                            },
+                            "beater1":{
+                                "xPos": myTeam.players.beater1.xPos,
+                                "yPos": myTeam.players.beater1.yPos,
+                            },
+                            "beater2":{
+                                "xPos": myTeam.players.beater2.xPos,
+                                "yPos": myTeam.players.beater2.yPos,
+                            }
+                        }
+                    }
+                    var timestamp = Date.now();
+                    var teamFormation = {
+                         "timestamp": timestamp,
+                         "payloadType": "teamFormation",
+                         "payload": payload
+                     }
+                    web.websocket.send(JSON.stringify(teamFormation));
+
+        },
+
+        // display and animation methods
         generateGrid() {
             var grid = [];
             for(var i = 0; i < 221; i++) {
@@ -770,18 +846,48 @@ export default {
             }
             return grid;
         },
-        shuffleBalls() {
-            for (var key in this.snapShot.balls) {
-                var ball = this.snapShot.balls[key];
-                ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
-                ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
+        highlightTiles(xPos, yPos, radius) {
+            this.highlightedTiles = [];
+            for(var x = xPos-radius;x<= xPos + radius;  x++) {
+                for(var y= yPos - radius; y <= yPos + radius; y ++) {
+                    if(true) {
+                        var tileID = y*17 + x;
+                        if (!this.cornerTiles.includes(tileID)) {
+                            this.highlightedTiles.push(tileID);
+                        }  
+                    }
+                }
             }
         },
-        scorePoints(increment, team) {
-            this.snapShot[team].points += increment;
+        startGame: function(){
+            var vm = this;
+            if(web.websocket) {
+                web.websocket.onmessage = function(msg) {
+                    var newText = "";
+                    var jsonObject = JSON.parse(msg.data);
+                    if(jsonObject.payloadType === "matchStart"){
+                        vm.handleMatchStart(jsonObject);
+                    }
+                    else if(jsonObject.payloadType === "matchFinish"){
+                        vm.handleMatchFinish(jsonObject);
+                    }
+                    else if(jsonObject.payloadType === "snapshot"){
+                        vm.handleSnapshot(jsonObject);
+                    }
+                    else if(jsonObject.payloadType === "next"){
+                        vm.handleNext(jsonObject);
+                    }
+                    Object.keys(jsonObject).forEach(key =>{
+                    var val = jsonObject[key];
+                
+                    newText = newText + "\n" + key + ": " + val; 
+                    });
+                    document.getElementById("game-log").innerHTML = newText;
+                }
+            }  
         },
-        mapRole(index) {
-            switch (index) {
+        mapRole(type) {
+            switch (type) {
                 case 'seeker':
                     return 'Sucher';
                 case 'keeper':
@@ -800,8 +906,8 @@ export default {
                 return undefined;
             }
         },
-        mapBroom(broom) {
-            switch(broom) {
+        mapBroom(broomType) {
+            switch(broomType) {
                 case 'thinderblast':
                     return 'Zunderfauch';
                 case 'cleansweep-11':
@@ -815,8 +921,8 @@ export default {
                 default: undefined
             }    
         },
-        mapFan(key) {
-            switch(key) {
+        mapFan(fanType) {
+            switch(fanType) {
                 case 'goblins':
                     return 'Goblins';
                 case 'elfs':
@@ -827,11 +933,103 @@ export default {
                     return 'Trolle';
                 default: undefined
             } 
+        },
+        
+        // game handlers
+        handleMatchStart: function(obj){
+            if(obj.payload.leftTeamUserName === game.userName){
+                this.mySide = "left";
+            }
+            else if(obj.payload.rightTeamUserName === game.userName){
+                this.mySide = "right";
+            }
+            document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
+            docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
+        },
+        handleMatchFinish: function(obj){
+            this.game.currentState = "inLobby";
+        },
+        handleSnapshot: function(obj){
+            this.snapShot = obj.payload;
+        },
+        handleNext: function(obj){
+            this.selectedEntity = undefined;
+            //if a player is chosen
+            if(obj.payload.turn === "leftSeeker") this.selectedEntity = this.snapShot.leftTeam.players.seeker;
+            else if(obj.payload.turn === "leftKeeper") this.selectedEntity = this.snapShot.leftTeam.players.keeper;
+            else if(obj.payload.turn === "leftChaser1") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
+            else if(obj.payload.turn === "leftChaser2") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
+            else if(obj.payload.turn === "leftChaser3") this.selectedEntity = this.snapShot.leftTeam.players.chaser3;
+            else if(obj.payload.turn === "leftBeater1") this.selectedEntity = this.snapShot.leftTeam.players.beater1;
+            else if(obj.payload.turn === "leftBeater2") this.selectedEntity = this.snapShot.leftTeam.players.beater2;
+            else if(obj.payload.turn === "rightSeeker") this.selectedEntity = this.snapShot.rightTeam.players.seeker;
+            else if(obj.payload.turn === "rightKeeper") this.selectedEntity = this.snapShot.rightTeam.players.keeper;
+            else if(obj.payload.turn === "rightChaser1") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
+            else if(obj.payload.turn === "rightChaser2") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
+            else if(obj.payload.turn === "rightChaser3") this.selectedEntity = this.snapShot.rightTeam.players.chaser3;
+            else if(obj.payload.turn === "rightBeater1") this.selectedEntity = this.snapShot.rightTeam.players.beater1;
+            else if(obj.payload.turn === "rightBeater2") this.selectedEntity = this.snapShot.rightTeam.players.beater2;
+            
+            //if a fan is chosen
+            else if(obj.payload.turn.includes("left")){
+                
+                for(let fan in this.snapShot.leftTeam.fans){
+                    if(obj.payload.turn.toLowerCase().includes(this.snapShot.leftTeam.fans[fan].fanType)){
+                        selectedEntity = this.snapShot.leftTeam.fans[fan];
+                        break;
+                    }
+                }
+            }
+            else if(obj.payload.turn.includes("right")){
+                
+                for(let fan in this.snapShot.rightTeam.fans){
+                    if(obj.payload.turn.toLowerCase().includes(this.snapShot.rightTeam.fans[fan].fanType)){
+                        selectedEntity = this.snapShot.rightTeam.fans[fan];
+                        break;
+                    }
+                }
+            }
+            this.possibleAction = obj.payload.type;
+            
+        },
+        scorePoints(increment, team) {
+            this.snapShot[team].points += increment;
+        },
+        deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
+            var timestamp = Date.now();
+            var payload = {
+                "deltaType": deltaType,
+                "success": null,
+                "xPosOld": xPosOld,
+                "yPosOld": yPosOld,
+                "xPosNew": xPosNew,
+                "yPosNew": yPosNew,
+                "activeEntity": activeEntity,
+                "passiveEntity": passiveEntity,
+                "phase": phase,
+                "leftPoints": leftPoints,
+                "rightPoints": rightPoints,
+                "round": round
+            }
+            var jsonObject = {
+                "timestamp": timestamp,
+                "payloadType": "deltaRequest",
+                "payload": payload
+            }
+            web.websocket.send(JSON.stringify(jsonObject));
         }
     },
     mounted() {
         this.grid = this.generateGrid();
-		this.startGame();
+        console.log(this.grid);
+        this.startGame();
+        for(let player in this.snapShot.leftTeam.players){
+            this.snapShot.leftTeam.players[player].banned = true;
+        }
+        for(let player in this.snapShot.rightTeam.players){
+            this.snapShot.rightTeam.players[player].banned = true;
+        }
+        this.mySide = "right";
     }
 }
 </script>
@@ -1337,11 +1535,6 @@ h1 {
     border: 1px solid #6b6b6b;
 }
 
-.corner-tile {
-   display: hidden;
-   pointer-events: none;
-}
-
 .corner-tile:hover {
    border: none;
    background: #ffffff4b;
@@ -1373,12 +1566,12 @@ h1 {
 }
 
 .highlighted-gras-tile {
-    background: radial-gradient(#fbfccf00, #fafc8960);
+    background: radial-gradient(#fbfccf00, #fafc8960), radial-gradient(#97ca79, #7cb859);
     border: 1px solid #fdff6d;
 }
 
 .highlighted-gras-tile:hover {
-    background: radial-gradient(#feffc72a, #f4f777e3);
+    background: radial-gradient(#feffc72a, #f4f777e3), radial-gradient(#97ca79, #7cb859);
     border: 1px solid #fdff6d;
 }
 
@@ -1578,5 +1771,12 @@ h1 {
   opacity: 0;
 }
 
+.corner-tile {
+    display: hidden;
+    pointer-events: none;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
 </style>
