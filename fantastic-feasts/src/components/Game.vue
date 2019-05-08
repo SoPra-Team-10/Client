@@ -664,11 +664,12 @@ export default {
         },
         selectPlayer(player, key) {
             var id = this.playerIdOnTile(player.xPos, player.yPos);
-            alert(id);
+            
             var xPos = player.xPos;
             var yPos = player.yPos;
             
             if(this.turnType === "move"){
+                
                 if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
                     this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
@@ -705,7 +706,7 @@ export default {
                 }
             }
             //this.selectedEntity = player;
-            //this.highlightTiles(player.xPos, player.yPos, 1);
+            //this.highlightTiles(xPos, yPos, 1);
         },
         feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
@@ -724,6 +725,7 @@ export default {
             }
         },
         clickEmptyTile: function(xPos, yPos){
+            
             this.clickedTile = [xPos, yPos];
             if(!this.started){
                 var myTeam;
@@ -762,7 +764,10 @@ export default {
                 }
             }
             else if(this.turnType === "move"){
-                this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                
+                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
+                    this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
             }
             else if(this.turnType === "action"){
                 if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
@@ -875,10 +880,7 @@ export default {
             for(var x = xPos-radius;x<= xPos + radius;  x++) {
                 for(var y= yPos - radius; y <= yPos + radius; y ++) {
                     if(true) {
-                        var tileID = y*17 + x;
-                        if (!this.cornerTiles.includes(tileID)) {
-                            this.highlightedTiles.push(tileID);
-                        }  
+                        this.highlightTile(x, y); 
                     }
                 }
             }
@@ -1021,12 +1023,16 @@ export default {
                 }
             }
             this.turnType = obj.payload.type;
+            if(obj.payload.type === "move"){
+                this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
+            }
         },
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
         },
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
+            this.highlightedTiles = [];
             var timestamp = Date.now();
             var payload = {
                 deltaType: deltaType,
@@ -1072,6 +1078,14 @@ export default {
             if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos) return "rightChaser3";
             if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
             if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
+        },
+
+        getTileId: function(xPos, yPos){
+            return yPos*17 + xPos;
+        },
+
+        highlightTile: function(xPos, yPos){
+            this.highlightedTiles.push(this.getTileId(xPos, yPos));
         }
     },
     mounted() {
