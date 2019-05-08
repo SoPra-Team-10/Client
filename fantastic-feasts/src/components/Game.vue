@@ -50,18 +50,18 @@
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
-                                :key="key" :class="['player-tile', 'left-team-player', key]" 
+                                :key="key" :class="['player-tile', 'left-team-player', key]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
                                 @click="selectPlayer(player, key)"
                                 @mouseenter="hoveredPlayerType = key"
-                                @mouseleave="hoveredPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
+                                @mouseleave="hoveredPlayerType = undefined"> <div :id="key.slice(0,6)"></div>
                                 </div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player, key)"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectPlayer(player, key)"> <div :id="key.slice(0,6)"></div></div>
                         </transition-group>
                     </div>
                 </div>
@@ -1512,6 +1512,39 @@ h1 {
     font-size: 3vh;
     z-index: 50;
     padding-top: .65vh;
+}
+
+#chaser {
+    background: url(../resources/chaser.svg);
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    top: 5%;
+    left: 5%;
+    z-index: 53;
+    pointer-events: none;
+}
+
+#beater {
+    background: url(../resources/beater.svg);
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    top: 5%;
+    left: 5%;
+    z-index: 53;
+    pointer-events: none;
+}
+
+#keeper {
+    background: url(../resources/keeper.svg);
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    top: 5%;
+    left: 5%;
+    z-index: 53;
+    pointer-events: none;
 }
 
 
