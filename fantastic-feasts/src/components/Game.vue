@@ -18,7 +18,7 @@
             <div class="sidebar-left">
                 <player-details>
                 </player-details>
-                <hr class="normal-separation-line">
+                <!-- <hr class="normal-separation-line"> -->
                 <banned-players>
                 </banned-players>
             </div>
@@ -82,10 +82,10 @@
                 </div>
             </div>
             <div class="sidebar-right">
-                <game-log>
+                <game-log :gameLog="gameLog">
                 </game-log>
-                <hr class="normal-separation-line">
-                <div class="info-panel">
+                <!-- <hr class="normal-separation-line"> -->
+                <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Testfunktionen</h3>
                     <hr class="inner-separation-line">
                     <input id="in" type="text">
@@ -138,7 +138,8 @@ export default {
             turnType: String,
             leftTeamScore: 0,
             rightTeamScore: 0,
-            gameLog: [],
+            // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
+            gameLog: [{message: 'test1'}, {message: 'test2'}],
             matchStart: {
                 matchConfig: {},
                 leftTeamConfig: {},
@@ -1269,6 +1270,7 @@ export default {
 
 .info-panel {
     display: block;
+    position: absolute;
     text-align: left;
     border: 1px solid #ebd18a;
     background: radial-gradient(#ffffff, #ebd18a);
@@ -1276,10 +1278,10 @@ export default {
     -webkit-box-shadow: inset 0 0 4px #000000;
     box-shadow:         inset 0 0 4px #000000;
     color: #86633c;
-    padding: 15px;
-    margin: 15px;
-    border-radius: 5px;
-    min-height: 40%;
+    width: 92%;
+    left: 4%;
+    height: 40%;
+    border-radius: 1%;
     min-width: 142px;
     font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
@@ -1325,6 +1327,7 @@ export default {
     background: radial-gradient(#e4f5d9, #bbe2a1);
 }
 
+
 #game-grid-panel {
     width: calc(75vh * 17 / 13);
     height: 75vh;
@@ -1342,6 +1345,7 @@ export default {
 .normal-separation-line {
     border: none;
     border-top: 1px solid #ebd18a;
+    margin: 2vh 0;
 }
 
 .inner-separation-line {
@@ -1701,8 +1705,77 @@ h1 {
     overflow: hidden;
 }
 
+
+#player-info-panel {
+    top: 2%;
+}
+
+#game-log-panel {
+    top: 2%;
+}
+
+#banned-players-panel {
+    top: 44%;
+}
+
+#test-functions-panel {
+    top: 44%;
+}
+
+
 .skip-button-container {
+    display: block;
+    position: absolute;
+    text-align: center;
+    border: 1px solid #ebd18a;
+    background: radial-gradient(#ffffff, #ebd18a);
+    -moz-box-shadow:    inset 0 0 4px #00000086;
+    -webkit-box-shadow: inset 0 0 4px #000000;
+    box-shadow:         inset 0 0 4px #000000;
+    color: #86633c;
+    border-radius: 5px;
+    min-height: 8%;
+    min-width: 142px;
+    padding: 2vh;
+    font-size: 2.5vh;
+    padding: 1.5vh 0.5vh;
+    width: 92%;
+    left: 4%;
+    bottom: 2%;
+
+
 
 }
+
+.skip-button {
+    background: radial-gradient(#bb3434, #802020);
+    border: 1.5px solid #e0a500;
+    color: #e0a500;
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    font-family: 'Alice';
+    height: 60%;
+    top: 20%;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2.5vh;
+    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.4), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
+    
+}
+
+.skip-button:hover {
+    background: #81623e;
+    border: 1.5px solid #e0a500;
+    color: #e0a500;
+}
+
+.skip-button:active,
+.skip-button:focus {
+    background: #ac8d6b;
+    border: 1.5px solid #e0a500;
+    color: #e0a500;
+}
+
 
 </style>
