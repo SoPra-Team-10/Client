@@ -506,6 +506,7 @@ export default {
         }
     },
     computed: {
+        /**Adds left half tiles to highlighted tiles */
         leftHalfTiles() {
             var tiles = [];
             for (var i = 0; i < 221;  i++) {
@@ -520,6 +521,7 @@ export default {
             }
             return tiles;
         },
+        /**Adds right half tiles to highlighted tiles */
         rightHalfTiles() {
             var tiles = [];
             for (var i = 0; i < 221;  i++) {
@@ -662,6 +664,10 @@ export default {
                 this.playerToPosition = player;
             }
         },
+
+        /**function to be called when a player on the field is clicked. 
+         * Sends a deltaRequest message if an action is required if possible
+         */
         selectPlayer(player, key) {
             var id = this.playerIdOnTile(player.xPos, player.yPos);
             
@@ -708,6 +714,7 @@ export default {
             //this.selectedEntity = player;
             //this.highlightTiles(xPos, yPos, 1);
         },
+        /**Deprecated */
         feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
             if (this.gameState === 'teamFormation') {
@@ -724,6 +731,10 @@ export default {
                 this.highlightedTiles = [];
             }
         },
+        /**function to be calles when a empty tile is clicked.
+         * Sends a deltaRequest to the server if clicking the tile induces a valid action if one is required.
+         * Sends a teamFormation the the server once all team members are placed for the first time.
+         */
         clickEmptyTile: function(xPos, yPos){
             
             this.clickedTile = [xPos, yPos];
@@ -801,6 +812,7 @@ export default {
             //    this.selectedEntity.yPos = yPos;
             //}
         },
+        /**Reads data from the current snapShot to sends the current team formation to the server */
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
             var payload = {
@@ -875,6 +887,7 @@ export default {
             }
             return grid;
         },
+        /**adds a square of tiles to the highlighted tiles */
         highlightTiles(xPos, yPos, radius) {
             this.highlightedTiles = [];
             for(var x = xPos-radius;x<= xPos + radius;  x++) {
@@ -885,6 +898,9 @@ export default {
                 }
             }
         },
+        /**To be called when the component is mounted.
+         * Updates the websocket`s onmessage method so server messages can be reacted to.
+         */
         startGame: function(){
             var vm = this;
             if(web.websocket) {
@@ -963,6 +979,7 @@ export default {
         },
         
         // game handlers
+        /**Gets the side a player is playing on when a matchStart message is received */
         handleMatchStart: function(obj){
             // store matchStart object in data
             this.matchStart = obj.payload;
@@ -974,16 +991,19 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
-            // Was wird hier gemacht?
+            // Sets the displayed names to the player names received
             document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
             docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
         },
+        /**Loads the lobby component */
         handleMatchFinish: function(obj){
             this.game.currentState = "inLobby";
         },
+        /**Update local snapShot */
         handleSnapshot: function(obj){
             this.snapShot = obj.payload;
         },
+        /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
@@ -1027,9 +1047,13 @@ export default {
                 this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
             }
         },
+        /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
         },
+        /**Creates and sends a deltaRequest.
+         * Resets variables required for actions.
+         */
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
             this.highlightedTiles = [];
@@ -1055,10 +1079,11 @@ export default {
             }
             web.websocket.send(JSON.stringify(jsonObject));
         },
+        /**Sends a skip deltaRequest */
         skip: function(){
             this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
         },
-
+        /**finds the playerId of the entity standing in the given tile. */
         playerIdOnTile: function(xPos, yPos){
             var pLeft = this.snapShot.leftTeam.players;
             var pRight = this.snapShot.rightTeam.players;
@@ -1079,15 +1104,16 @@ export default {
             if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
             if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
         },
-
+        /**computes the id of the given tile */
         getTileId: function(xPos, yPos){
             return yPos*17 + xPos;
         },
-
+        /**Adds given tile to highlighted tiles. */
         highlightTile: function(xPos, yPos){
             this.highlightedTiles.push(this.getTileId(xPos, yPos));
         }
     },
+    /**Is automatically called when the component loaded */
     mounted() {
         this.grid = this.generateGrid();
         this.startGame();
