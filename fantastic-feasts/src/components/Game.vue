@@ -52,7 +52,7 @@
                             <div v-for="(player, key) in activePlayersTeamLeft" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player), selectedEntityId = key"
+                                @click="selectPlayer(player, key)"
                                 @mouseenter="hoveredPlayerType = key"
                                 @mouseleave="hoveredPlayerType = undefined"> {{ key.slice(0,1).toUpperCase() }}
                                 </div>
@@ -61,7 +61,7 @@
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectedEntity=player"> {{ key.slice(0,1).toUpperCase() }}</div>
+                                @click="selectPlayer(player, key)"> {{ key.slice(0,1).toUpperCase() }}</div>
                         </transition-group>
                     </div>
                 </div>
@@ -509,6 +509,7 @@ export default {
         }
     },
     computed: {
+        /**Adds left half tiles to highlighted tiles */
         leftHalfTiles() {
             var tiles = [];
             for (var i = 0; i < 221;  i++) {
@@ -523,6 +524,7 @@ export default {
             }
             return tiles;
         },
+        /**Adds right half tiles to highlighted tiles */
         rightHalfTiles() {
             var tiles = [];
             for (var i = 0; i < 221;  i++) {
@@ -671,10 +673,57 @@ export default {
                 this.playerToPosition = player;
             }
         },
-        selectPlayer(player) {
-            this.selectedEntity = player;
-            this.highlightTiles(player.xPos, player.yPos, 1);
+
+        /**function to be called when a player on the field is clicked. 
+         * Sends a deltaRequest message if an action is required if possible
+         */
+        selectPlayer(player, key) {
+            var id = this.playerIdOnTile(player.xPos, player.yPos);
+            
+            var xPos = player.xPos;
+            var yPos = player.yPos;
+            
+            if(this.turnType === "move"){
+                
+                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
+                    this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
+            }
+            else if(this.turnType === "action"){
+                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                    this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
+                else if(selectedEntityId.includes("Chaser") && player.holdsQuaffle){
+                    this.deltaRequest("wrestQuaffle", null, null, null, null, selectedEntityId, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
+                    var balls = this.snapshot.balls;
+                    if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
+                    }
+                    else if(this.selectedEntity.xPos === balls.bludger2.xPos && this.selectedEntity.yPos === balls.bludger2.yPos){
+                        this.deltaRequest("bludgerBeating", balls.bludger2.xPos, balls.bludger2.yPos, xPos, yPos, this.selectedEntityId, "bludger2", null, null, null,  null);
+                    }
+                }
+            }
+            else if(this.turnType === "fan"){
+                if(this.selectedEntityId.includes("Elf")){
+                    this.deltaRequest("elfTeleportation", null, null, null, null, null, id, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Goblin")){
+                    this.deltaRequest("goblinShock", null, null, null, null, null, id, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Niffler")){
+                    this.deltaRequest("snitchSnatch", null, null, null, null, null, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Troll")){
+                    this.deltaRequest("trollRoar", null, null, null, null, null, null, null, null, null, null);
+                }
+            }
+            //this.selectedEntity = player;
+            //this.highlightTiles(xPos, yPos, 1);
         },
+        /**Deprecated */
         feedbackOld: function(xPos, yPos){
             this.clickedTile = [xPos, yPos];
             if (this.gameState === 'teamFormation') {
@@ -691,7 +740,12 @@ export default {
                 this.highlightedTiles = [];
             }
         },
+        /**function to be calles when a empty tile is clicked.
+         * Sends a deltaRequest to the server if clicking the tile induces a valid action if one is required.
+         * Sends a teamFormation the the server once all team members are placed for the first time.
+         */
         clickEmptyTile: function(xPos, yPos){
+            
             this.clickedTile = [xPos, yPos];
             if(!this.started){
                 var myTeam;
@@ -730,13 +784,16 @@ export default {
                 }
             }
             else if(this.turnType === "move"){
-                this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                
+                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
+                    this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
+                }
             }
             else if(this.turnType === "action"){
-                if(selectedEntityId.includes("chaser") || selectedEntityId.includes("keeper")){
+                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
-                else if(this.selectedEntityId.includes("beater")){
+                else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
                     var balls = this.snapshot.balls;
                     if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
                         this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
@@ -746,12 +803,25 @@ export default {
                     }
                 }
             }
-            
-            if(this.selectedEntity) {
-                this.selectedEntity.xPos = xPos;
-                this.selectedEntity.yPos = yPos;
+            else if(this.turnType === "fan"){
+                if(this.selectedEntityId.includes("Niffler")){
+                    this.deltaRequest("snitchSnatch", null, null, null, null, null, null, null, null, null, null);
+                }
+                else if(this.selectedEntityId.includes("Troll")){
+                    this.deltaRequest("trollRoar", null, null, null, null, null, null, null, null, null, null);
+                }
             }
+
+            else if(this.turnType === "removeBan"){
+                this.deltaRequest("unban", null, null, xPos, yPos, selectedEntityId, null, null, null, null, null);
+            }
+            
+            //if(this.selectedEntity) {
+            //    this.selectedEntity.xPos = xPos;
+            //    this.selectedEntity.yPos = yPos;
+            //}
         },
+        /**Reads data from the current snapShot to sends the current team formation to the server */
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
             var payload = {
@@ -826,19 +896,20 @@ export default {
             }
             return grid;
         },
+        /**adds a square of tiles to the highlighted tiles */
         highlightTiles(xPos, yPos, radius) {
             this.highlightedTiles = [];
             for(var x = xPos-radius;x<= xPos + radius;  x++) {
                 for(var y= yPos - radius; y <= yPos + radius; y ++) {
                     if(true) {
-                        var tileID = y*17 + x;
-                        if (!this.cornerTiles.includes(tileID)) {
-                            this.highlightedTiles.push(tileID);
-                        }  
+                        this.highlightTile(x, y); 
                     }
                 }
             }
         },
+        /**To be called when the component is mounted.
+         * Updates the websocket`s onmessage method so server messages can be reacted to.
+         */
         startGame: function(){
             var vm = this;
             if(web.websocket) {
@@ -917,6 +988,7 @@ export default {
         },
         
         // game handlers
+        /**Gets the side a player is playing on when a matchStart message is received */
         handleMatchStart: function(obj){
             // store matchStart object in data
             this.matchStart = obj.payload;
@@ -928,16 +1000,19 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
-            // Was wird hier gemacht?
+            // Sets the displayed names to the player names received
             document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
             docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
         },
+        /**Loads the lobby component */
         handleMatchFinish: function(obj){
             this.game.currentState = "inLobby";
         },
+        /**Update local snapShot */
         handleSnapshot: function(obj){
             this.snapShot = obj.payload;
         },
+        /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
@@ -977,12 +1052,20 @@ export default {
                 }
             }
             this.turnType = obj.payload.type;
+            if(obj.payload.type === "move"){
+                this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
+            }
         },
+        /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
         },
+        /**Creates and sends a deltaRequest.
+         * Resets variables required for actions.
+         */
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
+            this.highlightedTiles = [];
             var timestamp = Date.now();
             var payload = {
                 deltaType: deltaType,
@@ -1004,8 +1087,42 @@ export default {
                 payload: payload
             }
             web.websocket.send(JSON.stringify(jsonObject));
+        },
+        /**Sends a skip deltaRequest */
+        skip: function(){
+            this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+        },
+        /**finds the playerId of the entity standing in the given tile. */
+        playerIdOnTile: function(xPos, yPos){
+            var pLeft = this.snapShot.leftTeam.players;
+            var pRight = this.snapShot.rightTeam.players;
+
+            if(pLeft.seeker.xPos === xPos && pLeft.seeker.yPos === yPos) return "leftSeeker";
+            if(pLeft.keeper.xPos === xPos && pLeft.keeper.yPos === yPos) return "leftKeeper";
+            if(pLeft.chaser1.xPos === xPos && pLeft.chaser1.yPos === yPos) return "leftChaser1";
+            if(pLeft.chaser2.xPos === xPos && pLeft.chaser2.yPos === yPos) return "leftChaser2";
+            if(pLeft.chaser3.xPos === xPos && pLeft.chaser3.yPos === yPos) return "leftChaser3";
+            if(pLeft.beater1.xPos === xPos && pLeft.beater1.yPos === yPos) return "leftBeater1";
+            if(pLeft.beater2.xPos === xPos && pLeft.beater2.yPos === yPos) return "leftBeater2";
+
+            if(pRight.seeker.xPos === xPos && pRight.seeker.yPos === yPos) return "rightSeeker";
+            if(pRight.keeper.xPos === xPos && pRight.keeper.yPos === yPos) return "rightKeeper";
+            if(pRight.chaser1.xPos === xPos && pRight.chaser1.yPos === yPos) return "rightChaser1";
+            if(pRight.chaser2.xPos === xPos && pRight.chaser2.yPos === yPos) return "rightChaser2";
+            if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos) return "rightChaser3";
+            if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
+            if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
+        },
+        /**computes the id of the given tile */
+        getTileId: function(xPos, yPos){
+            return yPos*17 + xPos;
+        },
+        /**Adds given tile to highlighted tiles. */
+        highlightTile: function(xPos, yPos){
+            this.highlightedTiles.push(this.getTileId(xPos, yPos));
         }
     },
+    /**Is automatically called when the component loaded */
     mounted() {
         this.grid = this.generateGrid();
         this.startGame();
