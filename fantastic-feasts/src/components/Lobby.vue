@@ -44,7 +44,7 @@ export default {
         connect : function () {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
-            web.websocket = new WebSocket("wss://"+server+":"+port);
+            web.websocket = new WebSocket("ws://"+server+":"+port);
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);
             };
