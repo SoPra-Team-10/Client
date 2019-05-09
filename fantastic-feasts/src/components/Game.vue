@@ -16,7 +16,7 @@
                 </div>
             </header>
             <div class="sidebar-left">
-                <player-details>
+                <player-details :selectedEntityId="'chaser1'" :teamConfig="teamConfig" :selectedEntity="{xPos: 5, yPos: 5}">
                 </player-details>
                 <!-- <hr class="normal-separation-line"> -->
                 <banned-players>
@@ -52,7 +52,7 @@
                             <div v-for="(player, key) in activePlayersTeamLeft" 
                                 :key="key" :class="['player-tile', 'left-team-player', key]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player, key)"
+                                @click="targetPlayer(player, key)"
                                 @mouseenter="hoveredPlayerType = key"
                                 @mouseleave="hoveredPlayerType = undefined"> <div :id="key.slice(0,6)"></div>
                                 </div>
@@ -61,7 +61,7 @@
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player', key]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="selectPlayer(player, key)"> <div :id="key.slice(0,6)"></div></div>
+                                @click="targetPlayer(player, key)"> <div :id="key.slice(0,6)"></div></div>
                         </transition-group>
                     </div>
                 </div>
@@ -98,8 +98,7 @@
                     <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
                     <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
                     <hr class="inner-separation-line">
-                    <div class="info-text" v-if="!this.clickedTile == []">Ausgewähltes Feld: {{ this.clickedTile[0] }} | {{ this.clickedTile[1] }}
-                    <br> {{ this.selectedEntity }}, {{ this.gameState }}, {{ bannedPlayersTeamLeft.number }}
+                    <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
                 </div>
                 <div class="skip-button-container">
@@ -129,17 +128,23 @@ export default {
         return {
             gameState: 'inGame',
             grid: [],
-            clickedTile: [],
+
             selectedEntityId: undefined,
-            highlightedTiles: [],
-            hoveredPlayerType: undefined,
-            playerToPosition: undefined,
             selectedEntity: undefined,
+
+            highlightedTiles: [],
+            // for later
+            hoveredPlayerType: undefined,
+
+            // teamFormation
+            playerToPosition: undefined,
+            
             turnType: String,
-            leftTeamScore: 0,
-            rightTeamScore: 0,
+
             // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
             gameLog: [{message: 'test1'}, {message: 'test2'}],
+            
+            // can later be changed to undefined.
             matchStart: {
                 matchConfig: {},
                 leftTeamConfig: {},
@@ -148,9 +153,9 @@ export default {
                 rightTeamUserNameg: "Rechtes Team"
             },
 
-
-
             // server message data formats
+
+            // // can later be changed to undefined. Values are for debugging purposes
 
             snapShot: {    
                 phase: 'ballPhase',
@@ -341,6 +346,7 @@ export default {
                     }
                 }
             },
+
             matchFinish: {
                 endRound: undefined,
                 leftPoints: undefined,
@@ -348,11 +354,14 @@ export default {
                 winnerUserName: undefined,
                 victoryReason: undefined
             },
+
             next: {
                 turn: undefined,
                 type: undefined,
                 timeout: undefined
             },
+
+            // game grid setup
             centerTiles: [92, 93, 94, 109, 110, 111, 126, 127, 128],
             leftAttackTiles: [19, 35, 36, 37, 52, 53, 54, 68, 69, 70, 71, 72, 85, 86, 87, 88, 89, 102, 103, 104, 
                     105, 106, 119, 120, 121, 122, 123, 136, 137, 138, 139, 140, 154, 155, 156, 171, 172, 173, 189
@@ -362,118 +371,14 @@ export default {
                     117, 118, 131, 132, 133, 134, 135, 147, 148, 149, 150, 151, 152, 166, 167, 168, 183,
                     184, 185, 201
                     ],
-            cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],          
-            deltaRequestType: {
-                deltaType: undefined,
-                success: undefined,
-                xPosOld: undefined,
-                yPosOld: undefined,
-                xPosNew: undefined,
-                yPosNew: undefined,
-                activeEntity: undefined,
-                passiveEntity: undefined
-            },
-            snitchCatch: {
-                deltaType: "snitchCatch",
-                success: undefined,
-                xPosOld: null,
-                yPosOld: null,
-                xPosNew: null,
-                yPosNew: null,
-                activeEntity: undefined,
-                passiveEntity: "snitch"
-            },
-            bludgerBeating: {
-                deltaType: "bludgerBeating",
-                success: null,
-                xPosOld: undefined, //Old position of bludger
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of bludger
-                yPosNew: undefined,
-                activeEntity: undefined, //Beater that beats the bludger "passiveEntity": undefined //Bludger that gets beaten
-            },
-            quaffleThrow: {
-                deltaType: "quaffleThrow",
-                success: undefined, //If the quaffle does reach the desired field xPosOld: undefined, //Old position of the quaffle
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle
-                yPosNew: undefined,
-                activeEntity: undefined, //Player that throws the quaffle "passiveEntity": undefined or null //The new owner of the quaffle
-            },
-            snitchSnatch: {
-                deltaType: "snitchSnatch",
-                success: null,
-                xPosOld: undefined, //Old position of the snitch
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the snitch
-                yPosNew: undefined,
-                activeEntity: undefined, //Niffler that snatches after the snitch "passiveEntity": "snitch"
-            },
-            trollRoar: {
-                deltaType: "trollRoar",
-                success: null,
-                xPosOld: undefined, //Old position of the quaffle yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle yPosNew: undefined,
-                activeEntity: undefined, //Troll that roars "passiveEntity": "quaffle"
-            },
-            elfTeleportation: {
-                deltaType: "elfTeleportation",
-                success: null,
-                xPosOld: undefined, //Old position of the passive entity
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the passive entity
-                yPosNew: undefined,
-                activeEntity: undefined, //Elf that does the teleportation "passiveEntity": undefined //Entity that gets teleported by the elf
-            },
-            goblinShock: {
-                deltaType: "goblinShock",
-                success: null,
-                xPosOld: undefined, //Old position of the quaffle
-                yPosOld: undefined,
-                xPosNew: undefined, //New position of the quaffle
-                yPosNew: undefined,
-                activeEntity: undefined, //Goblin that shocks the passive entity "passiveEntity": "quaffle"
-            },
-            ban: {
-                deltaType: "ban",
-                success: null,
-                xPosOld: undefined,
-                yPosOld: undefined,
-                xPosNew: undefined,
-                yPosNew: undefined,
-                activeEntity: null,
-                "passiveEntity": undefined //Entity that gets banned                
-            },
-            bludgerKnockout: {
-                deltaType: "bludgerKnockout", success: null,
-                xPosOld: null,
-                yPosOld: null,
-                xPosNew: null,
-                yPosNew: null,
-                activeEntity: undefined, //The bludger that knocks the passive entity out "passiveEntity": undefined //The passive entity that gets knocked out           
-            },
-            move: {
-                deltaType: "move",
-                success: null,
-                xPosOld: undefined, //Old position of the active entity yPosOld: undefined,
-                xPosNew: undefined, //New position of the active entity yPosNew: undefined,
-                activeEntity: undefined, //Entity that gets a new position "passiveEntity": null
-            },
-            pauseRequest: {
-                message: undefined
-            },
-            continueRequest: {
-                message: undefined
-            },
-            pauseResponse: {
-                message: undefined,
-                userName: undefined,
-                pause: undefined
-            },
+            cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],   
+            
+            
             reconnect: {
                 matchStart: undefined,
                 snapshot: undefined
             },
+
             teamFormation: {
                 players: {
                         seeker: {
@@ -653,6 +558,8 @@ export default {
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
         },
+
+        // test method for animation
         shuffleBalls() {
             for (var key in this.snapShot.balls) {
                 var ball = this.snapShot.balls[key];
@@ -660,6 +567,7 @@ export default {
                 ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
             }
         },
+
         banLeftTeam() {
             var players = this.snapShot.leftTeam.players;
             for (var key  in players) {
@@ -667,18 +575,12 @@ export default {
             }
             this.gameState = 'teamFormation';
         },
-        // game-interaction methods
-        selectBannedPlayer(player) {
-            if(this.gameState === 'teamFormation') {
-                this.highlightedTiles = this.leftHalfTiles;
-                this.playerToPosition = player;
-            }
-        },
 
         /**function to be called when a player on the field is clicked. 
          * Sends a deltaRequest message if an action is required if possible
          */
-        selectPlayer(player, key) {
+
+        targetPlayer(player, key) {
             var id = this.playerIdOnTile(player.xPos, player.yPos);
             
             var xPos = player.xPos;
@@ -723,23 +625,6 @@ export default {
             }
             //this.selectedEntity = player;
             //this.highlightTiles(xPos, yPos, 1);
-        },
-        /**Deprecated */
-        feedbackOld: function(xPos, yPos){
-            this.clickedTile = [xPos, yPos];
-            if (this.gameState === 'teamFormation') {
-                this.playerToPosition.xPos = xPos;
-                this.playerToPosition = [];
-                if (this.bannedPlayersTeamLeft.number === 1) {
-                    this.gameState = 'inGame';
-                };
-                this.playerToPosition.banned = false;
-                this.playerToPosition = null;
-            } else if(this.selectedEntity) {
-                this.selectedEntity.xPos = xPos;
-                this.selectedEntity.yPos = yPos;
-                this.highlightedTiles = [];
-            }
         },
         /**function to be calles when a empty tile is clicked.
          * Sends a deltaRequest to the server if clicking the tile induces a valid action if one is required.
@@ -826,44 +711,44 @@ export default {
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
             var payload = {
-                        "players":{
-                            "seeker":{
-                                "xPos": myTeam.players.seeker.xPos,
-                                "yPos": myTeam.players.seeker.yPos,
-                            },
-                            "keeper":{
-                                "xPos": myTeam.players.keeper.xPos,
-                                "yPos": myTeam.players.keeper.yPos,
-                            },
-                            "chaser1":{
-                                "xPos": myTeam.players.chaser1.xPos,
-                                "yPos": myTeam.players.chaser1.yPos,
-                            },
-                            "chaser2":{
-                                "xPos": myTeam.players.chaser2.xPos,
-                                "yPos": myTeam.players.chaser2.yPos,
-                            },
-                            "chaser3":{
-                                "xPos": myTeam.players.chaser3.xPos,
-                                "yPos": myTeam.players.chaser3.yPos,
-                            },
-                            "beater1":{
-                                "xPos": myTeam.players.beater1.xPos,
-                                "yPos": myTeam.players.beater1.yPos,
-                            },
-                            "beater2":{
-                                "xPos": myTeam.players.beater2.xPos,
-                                "yPos": myTeam.players.beater2.yPos,
-                            }
-                        }
+                players:{
+                    seeker:{
+                        xPos: myTeam.players.seeker.xPos,
+                        yPos: myTeam.players.seeker.yPos,
+                    },
+                    keeper:{
+                        xPos: myTeam.players.keeper.xPos,
+                        yPos: myTeam.players.keeper.yPos,
+                    },
+                    chaser1:{
+                        xPos: myTeam.players.chaser1.xPos,
+                        yPos: myTeam.players.chaser1.yPos,
+                    },
+                    chaser2:{
+                        xPos: myTeam.players.chaser2.xPos,
+                        yPos: myTeam.players.chaser2.yPos,
+                    },
+                    chaser3:{
+                        xPos: myTeam.players.chaser3.xPos,
+                        yPos: myTeam.players.chaser3.yPos,
+                    },
+                    beater1:{
+                        xPos: myTeam.players.beater1.xPos,
+                        yPos: myTeam.players.beater1.yPos,
+                    },
+                    beater2:{
+                        xPos: myTeam.players.beater2.xPos,
+                        yPos: myTeam.players.beater2.yPos,
                     }
-                    var timestamp = Date.now();
-                    var teamFormation = {
-                         "timestamp": timestamp,
-                         "payloadType": "teamFormation",
-                         "payload": payload
-                     }
-                    web.websocket.send(JSON.stringify(teamFormation));
+                }
+            }
+            var timestamp = Date.now();
+            var teamFormation = {
+                    timestamp: timestamp,
+                    payloadType: "teamFormation",
+                    payload: payload
+                }
+            web.websocket.send(JSON.stringify(teamFormation));
 
         },
 
@@ -917,62 +802,33 @@ export default {
                 web.websocket.onmessage = function(msg) {
                     var newText = "";
                     var jsonObject = JSON.parse(msg.data);
+                    // all message types are assigned to their corresponding handlers
                     if(jsonObject.payloadType === "matchStart"){
+                        // debugging:
+                        vm.gameLog.unshift({message: 'Server sent: matchStart'});
+
                         vm.handleMatchStart(jsonObject);
                     }
                     else if(jsonObject.payloadType === "matchFinish"){
+                        // debugging:
+                        vm.gameLog.unshift({message: 'Server sent: matchFinish'});
+
                         vm.handleMatchFinish(jsonObject);
                     }
                     else if(jsonObject.payloadType === "snapshot"){
+                        // debugging:
+                        vm.gameLog.unshift({message: 'Server sent: snapshot'});
+
                         vm.handleSnapshot(jsonObject);
                     }
                     else if(jsonObject.payloadType === "next"){
+                        // debugging:
+                        vm.gameLog.unshift({message: 'Server sent: next'});
+
                         vm.handleNext(jsonObject);
                     }
-                    Object.keys(jsonObject.payload).forEach(key => {
-                        var val = jsonObject.payload[key];
-                        newText = newText + "\n" + key + ": " + val; 
-                    });
-                    // Wird in ein array vorne hinzugefügt. Dieses Array kann man dann schön darstellen. 
-                    // Bitte nicht mit innerHTML arbeiten und man hat so gut wie keinen Spielraum beim Design.
-                    vm.gameLog.unsifht( newText );
                 }
             }  
-        },
-        mapRole(type) {
-            switch (type) {
-                case 'seeker':
-                    return 'Sucher';
-                case 'keeper':
-                    return 'Hüter';
-                case 'chaser1':
-                    return 'Jäger 1';
-                case 'chaser2':
-                    return 'Jäger 2';
-                case 'chaser3':
-                    return 'Jäger 3';
-                case 'beater1':
-                    return 'Klopper 1';
-                case 'beater2':
-                    return 'Klopper 2';
-                default: 
-                return undefined;
-            }
-        },
-        mapBroom(broomType) {
-            switch(broomType) {
-                case 'thinderblast':
-                    return 'Zunderfauch';
-                case 'cleansweep-11':
-                    return 'Sauberwisch 11';
-                case 'comet-260':
-                    return 'Comet-2-60';
-                case 'nimbus-2001':
-                    return 'Nimbus-2001';
-                case 'firebolt':
-                    return 'Feuerblitz';
-                default: undefined
-            }    
         },
         mapFan(fanType) {
             switch(fanType) {
@@ -991,8 +847,10 @@ export default {
         // game handlers
         /**Gets the side a player is playing on when a matchStart message is received */
         handleMatchStart: function(obj){
-            // store matchStart object in data
+            // store matchStart object in data. This object together with data-bindings will be used to display
+            // all the relevant data
             this.matchStart = obj.payload;
+            // highlights the proper tiles for teamFormation
             if(obj.payload.leftTeamUserName === game.userName){
                 this.mySide = "left";
                 this.highlightedTiles = this.leftHalfTiles;
@@ -1001,9 +859,6 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
-            // Sets the displayed names to the player names received
-            document.getElementById("leftPlayerName").innerHTML = obj.payload.leftTeamUserName === game.userName;
-            docuemtn.getElementById("rightPlayerName").innerHTML = obj.payload.rightTeamUserName === game.userName;
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
@@ -1053,9 +908,11 @@ export default {
                 }
             }
             this.turnType = obj.payload.type;
+            
             if(obj.payload.type === "move"){
                 this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
             }
+            // TODO: throw, beat
         },
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
@@ -1741,6 +1598,7 @@ h1 {
 
 #player-info-panel {
     top: 2%;
+    height: 50%;
 }
 
 #game-log-panel {
@@ -1748,7 +1606,7 @@ h1 {
 }
 
 #banned-players-panel {
-    top: 44%;
+    top: 54%;
 }
 
 #test-functions-panel {

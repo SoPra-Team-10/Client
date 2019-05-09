@@ -4,7 +4,7 @@
         <hr class="inner-separation-line">
         <transition name="fade">
         <div v-if="selectedEntityId" class='player-detail-container'>
-            <div class="player-detail-icon">{{ selectedEntityId.slice(0, 1).toUpperCase() }}</div>
+            <div class="player-detail-icon"><div :class="selectedEntityId.slice(0,6) + '-detail-icon'"></div></div>
             <div class="player-detail-name-container">
                 <div class="player-detail-name"> <b>{{ teamConfig.players[selectedEntityId].name }}</b> ({{ teamConfig.players[selectedEntityId].sex }})</div>
                 <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[selectedEntityId].broom) }}</div>
@@ -24,7 +24,45 @@
 <script>
 export default {
     // have to be passed over from paren component
-    props: ['teamConfig', 'selectedEntityId', 'selectedEntity']
+    props: ['teamConfig', 'selectedEntityId', 'selectedEntity'],
+    methods: {
+
+        mapRole(type) {
+            switch (type) {
+                case 'seeker':
+                    return 'Sucher';
+                case 'keeper':
+                    return 'Hüter';
+                case 'chaser1':
+                    return 'Jäger 1';
+                case 'chaser2':
+                    return 'Jäger 2';
+                case 'chaser3':
+                    return 'Jäger 3';
+                case 'beater1':
+                    return 'Klopper 1';
+                case 'beater2':
+                    return 'Klopper 2';
+                default: 
+                return undefined;
+            }
+        },
+        mapBroom(broomType) {
+            switch(broomType) {
+                case 'thinderblast':
+                    return 'Zunderfauch';
+                case 'cleansweep-11':
+                    return 'Sauberwisch 11';
+                case 'comet-260':
+                    return 'Comet-2-60';
+                case 'nimbus-2001':
+                    return 'Nimbus-2001';
+                case 'firebolt':
+                    return 'Feuerblitz';
+                default: undefined
+            }    
+        },
+    }
 }
 </script>
 
@@ -51,6 +89,14 @@ export default {
     padding: 0.3vw;
     padding-left: .6vw;
     text-align: center;
+}
+
+.chaser-detail-icon {
+    margin: .5vw;
+    width: 8vw;
+    height: 8vw;
+    display: inline-block;
+    background: url('../resources/chaser.svg');
 }
 
 .player-detail-icon {
