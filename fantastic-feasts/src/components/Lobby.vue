@@ -14,8 +14,11 @@
                 <input id="user-name" type="text" class="menu__input">
                 <label for="password" class="menu__input-label">Passwort:</label>
                 <input id="password" type="text" class="menu__input">
+                <label for="lobby" class="menu__input-label">Lobby:</label>
+                <input id="lobby" type="text" class="menu__input">
                 <label for="spectator" class="menu__input-label">Als Gast beitreten:</label>
                 <input id="spectator" type="Checkbox" class="menu__input">
+                
             </div>
             <div class="main-menu__button-container">
                 <button @click="connect()" class="main-menu__small-button">Verbinden</button>
@@ -53,8 +56,9 @@ export default {
                 var userName = document.getElementById("user-name").value;
                 vm.game.userName = userName;
                 var pw = document.getElementById("password").value;
+                var lobby = document.getElementById("lobby").value;
                 var timestamp = Date.now();
-                var lobby = "";
+                
                 var joinRequest = {
                     "timestamp": timestamp,
                     "payloadType": "joinRequest",
@@ -67,23 +71,25 @@ export default {
                     }
                 }
                 var msg = JSON.stringify(joinRequest);
+                
                 web.websocket.send(msg);
                 web.websocket.onmessage = function(msg){
          
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
-                        if(!document.getElementById("spectator").value){
+                        if(document.getElementById("spectator").value){
+                            alert(JSON.stringify(configs.teamConfigs[configs.selectedTeam]));
                             var timestamp = Date.now();
                             var teamConf = {
                                 "timestamp": timestamp,
                                 "payloadType": "teamConfig",
-                                "payload": configs.selectedTeamConfig
+                                "payload": vm.teamConfig
                             }
                             web.websocket.send(JSON.stringify(teamConf));
                         }
                         vm.game.currentState = "inGame";
                     }
-                    vm.game.currentState = "inGame";
+                    //vm.game.currentState = "inGame";
                 }
             }
             

@@ -1,7 +1,7 @@
 <template>
   <div>
     <app-menu id="main-menu" :class="[game.colorSchemes[game.selectedColorScheme]]" class="menu" v-if="game.currentState === 'inMenu'" :game="game"></app-menu>
-    <app-lobby class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inLobby'" :game="game"></app-lobby>
+    <app-lobby class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inLobby'" :game="game" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-lobby>
     <app-help class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
     <app-team class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inTeam'" :game="game" :configs="configs"></app-team>
     <app-config class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs" :web="web"></app-config>
