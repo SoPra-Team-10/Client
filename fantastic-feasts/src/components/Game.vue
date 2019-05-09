@@ -7,7 +7,7 @@
                         Menü
                     </div>
                 </div>
-                <game-info>
+                <game-info :matchStart="matchStart" :snapShot="snapShot">
                 </game-info>
                 <div class="header__panel" id="pause-panel">
                     <div id="pause-button">
@@ -16,7 +16,7 @@
                 </div>
             </header>
             <div class="sidebar-left">
-                <player-details :selectedEntityId="'chaser1'" :teamConfig="teamConfig" :selectedEntity="{xPos: 5, yPos: 5}">
+                <player-details :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
                 </player-details>
                 <!-- <hr class="normal-separation-line"> -->
                 <banned-players>
@@ -150,7 +150,7 @@ export default {
                 leftTeamConfig: {},
                 rightTeamConfig: {},
                 leftTeamUserName: "Linkes Team",
-                rightTeamUserNameg: "Rechtes Team"
+                rightTeamUserName: "Rechtes Team"
             },
 
             // server message data formats
