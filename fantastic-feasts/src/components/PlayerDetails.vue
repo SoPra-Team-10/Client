@@ -6,7 +6,7 @@
         <div v-if="selectedEntityId" class='player-detail-container'>
             <div class="player-detail-icon"><div :class="selectedEntityId.slice(0,6) + '-detail-icon'"></div></div>
             <div class="player-detail-name-container">
-                <div class="player-detail-name"> <b>{{ teamConfig.players[selectedEntityId].name }}</b> ({{ teamConfig.players[selectedEntityId].sex }})</div>
+                <div class="player-detail-name"> <b>{{ mapPlayer(selectedEntityId).name }}</b> ({{ teamConfig.players[selectedEntityId].sex }})</div>
                 <div class="player-detail-broom"> {{ mapBroom(teamConfig.players[selectedEntityId].broom) }}</div>
                 <div class="player-detail-type">{{ mapRole(selectedEntityId) }} – ({{ selectedEntity.xPos }} | {{ selectedEntity.yPos }})</div>
             </div>
@@ -24,10 +24,18 @@
 <script>
 export default {
     // have to be passed over from paren component
-    props: ['teamConfig', 'selectedEntityId', 'selectedEntity'],
+    props: ['matchStart', 'selectedEntityId', 'selectedEntity'],
     methods: {
 
-        mapRole(type) {
+        mapRole(entityId) {
+            var type = '';
+            if(entityId[0] === 'r') {
+                type = entityId.slice(0, 5).toLowerCase();
+            }
+            if(entityId[0] === 'l') {
+                type = entityId.slice(0, 4).toLowerCase();
+            }
+            
             switch (type) {
                 case 'seeker':
                     return 'Sucher';

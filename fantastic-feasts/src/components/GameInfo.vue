@@ -3,29 +3,33 @@
         <div class="game-info-panel">
             <div class="header__panel" id="team-panel-left">
                 <div class="header__team-panel-content">
-                    <!-- {{ gameInfo.leftTeamName }} -->
+                   {{ matchStart.leftTeamConfig.name }}
+                   <br>
+                   {{ matchStart.leftTeamUserName }}
                 </div>
             </div>
             <div class="header__panel" id="score-panel">
                 <div class="score-panel-content">
-                    <!-- {{ gameInfo.scoreLeft }} : {{ gameInfo.scoreRight }} -->
+                    {{ snapShot.leftTeam.points }} : {{ snapShot.rightTeam.points }} -->
                 </div>
             </div>
             <div class="header__panel" id="round-panel">
                 <div class="round-panel-content">
                     
-                    <p class="round-label">Runde 5 <!-- {{ gameInfo.round }} --></p>
-                    <p class="round-phase-label">Ziehen <!-- {{ gameInfo.phase }} --></p>
+                    <p class="round-label">Runde {{ snapShot.round }}</p>
+                    <p class="round-phase-label">{{ snapShot.phase }}</p>
                 </div>
             </div>
             <div class="header__panel" id="round-phase-panel">
                 <div class="round-phase-panel-content">
-                    <!-- {{ gameInfo.roundPhase }} -->
+                    
                 </div>
             </div>
             <div class="header__panel" id="team-panel-right">
                 <div class="header__team-panel-content">
-                    <!-- {{ gameInfo.rightTeamName }} -->
+                    {{ matchStart.rightTeamConfig.name }}
+                    <br>
+                   {{ matchStart.rightTeamUserName }}
                 </div>
             </div>
         </div>
@@ -34,7 +38,7 @@
 
 <script>
 export default {
-    props: ['gameInfo'],
+    props: ['matchStart', 'snapShot'],
     
 }
 </script>
