@@ -851,11 +851,11 @@ export default {
             // all the relevant data
             this.matchStart = obj.payload;
             // highlights the proper tiles for teamFormation
-            if(obj.payload.leftTeamUserName === game.userName){
+            if(obj.payload.leftTeamUserName === this.game.userName){
                 this.mySide = "left";
                 this.highlightedTiles = this.leftHalfTiles;
             }
-            else if(obj.payload.rightTeamUserName === game.userName){
+            else if(obj.payload.rightTeamUserName === this.game.userName){
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
@@ -992,8 +992,8 @@ export default {
         for(let player in this.snapShot.rightTeam.players){
             this.snapShot.rightTeam.players[player].banned = true;
         }
-        this.mySide = "right";
-        this.highlightedTiles = this.rightHalfTiles;
+        //this.mySide = "right";
+        //this.highlightedTiles = this.rightHalfTiles;
     }
 }
 </script>

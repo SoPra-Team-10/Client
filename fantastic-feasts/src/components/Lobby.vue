@@ -90,7 +90,7 @@ export default {
                             conf.players.chaser2.broom = "nimbus2001";
                             conf.players.chaser3.broom = "firebolt";
                             conf.colors.primary = "C80010";
-                            alert(JSON.stringify(conf));
+                            
                             var timestamp = Date.now();
                             var teamConf = {
                                 "timestamp": timestamp,
