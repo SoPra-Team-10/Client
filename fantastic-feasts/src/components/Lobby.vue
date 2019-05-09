@@ -42,7 +42,7 @@ import game from "../App.vue"
 import configs from "../App.vue"
 export default {
     
-    props: ['game'],
+    props: ['game', 'teamConfig'],
     methods: {
         connect : function () {
             var server = document.getElementById("server").value;
@@ -78,7 +78,19 @@ export default {
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
-                            alert(JSON.stringify(configs.teamConfigs[configs.selectedTeam]));
+                            var conf = vm.teamConfig;
+                            conf.image = "";
+                            conf.fans.goblins = 2;
+                            conf.fans.trolls = 2;
+                            conf.fans.nifflers = 2;
+                            conf.fans.elves = 1;
+                            conf.players.seeker.broom = "tinderblast";
+                            conf.players.keeper.broom = "cleansweep11";
+                            conf.players.chaser1.broom = "comet260";
+                            conf.players.chaser2.broom = "nimbus2001";
+                            conf.players.chaser3.broom = "firebolt";
+                            conf.colors.primary = "C80010";
+                            alert(JSON.stringify(conf));
                             var timestamp = Date.now();
                             var teamConf = {
                                 "timestamp": timestamp,
@@ -96,7 +108,7 @@ export default {
             
         }
     },
-    props: ['game'],
+    props: ['game', 'teamConfig'],
     
     
 }
