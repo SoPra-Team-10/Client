@@ -1458,6 +1458,17 @@ h1 {
     pointer-events: none;
 }
 
+#seeker {
+    background: url(../resources/seeker.svg);
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    top: 5%;
+    left: 5%;
+    z-index: 53;
+    pointer-events: none;
+}
+
 
 
 .player-tile:hover {
