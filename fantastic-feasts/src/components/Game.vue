@@ -1030,23 +1030,7 @@ export default {
     
 }
 
-#team-panel-right {
-    position: absolute;
-    text-align: right;
-    width: 40%;
-    right: 0%;
-    font-size: 3vh;
-    padding: 1.2vh;
-}
 
-#team-panel-left {
-    position: absolute;
-    text-align: left;
-    width: 40%;
-    left: 0%;
-    font-size: 3vh;
-    padding: 1.2vh;
-}
 
 
 #pause-panel {

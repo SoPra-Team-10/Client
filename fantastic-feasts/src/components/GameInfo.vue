@@ -2,10 +2,8 @@
     <div class="header__game-info">
         <div class="game-info-panel">
             <div class="header__panel" id="team-panel-left">
-                <div class="header__team-panel-content">
-                   <span class="teamname-label">{{ matchStart.leftTeamConfig.name }}</span>
-                   <span class="username-label"></span>{{ matchStart.leftTeamUserName }}
-                </div>
+                <div id="left-teamname-label"><span class="inward-shadow">{{ matchStart.leftTeamConfig.name }}</span></div>
+                <div id="left-username-label">{{ matchStart.leftTeamUserName }}</div>
             </div>
             <div class="header__panel" id="score-panel">
                 <div class="score-panel-content">
@@ -15,8 +13,8 @@
             <div class="header__panel" id="round-panel">
                 <div class="round-panel-content">
                     
-                    <p class="round-label">Runde {{ snapShot.round }}</p>
-                    <p class="round-phase-label">{{ snapShot.phase }}</p>
+                    <div class="round-label">Runde {{ snapShot.round }}</div>
+                    <div class="round-phase-label">{{ snapShot.phase }}</div>
                 </div>
             </div>
             <div class="header__panel" id="round-phase-panel">
@@ -25,10 +23,8 @@
                 </div>
             </div>
             <div class="header__panel" id="team-panel-right">
-                <div class="header__team-panel-content">
-                    <span class="teamname-label">{{ matchStart.rightTeamConfig.name }}</span>
-                    <span class="username-label">{{ matchStart.rightTeamUserName }}</span>
-                </div>
+                <div id="right-teamname-label">{{ matchStart.rightTeamConfig.name }}</div>
+                <div id="right-username-label">{{ matchStart.rightTeamUserName }}</div>
             </div>
         </div>
     </div>   
@@ -48,6 +44,71 @@ export default {
     width: 86%;
     height: 100%;
     left: 7%;
+}
+
+#team-panel-right {
+    position: absolute;
+    text-align: right;
+    width: 35%;
+    right: 0%;
+    font-size: 3vh;
+    height: 100%;
+}
+
+#team-panel-left {
+    position: absolute;
+    text-align: left;
+    width: 35%;
+    left: 0%;
+    font-size: 3vh;
+    height: 100%;
+}
+
+#left-teamname-label {
+    position: absolute;
+    height: 65%;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    color: #f0c400;
+    font-size: 3.2vh;
+    padding: .5vh 1.5vh 0 1.5vh;
+    
+}
+
+#left-username-label {
+    position: absolute;
+    height: 35%;
+    width: 100%;
+    bottom: 0%;
+    left: 0%;
+    color: #00000088;
+    font-size: 1.4vh;
+    padding: 0 1.5vh .8vh 1.5vh;
+    
+}
+
+
+#right-teamname-label {
+    position: absolute;
+    height: 65%;
+    width: 100%;
+    top: 0%;
+    right: 0%;
+    color: #f0c400;
+    font-size: 3.2vh;
+    padding: .5vh 1.5vh 0 1.5vh;
+}
+
+#right-username-label {
+    position: absolute;
+    height: 35%;
+    width: 100%;
+    bottom: 0%;
+    right: 0%;
+    color: #00000088;
+    font-size: 1.4vh;
+    padding: 0 1.5vh .8vh 1.5vh;
 }
 
 
@@ -73,13 +134,13 @@ export default {
     position: absolute;
     width: 20%;
     left: 40%;
-    top: 100%;
+    top: 72%;
     padding: 0;
     margin: 0;
     background: radial-gradient(#ffffff, #e7e7e7);
-    height: 90%;
+    height: 120%;
     color: #4d4d4d;
-    border-radius: 2px;
+    border-radius: 1vh;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 3px 0 rgba(0, 0, 0, 0.19);
     line-height: 80%;
     text-align: center;
@@ -88,9 +149,6 @@ export default {
     z-index: 90;
 }
 
-.teamname-label {
-    position: absolute;
-}
 
 
 
@@ -111,15 +169,24 @@ export default {
 
 
 .round-label {
-    font-size: 1.9vh;
-    color: #634b2c;
+    position: absolute;
+    width: 100%;
+    height: 35%;
+    top: 44%;
+    padding-top: .2vh;
+    font-size: 2.8vh;
+    color: #4b4b4b;
     margin: 0;
     padding: 0;
 }
 
 .round-phase-label {
-    font-size: 1.4vh;
-    color: #634b2c;
+    position: absolute;
+    font-size: 1.2vh;
+    color: #808080;
+    height: 25%;
+    top: 70%;
+    width: 100%;
     margin: 0;
     padding: 0;
 }
