@@ -44,6 +44,9 @@ export default {
         connect : function () {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
+            //out server for testing
+            server = "134.60.29.234";
+            port = "8081";
             web.websocket = new WebSocket("ws://"+server+":"+port);
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);
@@ -61,7 +64,7 @@ export default {
                     "payloadType": "joinRequest",
                     "payload": {
                         "lobby": "lobby",
-                        "userName": "test",
+                        "userName": userName,
                         "password": "testpw",
                         "isArtificialIntelligence": false,
                         "mods":[]
@@ -75,18 +78,8 @@ export default {
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
-                            var conf = vm.teamConfig;
-                            conf.image = "";
-                            conf.fans.goblins = 2;
-                            conf.fans.trolls = 2;
-                            conf.fans.nifflers = 2;
-                            conf.fans.elves = 1;
-                            conf.players.seeker.broom = "tinderblast";
-                            conf.players.keeper.broom = "cleansweep11";
-                            conf.players.chaser1.broom = "comet260";
-                            conf.players.chaser2.broom = "nimbus2001";
-                            conf.players.chaser3.broom = "firebolt";
-                            conf.colors.primary = "C80010";
+                            alert(vm.teamConfig);
+                            
                             
                             var timestamp = Date.now();
                             var teamConf = {

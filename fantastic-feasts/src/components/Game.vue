@@ -133,6 +133,7 @@ export default {
             selectedEntity: undefined,
 
             highlightedTiles: [],
+            crossedTiles: [],
             // for later
             hoveredPlayerType: undefined,
 
@@ -632,32 +633,51 @@ export default {
          */
         clickEmptyTile: function(xPos, yPos){
             
+            //Make sure the player clicked a highlighted Tile
+            if(!highlighedtTiles.includes(this.getTileId(xPos, yPos))) return;
+
             this.clickedTile = [xPos, yPos];
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
                     this.highlighedtTiles = this.leftHalfTiles;
                     myTeam = this.snapShot.leftTeam;
+                    this.playerToPosition = myTeam.players.seeker;
                     for(let player in this.snapShot.leftTeam.players){
+                        var next = false;
                         if(this.snapShot.leftTeam.players[player].banned){
-                            this.snapShot.leftTeam.players[player].banned = false;
-                            this.snapShot.leftTeam.players[player].xPos = xPos;
-                            this.snapShot.leftTeam.players[player].yPos = yPos;
-                            this.selectedEntity = this.snapShot.leftTeam.players[player];
-                            break;
+                            if(!next){
+                                this.snapShot.leftTeam.players[player].banned = false;
+                                this.snapShot.leftTeam.players[player].xPos = xPos;
+                                this.snapShot.leftTeam.players[player].yPos = yPos;
+                                next = true;
+                            }
+                            else{
+                                this.playerToPosition = this.snapShot.leftTeam.players[player];
+                                break;
+                            }
+                            
                         }
                     }
                 }
                 else if(this.mySide === "right"){
                     this.highlightedTiles = this.rightHalfTiles;
                     myTeam = this.snapShot.rightTeam;
+                    this.playerToPosition = myTeam.players.seeker;
                     for(let player in this.snapShot.rightTeam.players){
+                        var next = false;
                         if(this.snapShot.rightTeam.players[player].banned){
-                            this.snapShot.rightTeam.players[player].banned = false;
-                            this.snapShot.rightTeam.players[player].xPos = xPos;
-                            this.snapShot.rightTeam.players[player].yPos = yPos;
-                            this.selectedEntity = this.snapShot.rightTeam.players[player];
-                            break;
+                            if(!next){
+                                this.snapShot.rightTeam.players[player].banned = false;
+                                this.snapShot.rightTeam.players[player].xPos = xPos;
+                                this.snapShot.rightTeam.players[player].yPos = yPos;
+                                next = true;
+                            }
+                            else{
+                                this.playerToPosition = this.snapShot.rightTeam.players[player];
+                                break;
+                            }
+                            
                         }
                     }
                 }
@@ -668,6 +688,7 @@ export default {
                     this.sendTeamFormation(myTeam);
                     this.highlightedTiles = [];
                 }
+                this.playerToPosition = null;
             }
             else if(this.turnType === "move"){
                 
@@ -834,7 +855,7 @@ export default {
             switch(fanType) {
                 case 'goblins':
                     return 'Goblins';
-                case 'elfs':
+                case 'elves':
                     return 'Elfen';
                 case 'nifflers':
                     return 'Niffler';
@@ -912,7 +933,36 @@ export default {
             if(obj.payload.type === "move"){
                 this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
             }
-            // TODO: throw, beat
+            else if((obj.payload.type === "action" && obj.payload.turn.includes("Chaser"))){
+                for(i = 0; i <= 220; i++){
+                    if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
+                }
+            }
+            else if(obj.payload.type === "fan"){
+                if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
+                    for(x = 0; x < 17; x++){
+                        for(y = 0; y < 13; y++){
+                            if(this.playerIdOnTile(x, y) !== null) highlighedtTiles.push(this.getTileId(x, y));
+                        }
+                    }
+                }
+                else if(obj.payload.turn.includes("Wombat")){
+                    for(x = 0; x < 17; x++){
+                        for(y = 0; y < 13; y++){
+                            if(this.isFreeTile(x, y)) highlighedtTiles.push(this.getTileId(x, y));
+                        }
+                    }
+                }
+                else{
+                    for(i = 0; i <= 220; i++){
+                        if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
+                    }
+                }
+            }
+            else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
+                //TODO
+            }
+            
         },
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
@@ -978,6 +1028,26 @@ export default {
         /**Adds given tile to highlighted tiles. */
         highlightTile: function(xPos, yPos){
             this.highlightedTiles.push(this.getTileId(xPos, yPos));
+        },
+        /**returns true if tile is free (for wombat) */
+        isFreeTile: function(xPos, yPos){
+            var free = true;
+            //Check left team players
+            for(let player in this.snapShot.leftTeam.players){
+                if(this.snapShot.leftTeam.players[player].xPos == xPos 
+                    && this.snapShot.leftTeam.players[player].yPos == yPos) free = false;
+            }
+            //Check right team players
+            for(let player in this.snapShot.rightTeam.players){
+                if(this.snapShot.rightTeam.players[player].xPos == xPos 
+                    && this.snapShot.rightTeam.players[player].yPos == yPos) free = false;
+            }
+            //Check balls
+            for(let ball in this.snapShot.balls){
+                if(this.snapShot.balls[ball].xPos == xPos 
+                    && this.snapShot.balls[ball].yPos == yPos) free = false;
+            }
+            return free;
         }
     },
     /**Is automatically called when the component loaded */
