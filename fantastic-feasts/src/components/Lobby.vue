@@ -1,38 +1,42 @@
 <template>
-    <div>
-        <h1 class="subtitle">Lobby</h1>
-        <div class="text-content-container">
+    <section>
+        <h1 class="app__header">Lobby</h1>
+        <div class="app__content">
             <p id="lobby-description">Willkommen in der Lobby.</p>
-            <div class="main-menu__button-container">
+            <div class="">
             <label for="server" class="menu__input-label">Server:</label>
             <input id="server" type="text" class="menu__input">
             </div>
-            <div class="main-menu__button-container">
+            <div class="">
                 <label for="port" class="menu__input-label">Port:</label>
                 <input id="port" type="text" class="menu__input">
+                <br>
                 <label for="user-name" class="menu__input-label">Benutzername:</label>
                 <input id="user-name" type="text" class="menu__input">
+                <br>
                 <label for="password" class="menu__input-label">Passwort:</label>
                 <input id="password" type="text" class="menu__input">
+                <br>
                 <label for="lobby" class="menu__input-label">Lobby:</label>
                 <input id="lobby" type="text" class="menu__input">
+                <br>
                 <label for="spectator" class="menu__input-label">Als Gast beitreten:</label>
                 <input id="spectator" type="Checkbox" class="menu__input">
                 
             </div>
-            <div class="main-menu__button-container">
-                <button @click="connect()" class="main-menu__small-button">Verbinden</button>
+            <div class="">
+                <button @click="connect()" class="app__small-button">Verbinden</button>
             </div>
         </div>
         
         
-        <div class="main-menu__button-container footer-bar">
-            <hr>
-            <button @click="game.currentState = 'inMenu'" class="main-menu__button">Zurück zum Menu</button>
-            <button @click="game.currentState = 'inGame'" class="main-menu__button">Spielfeld</button>
+        <div class="app__footer">
+            <hr class="app__footer-separation-line">
+            <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Zurück zum Menu</button>
+            <button @click="game.currentState = 'inGame'" class="app__large-button app__footer-button">Spielfeld</button>
         </div>
         
-    </div>
+    </section>
     
 </template>
 

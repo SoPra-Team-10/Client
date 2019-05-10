@@ -1,24 +1,23 @@
 <template>
-    <div>
-        <h1 class="subtitle">Team auswählen</h1>
-        <div class="text-content-container">
+    <section>
+        <h1 class="app__header">Team auswählen</h1>
+        <div class="app__content">
             <div class="team-overview__team-list" id="team-selection__team-list">
                 <div v-for="(team, index) in configs.teamConfigs" :key="team.name + team.motto" :class="[index === configs.selectedTeam ? 'selected-team' : '']" class="team-overview__team-preview">
                     <li @click="selectTeam(index)" class="team-overview__team-preview-item">{{ team.name }}</li>
                 </div>
             </div>
             <app-team-selection v-if="configs.selectedTeam != undefined" :configs="configs" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-team-selection> 
-            <div class="main-menu__button-container">
+            <div class="app__large-button-container">
                 <!-- function for import is yet to be implemented!! -->
-                <button class="main-menu__small-button">Importieren</button>
+                <button class="app__small-button">Importieren</button>
             </div>   
         </div>
-        
-        <div class="main-menu__button-container footer-bar">
-            <hr>
-            <button @click="game.currentState = 'inMenu'" class="main-menu__button">Zurück zum Menü</button>
+        <div class="app__footer">
+            <hr class="app__footer-separation-line">
+            <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Zurück zum Menü</button>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>

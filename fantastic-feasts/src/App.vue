@@ -1,10 +1,10 @@
 <template>
   <div>
-    <app-menu id="main-menu" :class="[game.colorSchemes[game.selectedColorScheme]]" class="menu" v-if="game.currentState === 'inMenu'" :game="game"></app-menu>
-    <app-lobby class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inLobby'" :game="game" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-lobby>
-    <app-help class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
-    <app-team class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inTeam'" :game="game" :configs="configs"></app-team>
-    <app-config class="menu" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs" :web="web"></app-config>
+    <app-menu :class="[game.colorSchemes[game.selectedColorScheme]]" class="fullscreen" v-if="game.currentState === 'inMenu'" :game="game"></app-menu>
+    <app-lobby class="fullscreen" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inLobby'" :game="game"></app-lobby>
+    <app-help class="fullscreen" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inHelp'" :game="game"></app-help>
+    <app-team class="fullscreen" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inTeam'" :game="game" :configs="configs"></app-team>
+    <app-config class="fullscreen" :class="[game.colorSchemes[game.selectedColorScheme]]" v-if="game.currentState === 'inConfig'" :game="game" :configs="configs" :web="web"></app-config>
     <app-game v-if="game.currentState === 'inGame'" :game="game" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-game>
 
   </div>
@@ -62,113 +62,60 @@ export default {
 
 <style>
 
+/* Global CSS-styles */
 
-  html {
-    margin: 0;
-  }
+html {
+  margin: 0;
+}
 
-  body {
-    margin: 0;
-    display: fixed; 
-  }
+body {
+  margin: 0;
+  display: fixed; 
+}
 
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+}
 
-
-  .menu {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-
-  }
-
-  .griffindor-color-scheme {
-    background: radial-gradient(#bb3434, #751c1c);
-  }
-
-  .slytherin-color-scheme {
-    background: radial-gradient(#24867b, #07584e);
-  }
-
-  .hufflepuff-color-scheme {
-    background: radial-gradient(#2657b1, #09317a);
-  }
-
-  .ravenclaw-color-scheme {
-    background: radial-gradient(#6744a8, #380f68);
-  }
-
-  #main-menu {
-    text-align: center;
-  }
-
-  hr {
-    border: 1px solid #e0a500;
-    margin: 30px 0 30px 0;
-  }
-
-  .main-menu__button {
-    background: #502d16;
-    display: auto;
-    color: #e0a500;
-    font-family: 'Alice';
-    font-size: 2.3vh;
-    border: 1px solid #e0a500;
-    border-radius: 4px;
-    margin: 1.8vh;
-    width: 18vw;
-    height: 4vh;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
-
-  }
-
-  .main-menu__button:hover {
-    box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
-    color: #f8c22d;
-  }
-
-  .main-menu__button:focus {
-    background: #5f361a;
-    box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
-    color: #f8c22d;
-  }
-
-  textarea:focus, input:focus{
+textarea:focus, input:focus{
     outline: none;
-  }
+}
 
-  button:focus{
+button:focus{
     outline: none;
-  }
+}
 
-  .main-title {
-    font-family: 'Alice';
-    color: #e0a80c;
-    font-size: 10vh;
-    text-shadow: 1px 1px 2px #1b1b1ba6;
-    /* text-shadow: 0px 0px 3px #FFD938; */
-  }
+.fullscreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
 
-  .subtitle {
-    font-family: 'Alice';
-    color: #f1c534;
-    font-size: 6vh;
-    text-shadow: 1px 1px 2px #1b1b1ba6;
-  }
 
-  .text-content-container {
-    background: radial-gradient(#ffffff, #ebd18a);
-    display: inline-block;
-    width: 80%;
-    max-width: 1000px;
-    border-radius: 5px;
-    color: #795a46;
-    padding: 30px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
+
+/* Color schemes for menu background */
+.griffindor-color-scheme {
+  background: radial-gradient(#bb3434, #751c1c);
+}
+
+.slytherin-color-scheme {
+  background: radial-gradient(#24867b, #07584e);
+}
+
+.hufflepuff-color-scheme {
+  background: radial-gradient(#2657b1, #09317a);
+}
+
+.ravenclaw-color-scheme {
+  background: radial-gradient(#6744a8, #380f68);
+}
+
+
+
+
+
+
 
   .menu__input {
     margin: 10px;
@@ -196,31 +143,109 @@ export default {
     padding: 2px 4px;
   }
 
-  .main-menu__small-button {
-    background: #f8f1df;
-    display: auto;
-    color: #8d6951;
-    font-family: 'Alice';
-    font-size: 1em;
-    border: 1px solid #99735a;
-    border-radius: 3px;
-    margin: 10px 5px 0 5px;
-  }
-
-  .main-menu__small-button:hover {
-    background: #f7e9c6;
-  }
-
+ 
   #lobby-description {
     color: #795a46;
     font-size: 1.5em;
   }
 
-  .footer-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 20vh;
-  }
+
+
+.app__large-button {
+  background: #502d16;
+  display: auto;
+  color: #e0a500;
+  font-family: 'Alice';
+  font-size: 2.3vh;
+  border: 1px solid #e0a500;
+  border-radius: 4px;
+  margin: 1.8vh;
+  width: 18vw;
+  height: 4vh;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+}
+.app__large-button:hover {
+  box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
+  color: #f8c22d;
+}
+
+.app__large-button:focus {
+  background: #5f361a;
+  box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
+  color: #f8c22d;
+}
+
+.app__small-button {
+  background: #f8f1df;
+  display: inline-block;
+  color: #8d6951;
+  font-family: 'Alice';
+  font-size: 1.8vh;
+  border: 1px solid #99735a;
+  border-radius: .5vh;
+  margin: 1vh 1vw 0 1vw;
+  padding: 0 .8vw;
+  height: 2.8vh;
+  min-width: 10vw;
+}
+
+.app__import-label {
+    display: inline-block;
+    position: relative;
+    margin: 0 1vw;
+    padding-top: .2vh;
+}
+
+.app__small-button:hover {
+  background: #f7e9c6;
+}
+
+
+
+.app__header {
+  font-family: 'Alice';
+  color: #f1c534;
+  font-size: 6vh;
+  text-shadow: 1px 1px 2px #1b1b1ba6;
+  margin: 2vh 0;
+}
+
+
+.app__content {
+  position: fixed;
+  width: 80%;
+  height: 70%;
+  top: 15%;
+  left: 10%;
+  padding: 0 5% 0 5%;
+  background: radial-gradient(#ffffff, #ebd18a);
+  display: inline-block;
+  border-radius: 1vh;
+  color: #795a46;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+
+.app__footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 10vh;
+  text-align: center;
+}
+
+.app__footer-separation-line {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  border: 1px solid #e0a500;
+  margin: 0;
+}
+
+.app__footer-button {
+  position: relative;
+  margin-top: 3vh;
+}
 
 </style>
