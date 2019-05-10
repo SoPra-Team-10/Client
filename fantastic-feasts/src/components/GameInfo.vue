@@ -3,14 +3,13 @@
         <div class="game-info-panel">
             <div class="header__panel" id="team-panel-left">
                 <div class="header__team-panel-content">
-                   {{ matchStart.leftTeamConfig.name }}
-                   <br>
-                   {{ matchStart.leftTeamUserName }}
+                   <span class="teamname-label">{{ matchStart.leftTeamConfig.name }}</span>
+                   <span class="username-label"></span>{{ matchStart.leftTeamUserName }}
                 </div>
             </div>
             <div class="header__panel" id="score-panel">
                 <div class="score-panel-content">
-                    {{ snapShot.leftTeam.points }} : {{ snapShot.rightTeam.points }} -->
+                    {{ snapShot.leftTeam.points }} : {{ snapShot.rightTeam.points }}
                 </div>
             </div>
             <div class="header__panel" id="round-panel">
@@ -27,9 +26,8 @@
             </div>
             <div class="header__panel" id="team-panel-right">
                 <div class="header__team-panel-content">
-                    {{ matchStart.rightTeamConfig.name }}
-                    <br>
-                   {{ matchStart.rightTeamUserName }}
+                    <span class="teamname-label">{{ matchStart.rightTeamConfig.name }}</span>
+                    <span class="username-label">{{ matchStart.rightTeamUserName }}</span>
                 </div>
             </div>
         </div>
@@ -88,6 +86,10 @@ export default {
     font-size: 2.7vh;
     padding: .9vh 0;
     z-index: 90;
+}
+
+.teamname-label {
+    position: absolute;
 }
 
 
