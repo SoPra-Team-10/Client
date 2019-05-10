@@ -70,13 +70,15 @@
                         <div v-for="(fan, index) in activeFansTeamLeft" 
                             :key="index"
                             :class="['fan', 'fan-left-team']"
-                            @click="fan.banned = true"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
+                            @click="fan.banned = true"> 
+                            <div :class="fan.fanType"></div>
                         </div>
                     </div>
                     <div class="spectator-stand-right">
                         <div v-for="(fan, index) in activeFansTeamRight" 
                             :key="index"
-                            :class="['fan', 'fan-right-team']"> {{ fan.fanType.slice(0,1).toUpperCase() }} 
+                            :class="['fan', 'fan-right-team']">
+                            <div :class="fan.fanType"></div>
                         </div> 
                     </div>
                 </div>
@@ -1338,8 +1340,20 @@ export default {
     border-radius: 1vh;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
     font-size: 3vh;
-    z-index: 50;
     padding-top: .6vh; 
+}
+
+.troll {
+    display: inline-block;
+    z-index: 51;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    border-radius: .9vh;
+    overflow: hidden;
+    background: url(../resources/troll.svg), radial-gradient(#ffffffcb, #ffffff00);
 }
 
 .fan:hover {
