@@ -907,7 +907,7 @@ export default {
                     }
                 }
             }
-            this.turnType = obj.payload.type;
+            if(obj.payload.turn.includes(this.mySide))this.turnType = obj.payload.type;
             
             if(obj.payload.type === "move"){
                 this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
