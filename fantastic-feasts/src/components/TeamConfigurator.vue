@@ -111,15 +111,15 @@
                     class="team-config__fan-counter"
                     v-model.number="teamConfig.fans.trolls"
                     @blur="checkInput($event, teamConfig.fans, 'trolls')">
-                <label class="team-config__fan-label" for="team-elfs">Elfen</label>
+                <label class="team-config__fan-label" for="team-elves">Elfen</label>
                 <input
                     type="number"
-                    id="team-elfs"
+                    id="team-elves"
                     min='1'
                     max='3'
                     class="team-config__fan-counter"
-                    v-model.number="teamConfig.fans.elfs"
-                    @blur="checkInput($event, teamConfig.fans, 'elfs')">
+                    v-model.number="teamConfig.fans.elves"
+                    @blur="checkInput($event, teamConfig.fans, 'elves')">
                 <label class="team-config__fan-label" for="team-nifflers">Niffler</label>
                 <input
                     type="number"

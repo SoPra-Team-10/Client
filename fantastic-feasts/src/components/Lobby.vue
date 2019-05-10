@@ -85,18 +85,8 @@ export default {
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
-                            var conf = vm.teamConfig;
-                            conf.image = "";
-                            conf.fans.goblins = 2;
-                            conf.fans.trolls = 2;
-                            conf.fans.nifflers = 2;
-                            conf.fans.elves = 1;
-                            conf.players.seeker.broom = "tinderblast";
-                            conf.players.keeper.broom = "cleansweep11";
-                            conf.players.chaser1.broom = "comet260";
-                            conf.players.chaser2.broom = "nimbus2001";
-                            conf.players.chaser3.broom = "firebolt";
-                            conf.colors.primary = "C80010";
+                            alert(vm.teamConfig);
+                            
                             
                             var timestamp = Date.now();
                             var teamConf = {
