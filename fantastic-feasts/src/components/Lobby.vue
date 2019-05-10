@@ -47,6 +47,9 @@ export default {
         connect : function () {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
+            //out server for testing
+            server = "134.60.29.234";
+            port = "8081";
             web.websocket = new WebSocket("ws://"+server+":"+port);
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);
@@ -64,7 +67,7 @@ export default {
                     "payloadType": "joinRequest",
                     "payload": {
                         "lobby": "lobby",
-                        "userName": "test",
+                        "userName": userName,
                         "password": "testpw",
                         "isArtificialIntelligence": false,
                         "mods":[]
