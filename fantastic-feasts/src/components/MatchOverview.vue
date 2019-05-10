@@ -1,42 +1,109 @@
 <template>
-    <section>
-        <!-- <h2>Team Konfigurator</h2> -->
-        <div class="team-config__content-container">
-            <h3>Partiekonfigurationen</h3>
+    <div class="main-content-window-overview">
+            <h3 class="config-submenu-title">Partiekonfigurationen</h3>
             <div class="team-container">
-                <div class="team-overview__team-list">
-                    <div v-for="(match, index) in configs.matchConfigs" :key="match.id" :class="{ selected: index ===  selectedItem}" class="team-overview__team-preview">
-                        <li @click="selectListItem(index)" class="team-overview__team-preview-item">{{ match.name }}</li>
-                    </div>
+                <div class="overview-list">
+                    <!-- List of selectable configurations -->
+                    <li v-for="(match, index) in configs.matchConfigs" :key="match.id" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ match.name }}
+                    </li>
                 </div>
-                <div class="team-overview__team-options">
-                    <button @click="editConfig(selectedItem)" class="main-menu__small-button team-overview__team-options-button">Bearbeiten</button>
-                    <button @click="downloadJSON()" class="main-menu__small-button team-overview__team-options-button"><a id="downloadAnchorElem" style="display:none"></a>Download</button>
-                    <button @click="deleteConfig(selectedItem)" class="main-menu__small-button team-overview__team-options-button">Löschen</button>
+                <!-- The buttons on the right -->
+                <div class="overview-options">
+                    <button @click="editConfig(selectedItem)" class="app__small-button overview-options-button">Bearbeiten</button>
+                    <button @click="downloadJSON()" class="app__small-button overview-options-button"><a id="downloadAnchorElem" style="display:none"></a>Download</button>
+                    <button @click="deleteConfig(selectedItem)" class="app__small-button overview-options-button">Löschen</button>
                 </div>
-            </div>
-            <hr class="team-config__content-container-hr">
-            <div class="team-overview__general-options">
-                <label for="file-import" class="main-menu__small-button team-overview__general-options-button">Importieren</label>
-                <!-- <button @click="readFile()" class="main-menu__small-button team-overview__general-options-button">Importieren</button>
-                <input type="file" id="importChooser" @change="readFile()"/> -->
-                <input type="file" id="file-import" @change="readFile()"/>
-                <button @click="createMatchConfig()" class="main-menu__small-button team-overview__general-options-button">Partiekonfiguration erstellen</button>
             </div>
             
-        </div>
-    </section>
+            <!-- The buttons at the bottom -->
+            <div class="overview__general-options">
+                <hr class="team-config__content-container-hr">
+                <label for="file-import" class="app__small-button app__import-label">Importieren</label>
+                <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
+                <input type="file" id="importChooser" @change="readFile()"/> -->
+                <input type="file" id="file-import" @change="readFile()"/>
+                <button @click="createMatchConfig()" class="app__small-button overview__general-options-button">Partiekonfiguration erstellen</button>
+            </div>
+    </div>
 </template>
 
 <script>
+var Ajv = require('ajv');
+var ajv = new Ajv();
+
 export default {
     props: ['configs', 'state'],
     data() {
         return {
-            selectedItem: 0
+            test: {
+                "properties": {
+                    "test": {"type": "string"}
+                }
+            },
+            testvar: {test: "Hi"},
+            selectedItem: 0,
+            validate: undefined,
+            matchConfigSchema: {
+                "properties": {
+                    "maxRounds": {"type": "number"},
+                    "timings": {
+                        "properties": {
+                            "teamFormationTimeout": {"type": "number"},
+                            "playerTurnTimeout": {"type": "number"},
+                            "fanTurnTimeout": {"type": "number"},
+                            "minPlayerPhaseAnimationDuration": {"type": "number"},
+                            "minFanPhaseAnimationDuration": {"type": "number"},
+                            "minBallPhaseAnimationDuration": {"type": "number"}
+                        }
+                        
+                    },
+                    "probabilities": {
+                        "required": ["throwSuccess", "knockOut", "foolAway", "catchSnitch", "catchQuaffle", "wrestQuaffle", "extraMove", "foulDetection", "fanFoulDetection"],
+                        "properties": {
+                            "throwSuccess": {"type": "number"},
+                            "knockOut": {"type": "number"},
+                            "foolAway": {"type": "number"},
+                            "catchSnitch": {"type": "number"},
+                            "catchQuaffle": {"type": "number"},
+                            "wrestQuaffle": {"type": "number"},
+                            "extraMove": {
+                                "properties": {
+                                    "tinderblast": {"type": "number"},
+                                    "cleansweep11": {"type": "number"},
+                                    "comet260": {"type": "number"},
+                                    "nimbus2001": {"type": "number"},
+                                    "firebolt": {"type": "number"}
+                                },
+                                "required": ["tinderblast", "cleansweep11", "comet260", "nimbus2001", "firebolt"]
+                            },
+                            "foulDetection": {
+                                "properties": {
+                                    "flacking": {"type": "number"},
+                                    "haversacking": {"type": "number"},
+                                    "stooging": {"type": "number"},
+                                    "blatching": {"type": "number"},
+                                    "snitchnip": {"type": "number"}
+                                },
+                                "required": ["flacking", "haversacking", "stooging", "blatching", "snitchnip"]
+                            },
+                            "fanFoulDetection": {
+                                "properties": {
+                                    "elfTeleportation": {"type": "number"},
+                                    "goblinShock": {"type": "number"},
+                                    "trollRoar": {"type": "number"},
+                                    "snitchSnatch": {"type": "number"}
+                                },
+                                "required": ["elfTeleportation", "goblinShock", "trollRoar", "snitchSnatch"]
+                            }               
+                        }           
+                    }
+                },
+                "required": ["maxRounds", "timings", "probabilites"]
+            }  
         }   
     },
     methods: {
+        //Downloads the configuration as a json file, writing it to the hard drive
         downloadJSON() {
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.configs.matchConfigs[this.selectedItem].config));
             var downloadAnchorNode = document.createElement('a');
@@ -49,55 +116,57 @@ export default {
         selectListItem(index) {
             this.selectedItem = index;
         },
+        //Removes selected configuration from the cache
         deleteConfig(index) {
             this.configs.matchConfigs.splice(index, 1);
             const parsed = JSON.stringify(this.configs);
             localStorage.setItem('configs', parsed);
         },
+        //Switches to the MatchConfigurator component and loads the selected configuration
         editConfig(index) {
-            console.log(index);
-            console.log(this.configs.matchConfigs[index]);
             this.state.index = index;
             this.state.isNew = false;
             this.state.currentState = 'inMatchConfig';
         },
+        //Sets up a new configuration and switches to the MatchConfigurator component. All values are 
+        //initialized with 0.
         createMatchConfig() {
             var newConfig = {   
-                maxRounds: 0,
-                timeouts: {
-                    playerTurnTimeout: 0,
-                    fanTurnTimeout: 0,
-                    playerPhaseTime: 0,
-                    fanPhaseTime: 0,
-                    ballPhaseTime: 0
+                maxRounds: 200,
+                timings: {
+                    teamFormationTimeout: 30000,
+                    playerTurnTimeout: 20000,
+                    fanTurnTimeout: 20000,
+                    minPlayerPhaseAnimationDuration: 3000,
+                    minFanPhaseAnimationDuration: 3000,
+                    minBallPhaseAnimationDuration: 3000
                 },
                 probabilities: {
-                    goal: 0.0,
-                    throwSuccess: 0.0,
-                    knockOut: 0.0,
-                    foolAway: 0.0,
-                    catchSnitch: 0.0,
-                    catchQuaffle: 0.0,
-                    wrestQuaffle: 0.0,
+                    throwSuccess: 0.5,
+                    knockOut: 0.33,
+                    foolAway: 0.33,
+                    catchSnitch: 0.1,
+                    catchQuaffle: 0.2,
+                    wrestQuaffle: 0.2,
                     extraMove: {
-                        thinderblast: 0.0,
-                        cleansweep11: 0.0,
-                        comet260: 0.0,
-                        nimbus2001: 0.0,
-                        firebolt: 0.0
+                        thinderblast: 0.5,
+                        cleansweep11: 0.4,
+                        comet260: 0.3,
+                        nimbus2001: 0.2,
+                        firebolt: 0.1
                     },
                     foulDetection: {
-                        flacking: 0.0,
-                        haversacking: 0.0,
-                        stooging: 0.0,
-                        blatching: 0.0,
-                        snitchnip: 0.0
+                        flacking: 0.33,
+                        haversacking: 0.33,
+                        stooging: 0.33,
+                        blatching: 0.33,
+                        snitchnip: 0.33
                     },
                     fanFoulDetection: {
-                        elfTeleportation: 0.0,
-                        goblinShock: 0.0,
-                        trollRoar: 0.0,
-                        snitchSnatch: 0.0
+                        elfTeleportation: 0.33,
+                        goblinShock: 0.33,
+                        trollRoar: 0.33,
+                        snitchSnatch: 0.33
                     }
                 }   
             }
@@ -112,13 +181,14 @@ export default {
         },
         storeConfigs() {
             const parsed = JSON.stringify(this.configs);
-            console.log(parsed);
             localStorage.setItem('configs', parsed);
         },
+        //Reads a json file on the hard drive and conerts it to a javascript object
         readFile(){
             var files = document.getElementById("file-import").files;
             var file = files[0];
-            var name = file.name;
+            var name = file.name.split('.')[0];
+            //Check of the selected file is a single json file
             if(files.length !== 1){
                 alert("Please choose one file only");
             }
@@ -130,95 +200,44 @@ export default {
                 var reader = new FileReader();
                 reader.readAsText(file);
                 var data;
-                var my_vue = this;
+                var vm = this;
+                //The reading process is asynchron
                 reader.onload = function(){
                     data = JSON.parse(reader.result);
-                    console.log(data);
-                    alert(name);
-                    var newEntry = {
-                        name: name,
-                        config: data
-                    };
-                    console.log(newEntry);
-                    my_vue.configs.matchConfigs.unshift(newEntry);
-                    my_vue.storeConfigs();
+                    var valid = true;
+                    // this functionality is not working yet!
+                    // var valid = vm.validate(data);
+                    if(valid) {
+                        alert('Valides JSON-Schema');
+                        var newEntry = {
+                            name: name,
+                            config: data
+                        };
+                        vm.configs.matchConfigs.unshift(newEntry);
+                        vm.storeConfigs();
+                    } else {
+                        alert('Kein valides JSON-Schema.');
+                    }   
                 }
             }
         }
+    },
+    mounted() {
+        this.validate = ajv.compile(this.matchConfigSchema);
     }
 }
     
 </script>
 
 <style scoped>
-.team-overview__team-preview-item {
-    list-style: none;
-    text-align: left;
-}
+
 
 #file-import {
     display: none;
-}
-
-label.main-menu__small-button {
-    height: 24px;
-    display: inline-block;
-    vertical-align: center;
-    text-align: bottom; 
-    padding: 1px 5px 3px 5px;
-}
-
-.selected {
-    background: #d3c9b1;
 }
 
 #importChooser {
     display: none;
 }
 
-.team-overview__team-preview-item:hover,
-.team-overview__team-preview-item:focus {
-    background: #e0d9c7;
-}
-.team-overview__team-preview-item.active {
-    background: #d3c9b1;
-}
-
-.team-overview__team-preview li.active {
-    background: #d3c9b1;
-}
-
-.team-overview__team-options {
-    display: inline-block;
-    width: 40%;
-}
-
-.team-overview__team-list {
-    vertical-align: top;
-    display: inline-block;
-    width: 60%;
-}
-
-.team-overview__general-options-button {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-.team-overview__team-options-button {
-    text-align: center;
-    display: auto;
-    width: 60%;
-    margin: 10px 10px;
-}
-
-.team-container {
-    vertical-align: top;
-    display: block;
-    padding: 0 10%;
-}
-
-.team-config__content-container-hr {
-    border: none;
-    border-top: 1px solid #d1cb94;
-}
 </style>

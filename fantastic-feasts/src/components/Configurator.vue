@@ -1,25 +1,23 @@
 <template>
-    <div>
-        <h1 class="subtitle">Konfigurator</h1>
-        <div class="config__main-content">
-            <div class="team-config__content-container">
-                <div class="text-content-container">
-                    <div v-if="state.currentState === 'inTeamOverview' || state.currentState === 'inMatchOverview'">
-                        <button @click="state.currentState = 'inTeamOverview'" :class="{ selected: state.currentState === 'inTeamOverview'}" class="config__header-button" id="config__header-button-left">Team</button>
-                        <button @click="state.currentState = 'inMatchOverview'" :class="{ selected: state.currentState === 'inMatchOverview'}" class="config__header-button" id="config__header-button-right">Partie</button>
-                    </div>
-                    <app-team-config v-if="state.currentState === 'inTeamConfig'" :game="game" :state="state" :configs="configs"></app-team-config>
-                    <app-match-config v-if="state.currentState === 'inMatchConfig'" :game="game" :state="state" :configs="configs"></app-match-config>
-                    <app-team-overview v-if="state.currentState === 'inTeamOverview'" :game="game" :state="state" :configs="configs"></app-team-overview>
-                    <app-match-overview v-if="state.currentState === 'inMatchOverview'" :game="game" :state="state" :configs="configs"></app-match-overview>
+        <section>
+            <h1 class="app__header">Konfigurator</h1>
+            <div class="app__content">
+                <!-- Buttons to switch between the team-editor and the match-editor -->
+                <div v-if="state.currentState === 'inTeamOverview' || state.currentState === 'inMatchOverview'" class="button-header-panel">
+                    <button @click="state.currentState = 'inTeamOverview'" :class="{ selected: state.currentState === 'inTeamOverview'}" class="config__header-button" id="config__header-button-left">Team</button>
+                    <button @click="state.currentState = 'inMatchOverview'" :class="{ selected: state.currentState === 'inMatchOverview'}" class="config__header-button" id="config__header-button-right">Partie</button>
                 </div>
+                <!-- hands objects over to other components -->
+                <app-team-config v-if="state.currentState === 'inTeamConfig'" :game="game" :state="state" :configs="configs"></app-team-config>
+                <app-match-config v-if="state.currentState === 'inMatchConfig'" :game="game" :state="state" :configs="configs"></app-match-config>
+                <app-team-overview v-if="state.currentState === 'inTeamOverview'" :game="game" :state="state" :configs="configs"></app-team-overview>
+                <app-match-overview v-if="state.currentState === 'inMatchOverview'" :game="game" :state="state" :configs="configs"></app-match-overview>
             </div>
-        </div>
-        <div class="main-menu__button-container footer-bar">
-            <hr>
-            <button @click="game.currentState = 'inMenu'" class="main-menu__button">Zurück zum Menü</button>
-        </div>
-    </div>
+            <div class="app__footer">
+                <hr class="app__footer-separation-line">
+                <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Hauptmenü</button>
+            </div>
+        </section>
 </template>
 
 <script>
@@ -32,6 +30,7 @@ export default {
     data() {
         return {
             state: {
+                //initializes varbiables so that the program starts in team-configuration select mode
                 currentState: 'inTeamOverview',
                 index: 0,
                 isNew: false
@@ -40,6 +39,7 @@ export default {
     },
     props: ['game', 'configs'],
     components: {
+        //allows this component to access imported components
         'app-team-config': TeamConfig,
         'app-match-config': MatchConfig,
         'app-team-overview': TeamOverview,
@@ -50,16 +50,49 @@ export default {
 
 <style>
 
-.team-config__content-container {
+.main-content-window-overview {
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    top: 10%;
+    height: 85%;
+}
+
+.main-content-window-editor {
+    position: absolute;
+    overflow-y: auto;
+    width: 90%;
+    left: 5%;
+    top: 4%;
+    height: 90%;
+}
+
+.main-content-container {
     display: inline-block;
-    width: 100%;
+    position: absolute;
+    width: 80%;
+    height: 70%;
+    min-height: 440px;
+    left: 10%;
 }
 
 .team-config__content-container h3 {
-    margin: 10px 0;
-
-    
+    margin: 1vh 0;    
 }
+
+.button-header-panel {
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    height: 10%;
+}
+
+.page-content {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
 
 
 .team-config__content-container h4 {
@@ -70,33 +103,46 @@ export default {
 }
 
 .config__header-button {
-    background: #f8f1df;
+    background: #f3e7c0;
     padding: 4px;
     color: #8d6951;
     font-family: 'Alice';
-    font-size: 1em;
+    font-size: 2vh;
     border: 1px solid #99735a;
+    position: absolute;
+    height: 60%;
+    top: 40%;
+    width: 10%;
 }
 
+
 .config__header-button:hover {
-    background: #f7e9c6;
+    background: #faf0d6;
 }
 
 .config__header-button:active {
     background: #fcf2da;
+    -moz-box-shadow:    inset 0 0 .8vw #00000036;
+    -webkit-box-shadow: inset 0 0 .8vw #00000036;
+    box-shadow:         inset 0 0 .8vw #00000036;
 }
 
 .config__header-button:focus {
     background: #f7e9c6;
+    -moz-box-shadow:    inset 0 0 .8vw #00000036;
+    -webkit-box-shadow: inset 0 0 .8vw #00000036;
+    box-shadow:         inset 0 0 .8vw #00000036;
 }
 
 #config__header-button-left {
+    left: 40%;
     border-right: none;
-    border-radius: 3px 0 0 3px;
+    border-radius: .5vh 0 0 .5vh;
 }
 
 #config__header-button-right {
-    border-radius: 0 3px 3px 0;
+    border-radius: 0 .5vh .5vh 0;
+    right: 40%;
 }
 
 .team-config__content-container input {
@@ -123,7 +169,8 @@ export default {
 }
 
 .team-config__fan-counter {
-    width: 30px;
+    width: 3vw;
+    min-width: 45px;
     border-radius: 3px;
     border: .5px solid #ebd18a;
     color: #795a46;
@@ -137,12 +184,6 @@ export default {
     padding: 0 15px;
 }
 
-.config__main-content {
-    margin-top: 30px;
-    display: block;
-    position: relative;
-}
-
 .team-config__fan-label {
     width: 40px;
     color: #795a46;
@@ -152,26 +193,25 @@ export default {
 }
 
 .team-config__player-selection {
+    width: 100%;
+    height: 4vh;
     position: relative;
-}
-
-.team-config__player-selection h4 {
-    width: 25%;
-    margin-block-start: 0;
 }
 
 h4.table-header {
     display: inline-block;
     text-align: center;
+    margin-top: 0;
+    margin-bottom: 1vh;
     width: 25%;
 }
 
 .team-config__team-label {
-    width: 40px;
+    display: inline-block;
     color: #795a46;
     text-align: left;
     font-weight: bold;
-    margin: 5px;
+    margin: 1vh 1vh;
 }
 
 .team-config__team-name-input {
@@ -179,7 +219,7 @@ h4.table-header {
     border: .5px solid #ebd18a;
     color: #795a46;
     text-align: left;
-    width: 80px;
+    width: 10vw;
 }
 
 .team-config__team-motto-input {
@@ -187,14 +227,14 @@ h4.table-header {
     border: .5px solid #ebd18a;
     color: #795a46;
     text-align: left;
-    width: 250px;
+    width: 35vw;
 }
 .team-config__team-color-input {
     border-radius: 3px;
     border: .5px solid #ebd18a;
     color: #795a46;
     text-align: left;
-    width: 50px;
+    width: 60px;
 }
 
 .team-config__player-label {
@@ -202,6 +242,12 @@ h4.table-header {
     text-align: center;
     width: 12.5%;
     display: inline-block;
+}
+
+
+.config-submenu-title {
+    font-size: 3vh;
+
 }
 
 .team-config__player-name-input {
@@ -222,9 +268,102 @@ h4.table-header {
     border: .5px solid #ebd18a;
 }
 
-.selected {
-    background: #f3e7c0;
+
+
+
+.overview-options-button {
+    text-align: center;
+    display: auto;
+    width: 60%;
+    margin: 1vh 1vh;
 }
+
+.overview-list-item {
+    list-style: none;
+    text-align: left;
+    padding: .3vw;
+    margin: .1vw;
+    border-radius: .3vw;
+}
+
+.overview-list-item:hover,
+.overview-list-item:focus {
+    background: #0000001e;
+}
+.overview-list-item.active {
+    background: #0000001e;
+}
+
+.selected-list-item {
+    background: #0000002f;
+}
+
+.selected {
+    -moz-box-shadow:    inset 0 0 .8vw #00000036;
+    -webkit-box-shadow: inset 0 0 .8vw #00000036;
+    box-shadow:         inset 0 0 .8vw #00000036;
+}
+
+.overview-options {
+    display: inline-block;
+    width: 40%;
+}
+
+.overview-list {
+    vertical-align: top;
+    display: inline-block;
+    width: 60%;
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+.overview__general-options {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 16%;
+    min-height: 8vh;
+}
+
+
+label.small-button {
+    height: 3vh;
+    display: inline-block;
+    vertical-align: center;
+    
+}
+
+.overview-options-button {
+    text-align: center;
+    width: 60%;
+    margin: 1vh 1vh;
+}
+
+
+  
+
+  .menu__input {
+    margin: 10px;
+    height: 30px;
+    color: #6e6e6e;
+    font-family: 'Alice';
+    font-size: 1.5em;
+  }
+
+  .menu__input-label {
+    color: #795a46;
+    margin: 5px;
+    font-size: 1.5em;
+  }
+
+  .help__text {
+    text-align: left;
+  }
+
+
+  #file-chooser {
+    padding: 2px 4px;
+  }
 
 
 </style>

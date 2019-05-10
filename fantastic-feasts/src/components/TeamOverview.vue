@@ -1,43 +1,131 @@
 <template>
-    <section>
-        <!-- <h2>Team Konfigurator</h2> -->
-        <div class="team-config__content-container">
-            <h3>Teams</h3>
+    <div class="main-content-window-overview">
+            <h3 class="config-submenu-title">Teams</h3>
             <div class="team-container">
-                <div class="team-overview__team-list">
-                    <div v-for="(team, index) in configs.teamConfigs" :key="team.id" :class="{ selected: index ===  selectedItem}" class="team-overview__team-preview">
-                        <li @click="selectListItem(index)" class="team-overview__team-preview-item">{{ team.name }}</li>
-                    </div>
+                <div class="overview-list">
+                    <!-- List of selectable configurations -->
+                    <li v-for="(team, index) in configs.teamConfigs" :key="team.id" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ team.name }}
+                    </li>
                 </div>
-                <div class="team-overview__team-options">
-                    <button @click="editTeamConfig(selectedItem)" class="main-menu__small-button team-overview__team-options-button">Bearbeiten</button>
-                    <button @click="downloadJSON()" class="main-menu__small-button team-overview__team-options-button"><a id="downloadAnchorElem" style="display:none"></a>Download</button>
-                    <button @click="deleteTeamConfig(selectedItem)" class="main-menu__small-button team-overview__team-options-button">Löschen</button>
+                <!-- Buttons on the right -->
+                <div class="overview-options">
+                    <button @click="editTeamConfig(selectedItem)" class="app__small-button overview-options-button">Bearbeiten</button>
+                    <button @click="downloadJSON()" class="app__small-button overview-options-button"><a id="downloadAnchorElem" style="display:none"></a>Download</button>
+                    <button @click="deleteTeamConfig(selectedItem)" class="app__small-button overview-options-button">Löschen</button>
                 </div>
             </div>
             
-            <hr class="team-config__content-container-hr">
-            <div class="team-overview__general-options">
-                <label for="file-import" class="main-menu__small-button team-overview__general-options-button">Importieren</label>
-                <!-- <button @click="readFile()" class="main-menu__small-button team-overview__general-options-button">Importieren</button>
+            <!-- Buttons at the bottom -->
+            <div class="overview__general-options">
+                <hr class="team-config__content-container-hr">
+                <label for="file-import" class="app__small-button app__import-label">Importieren</label>
+                <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
                 <input type="file" id="importChooser" @change="readFile()"/> -->
                 <input type="file" id="file-import" @change="readFile()"/>
-                <button @click="createTeamConfig()" class="main-menu__small-button team-overview__general-options-button">Team erstellen</button>
+                <button @click="createTeamConfig()" class="app__small-button overview__general-options-button">Team erstellen</button>
             </div>
-            
-        </div>
-    </section>
+    </div>
 </template>
 
 <script>
+var Ajv = require('ajv');
+var ajv = new Ajv();
+
 export default {
     props: ['configs', 'state'],
     data() {
         return {
-            selectedItem: 0
+            selectedItem: 0,
+            teamConfigSchema: {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "motto": {"type": "string"},
+                    "colors": {
+                        "properties": {
+                            "primary": {"type": "string"},
+                            "secondary": {"type": "string"}
+                        },
+                        "required": ["primary", "secondary"]
+                    },
+                    "image": {"type": "string"},
+                    "fans": {
+                        "properties": {
+                            "goblins": {"type": "number"},
+                            "trolls": {"type": "number"},
+                            "elves": {"type": "number"},
+                            "nifflers": {"type": "number"}
+                        },
+                        "required": ["goblins", "trolls", "elves", "nifflers"]
+                    },
+                    "players": {
+                        "properties": {
+                            "seeker": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "keeper": {
+                                "properties": {
+                                "name": {"type": "string"},
+                                "broom": {"type": "string"},
+                                "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "chaser1": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "chaser2": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "chaser3": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "beater1": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            },
+                            "beater2": {
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "broom": {"type": "string"},
+                                    "sex": {"type": "string"}
+                                },
+                                "required": ["name", "broom", "sex"]
+                            }
+                        },
+                        "required": ["seeker", "keeper", "chaser1", "chaser2", "chaser3", "beater1", "beater2"]
+                    }
+                },
+                "required": ["name", "motto", "colors", "fans", "players"]
+            }
         }   
     },
     methods: {
+        //Downloads the json file from the cache, writing it to the hard drive
         downloadJSON() {
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.configs.teamConfigs[this.selectedItem]));
             var downloadAnchorNode = document.createElement('a');
@@ -50,65 +138,68 @@ export default {
         selectListItem(index) {
             this.selectedItem = index;
         },
+        //Removes the object from the cache
         deleteTeamConfig(index) {
             this.configs.teamConfigs.splice(index, 1);
             const parsed = JSON.stringify(this.configs);
             localStorage.setItem('configs', parsed);
         },
+        //Opens the TeamConfiguration component and loads the selected configuration
         editTeamConfig(index) {
             this.state.index = index;
             this.state.isNew = false;
             this.state.currentState = 'inTeamConfig';
         },
+        //sets up a new team-configuration object and switches to the TeamConfiguration component
         createTeamConfig() {
             var newConfig = {   
                 name: 'Name',
                 motto: 'Motto',
                 colors: {
-                    primary: 'e2e2e2',
-                    secondary: 'e2e2e2'
+                    primary: 'bb3434',
+                    secondary: 'f8c22d'
                 },
-                image: undefined,
+                image: '',
                 fans: {
-                    goblins: 0,
-                    trolls: 0,
-                    elfs: 0,
-                    nifflers: 0
+                    goblins: 1,
+                    trolls: 1,
+                    elfs: 1,
+                    nifflers: 1
                 },
                 players: {
                     seeker: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Luna',
+                        broom: 'firebolt',
                         sex: 'f'
                     },
                     keeper: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Tom',
+                        broom: 'nimbus-2001',
                         sex: 'm'
                     },
                     chaser1: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Arthur',
+                        broom: 'comet-260',
                         sex: 'm'
                     },
                     chaser2: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Rita',
+                        broom: 'cleansweep-11',
                         sex: 'f'
                     },
                     chaser3: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Fleur',
+                        broom: 'firebolt',
                         sex: 'f'
                     },
                     beater1: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Mafalda',
+                        broom: 'thinderblast',
                         sex: 'f'
                     },
                     beater2: {
-                        name: 'Name',
-                        broom: undefined,
+                        name: 'Phineus',
+                        broom: 'thinderblast',
                         sex: 'm'
                     }
                 }   
@@ -118,9 +209,11 @@ export default {
             this.state.isNew = true;
             this.state.currentState = 'inTeamConfig';
         },
+        //Reads a json file on the hard drive and converts it into an javascript object
         readFile(){
             var files = document.getElementById("file-import").files;
             var file = files[0];
+            //check if the selected file is a single json file
             if(files.length !== 1){
                 alert("Please choose one file only");
             }
@@ -131,40 +224,37 @@ export default {
                 var reader = new FileReader();
                 reader.readAsText(file);
                 var data;
-                var my_vue = this;
+                var vm = this;
+                //The reading process is asynchron
                 reader.onload = function(){
                     data = JSON.parse(reader.result);
-                    my_vue.configs.teamConfigs.unshift(data);
-                    my_vue.storeConfigs();
+                    vm.validate = ajv.compile(vm.teamConfigSchema);
+                    var valid = vm.validate(data);
+                    if(valid) {
+                        alert('Valides JSON-Schema');
+                        vm.configs.teamConfigs.unshift(data);
+                        vm.storeConfigs();
+                    } else {
+                        alert('Kein valides JSON-Schema.');
+                    }  
                 }
             }
         },
+        
         storeConfigs() {
             const parsed = JSON.stringify(this.configs);
             localStorage.setItem('configs', parsed);
         }
-
     }
 }
     
 </script>
 
 <style>
-.team-overview__team-preview-item {
-    list-style: none;
-    text-align: left;
-}
+
 
 #file-import {
     display: none;
-}
-
-label.main-menu__small-button {
-    height: 24px;
-    display: inline-block;
-    vertical-align: center;
-    text-align: bottom; 
-    padding: 1px 5px 3px 5px;
 }
 
 .selected {
@@ -175,40 +265,6 @@ label.main-menu__small-button {
     display: none;
 }
 
-.team-overview__team-preview-item:hover,
-.team-overview__team-preview-item:focus {
-    background: #e0d9c7;
-}
-.team-overview__team-preview-item.active {
-    background: #d3c9b1;
-}
-
-.team-overview__team-preview li.active {
-    background: #d3c9b1;
-}
-
-.team-overview__team-options {
-    display: inline-block;
-    width: 40%;
-}
-
-.team-overview__team-list {
-    vertical-align: top;
-    display: inline-block;
-    width: 60%;
-}
-
-.team-overview__general-options-button {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-.team-overview__team-options-button {
-    text-align: center;
-    display: auto;
-    width: 60%;
-    margin: 10px 10px;
-}
 
 .team-container {
     display: block;
