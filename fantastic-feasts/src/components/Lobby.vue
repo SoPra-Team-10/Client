@@ -2,29 +2,22 @@
     <section>
         <h1 class="app__header">Lobby</h1>
         <div class="app__content">
-            <p id="lobby-description">Willkommen in der Lobby.</p>
-            <div class="">
-            <label for="server" class="menu__input-label">Server:</label>
-            <input id="server" type="text" class="menu__input">
+            <div class="app__lobby-grid">
+                <h3 id="lobby-description">Willkommen in der Lobby!</h3>
+                <label for="server" class="app__lobby-label">Server:</label>
+                <input id="server" type="text" class="app__lobby-input">
+                <label for="port" class="app__lobby-label">Port:</label>
+                <input id="port" type="text" class="app__lobby-input">
+                <label for="user-name" class="app__lobby-label">Benutzername:</label>
+                <input id="user-name" type="text" class="app__lobby-input">
+                <label for="password" class="app__lobby-label">Passwort:</label>
+                <input id="password" type="text" class="app__lobby-input">
+                <label for="lobby" class="app__lobby-label">Lobby:</label>
+                <input id="lobby" type="text" class="app__lobby-input">
+                <label for="spectator" class="app__lobby-label">Als Gast beitreten:</label>
+                <input id="spectator" type="Checkbox" class="app__lobby-input">
             </div>
-            <div class="">
-                <label for="port" class="menu__input-label">Port:</label>
-                <input id="port" type="text" class="menu__input">
-                <br>
-                <label for="user-name" class="menu__input-label">Benutzername:</label>
-                <input id="user-name" type="text" class="menu__input">
-                <br>
-                <label for="password" class="menu__input-label">Passwort:</label>
-                <input id="password" type="text" class="menu__input">
-                <br>
-                <label for="lobby" class="menu__input-label">Lobby:</label>
-                <input id="lobby" type="text" class="menu__input">
-                <br>
-                <label for="spectator" class="menu__input-label">Als Gast beitreten:</label>
-                <input id="spectator" type="Checkbox" class="menu__input">
-                
-            </div>
-            <div class="">
+            <div class="app__lobby-footer">
                 <button @click="connect()" class="app__small-button">Verbinden</button>
             </div>
         </div>
@@ -119,5 +112,56 @@ export default {
 </script>
 
 <style>
+
+.app__lobby-grid {
+    position: absolute;
+    height: 80%;
+    width: 70%;
+    max-width: 800px;
+    top: 0;
+    left: 15%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 28% 12% 12% 12% 12% 12% 12%;
+    align-items: center;
+}
+
+.app__lobby-label {
+    text-align: left;
+    font-size: 2.5vh;
+}
+
+#port {
+    width: 40%;
+}
+
+.app__lobby-input {
+    text-align: left;
+    font-size: 2.5vh;
+    position: relative;
+    font-size: 2.5vh;
+    font-family: 'Alice';
+    color: #535353;
+    padding: 2% 3%;
+    margin: 1% 2%;
+    border-radius: .5vh;
+    border: 1px solid #c0ab7e;
+}
+
+
+.app__lobby-footer {
+    position: absolute;
+    width: 100%;
+    height: 15%;
+    bottom: 0;
+    left: 0;
+
+}
+
+#lobby-description {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    font-size: 3vh;
+}
 
 </style>

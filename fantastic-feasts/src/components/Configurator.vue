@@ -203,6 +203,7 @@ h4.table-header {
     text-align: center;
     margin-top: 0;
     margin-bottom: 1vh;
+    font-size: 2vh;
     width: 25%;
 }
 
@@ -211,6 +212,7 @@ h4.table-header {
     color: #795a46;
     text-align: left;
     font-weight: bold;
+    font-size: 2vh;
     margin: 1vh 1vh;
 }
 
@@ -241,6 +243,7 @@ h4.table-header {
     color: #795a46;
     text-align: center;
     width: 12.5%;
+    font-size: 1.5vh;
     display: inline-block;
 }
 

@@ -96,19 +96,19 @@ button:focus{
 
 /* Color schemes for menu background */
 .griffindor-color-scheme {
-  background: radial-gradient(#bb3434, #751c1c);
+  background: radial-gradient(#c04c4c, #751c1c);
 }
 
 .slytherin-color-scheme {
-  background: radial-gradient(#24867b, #07584e);
+  background: radial-gradient(#35887e, #07584e);
 }
 
 .hufflepuff-color-scheme {
-  background: radial-gradient(#2657b1, #09317a);
+  background: radial-gradient(#497ab3, #034188);
 }
 
 .ravenclaw-color-scheme {
-  background: radial-gradient(#6744a8, #380f68);
+  background: radial-gradient(#8c73b9, #412561);
 }
 
 
@@ -135,20 +135,12 @@ button:focus{
     text-align: left;
   }
 
-  #port {
-    margin-left: 34px;
-  }
 
   #file-chooser {
     padding: 2px 4px;
   }
 
  
-  #lobby-description {
-    color: #795a46;
-    font-size: 1.5em;
-  }
-
 
 
 .app__large-button {

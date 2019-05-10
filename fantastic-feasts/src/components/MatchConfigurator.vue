@@ -248,10 +248,6 @@ export default {
     display: inline-block;
 }
 
-.main-menu__button-container .app__small-button {
-    margin: 25px 10px 0 15px;
-}
-
 .match-config__float-counter {
     text-align: right !important;
 }

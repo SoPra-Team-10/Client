@@ -2,139 +2,140 @@
     <!-- The main area that includes the configuration options -->
     <div class="main-content-window-editor" id="team-configurator">
         <!-- <h2>Team Konfigurator</h2> -->
-             <h3 class="team-config-section-title">Team</h3>
-            <label class="team-config__team-label" for="team-name">Name</label>
-            <input
-                type="text"
-                id="team-name"
-                maxlength="40"
-                class="team-config__team-name-input"
-                v-model.lazy="teamConfig.name">
-            <label class="team-config__team-label" for="team-motto">Motto</label>
-            <input
-                type="text"
-                id="team-motto"
-                maxlength="80"
-                class="team-config__team-motto-input"
-                v-model.lazy="teamConfig.motto">
-            <br>
-            <label class="team-config__team-label" :style="{color: '#' + teamConfig.colors.primary}" for="team-color-primary">Hauptfarbe</label>
-            <input
-                type="text"
-                id="team-color-primary"
-                maxlength="6"
-                class="team-config__team-color-input"
-                v-model.lazy="teamConfig.colors.primary">
-            <label class="team-config__team-label" :style="{color: '#' + teamConfig.colors.secondary}" for="team-color-secondary">Zweitfarbe</label>
-            <input
-                type="text"
-                id="team-color-secondary"
-                maxlength="6"
-                class="team-config__team-color-input"
-                v-model.lazy="teamConfig.colors.secondary">
-            
-            <label class="team-config__team-label" for="team-color-secondary">Logo</label>
-            <input type="file" id="image-import" @change="encodeImageFileAsURL()" />
-            <canvas id="logo-canvas"></canvas>
+        <h3 class="team-config-section-title">Team</h3>
+        <label class="team-config__team-label" for="team-name">Name</label>
+        <input
+            type="text"
+            id="team-name"
+            maxlength="40"
+            class="team-config__team-name-input"
+            v-model.lazy="teamConfig.name">
+        <label class="team-config__team-label" for="team-motto">Motto</label>
+        <input
+            type="text"
+            id="team-motto"
+            maxlength="80"
+            class="team-config__team-motto-input"
+            v-model.lazy="teamConfig.motto">
+        <br>
+        <label class="team-config__team-label" :style="{color: '#' + teamConfig.colors.primary}" for="team-color-primary">Hauptfarbe</label>
+        <input
+            type="text"
+            id="team-color-primary"
+            maxlength="6"
+            class="team-config__team-color-input"
+            v-model.lazy="teamConfig.colors.primary">
+        <label class="team-config__team-label" :style="{color: '#' + teamConfig.colors.secondary}" for="team-color-secondary">Zweitfarbe</label>
+        <input
+            type="text"
+            id="team-color-secondary"
+            maxlength="6"
+            class="team-config__team-color-input"
+            v-model.lazy="teamConfig.colors.secondary">
+        
+        <label class="team-config__team-label" for="team-color-secondary">Logo</label>
+        <input type="file" id="image-import" @change="encodeImageFileAsURL()" />
+        <canvas id="logo-canvas"></canvas>
 
-            <h3 class="team-config-section-title">Spieler</h3>
-            <h4 class="table-header"></h4>
-            <h4 class="table-header">Name</h4>
-            <h4 class="table-header">Besen <span :class="[{valid: broomsAreValid},{invalid: !broomsAreValid}]" id="validation-span">{{ broomValidator }}</span></h4>
-            <h4 class="table-header">Geschlecht <span :class="[{valid: sexesAreValid},{invalid: !sexesAreValid}]" id="validation-span">{{ sexValidator }}</span></h4>
-            <div v-for="(player, index) in teamConfig.players" :key="index +player.sex+player.broom" class="team-config__player-selection">
-                <h4 class="player-type-label">{{ mapRole(index) }}</h4>
-                <!-- <label 
-                    for="player-name"
-                    class="team-config__player-label"
-                    >Name</label> -->
-                <div class="team-config__input-wrapping">
-                    <input
-                    type="text"
-                    maxlength="30"
-                    id="player-name"
-                    class="team-config__player-name-input"
-                    v-model.lazy="player.name">
-                </div>
-                
-                <!-- <label 
-                    for="player-broom"
-                    class="team-config__player-label">
-                    Besen</label> -->
-                <div class="team-config__input-wrapping" id="broom-select-wrapper">
-                    <select
-                        id="player-broom"
-                        class="team-config__player-broom-input"
-                        v-model="player.broom">
-                        <optgroup class="broom-options">
-                            <option class="broom-options" v-for="broom in brooms" :value="broom" :key="broom.id">{{ mapBroom(broom) }}</option>
-                        </optgroup>
-                    </select>
-                </div> 
-                <label 
-                    for="male"
-                    class="team-config__player-label">
+        <h3 class="team-config-section-title">Spieler</h3>
+        <h4 class="table-header"></h4>
+        <h4 class="table-header">Name</h4>
+        <h4 class="table-header">Besen <span :class="[{valid: broomsAreValid},{invalid: !broomsAreValid}]" id="validation-span">{{ broomValidator }}</span></h4>
+        <h4 class="table-header">Geschlecht <span :class="[{valid: sexesAreValid},{invalid: !sexesAreValid}]" id="validation-span">{{ sexValidator }}</span></h4>
+        <div v-for="(player, index) in teamConfig.players" :key="index +player.sex+player.broom" class="team-config__player-selection">
+            <h4 class="player-type-label">{{ mapRole(index) }}</h4>
+            <!-- <label 
+                for="player-name"
+                class="team-config__player-label"
+                >Name</label> -->
+            <div class="team-config__input-wrapping">
                 <input
-                    type="radio"
-                    id="male"
-                    value="m"
-                    v-model="player.sex"> m
-                </label>
-                <label 
-                    for="female"
-                    class="team-config__player-label">
-                <input
-                    type="radio"
-                    id="female"
-                    value="f"
-                    v-model="player.sex"> w
-                </label>
+                type="text"
+                maxlength="30"
+                id="player-name"
+                class="team-config__player-name-input"
+                v-model.lazy="player.name">
             </div>
-            <!-- The fan options -->
-            <h3 class="team-config-section-title">Fans (<span :class="[{valid: fansAreValid},{invalid: !fansAreValid}]">{{ fanValidator }}</span> / 7)</h3>
-            <div class="fan-selection">
-                <label class="team-config__fan-label" for="team-goblins">Goblins</label>
-                <input
-                    type="number"
-                    id="team-goblins"
-                    min='1'
-                    max='3'
-                    class="team-config__fan-counter"
-                    v-model.number="teamConfig.fans.goblins"
-                    @blur="checkInput($event, teamConfig.fans, 'goblins')">
-                <label class="team-config__fan-label" for="team-trolls">Trolle</label>
-                <input
-                    type="number"
-                    id="team-trolls"
-                    min='1'
-                    max='3'
-                    class="team-config__fan-counter"
-                    v-model.number="teamConfig.fans.trolls"
-                    @blur="checkInput($event, teamConfig.fans, 'trolls')">
-                <label class="team-config__fan-label" for="team-elfs">Elfen</label>
-                <input
-                    type="number"
-                    id="team-elfs"
-                    min='1'
-                    max='3'
-                    class="team-config__fan-counter"
-                    v-model.number="teamConfig.fans.elfs"
-                    @blur="checkInput($event, teamConfig.fans, 'elfs')">
-                <label class="team-config__fan-label" for="team-nifflers">Niffler</label>
-                <input
-                    type="number"
-                    id="team-nifflers"
-                    min='1'
-                    max='3'
-                    class="team-config__fan-counter"
-                    v-model.number="teamConfig.fans.nifflers"
-                    @blur="checkInput($event, teamConfig.fans, 'nifflers')">
-                <div class="main-menu__button-container">
-                    <!-- Buttons at the bottom -->
-                    <button @click="saveTeamConfig()" class="app__small-button">Speichern</button>
-                    <button @click="discardChanges()" class="app__small-button">Verwerfen</button>
-                </div>
-            </div>
+            
+            <!-- <label 
+                for="player-broom"
+                class="team-config__player-label">
+                Besen</label> -->
+            <div class="team-config__input-wrapping" id="broom-select-wrapper">
+                <select
+                    id="player-broom"
+                    class="team-config__player-broom-input"
+                    v-model="player.broom">
+                    <optgroup class="broom-options">
+                        <option class="broom-options" v-for="broom in brooms" :value="broom" :key="broom.id">{{ mapBroom(broom) }}</option>
+                    </optgroup>
+                </select>
+            </div> 
+            <label 
+                for="male"
+                class="team-config__player-label">
+            <input
+                type="radio"
+                id="male"
+                value="m"
+                v-model="player.sex"> m
+            </label>
+            <label 
+                for="female"
+                class="team-config__player-label">
+            <input
+                type="radio"
+                id="female"
+                value="f"
+                v-model="player.sex"> w
+            </label>
+        </div>
+        <!-- The fan options -->
+        <h3 class="team-config-section-title">Fans (<span :class="[{valid: fansAreValid},{invalid: !fansAreValid}]">{{ fanValidator }}</span> / 7)</h3>
+        <div class="fan-selection">
+            <label class="team-config__fan-label" for="team-goblins">Goblins</label>
+            <input
+                type="number"
+                id="team-goblins"
+                min='1'
+                max='3'
+                class="team-config__fan-counter"
+                v-model.number="teamConfig.fans.goblins"
+                @blur="checkInput($event, teamConfig.fans, 'goblins')">
+            <label class="team-config__fan-label" for="team-trolls">Trolle</label>
+            <input
+                type="number"
+                id="team-trolls"
+                min='1'
+                max='3'
+                class="team-config__fan-counter"
+                v-model.number="teamConfig.fans.trolls"
+                @blur="checkInput($event, teamConfig.fans, 'trolls')">
+            <label class="team-config__fan-label" for="team-elfs">Elfen</label>
+            <input
+                type="number"
+                id="team-elfs"
+                min='1'
+                max='3'
+                class="team-config__fan-counter"
+                v-model.number="teamConfig.fans.elfs"
+                @blur="checkInput($event, teamConfig.fans, 'elfs')">
+            <label class="team-config__fan-label" for="team-nifflers">Niffler</label>
+            <input
+                type="number"
+                id="team-nifflers"
+                min='1'
+                max='3'
+                class="team-config__fan-counter"
+                v-model.number="teamConfig.fans.nifflers"
+                @blur="checkInput($event, teamConfig.fans, 'nifflers')">
+            
+        </div>
+        <div>
+            <!-- Buttons at the bottom -->
+            <button @click="saveTeamConfig()" class="app__small-button">Speichern</button>
+            <button @click="discardChanges()" class="app__small-button">Verwerfen</button>
+        </div>
     </div>
 </template>
 
@@ -434,7 +435,8 @@ export default {
 
 .team-config-section-title {
     margin: 1vh;
-    margin-top: 2vh;
+    margin-top: 1.5vh;
+    font-size: 2.4vh;
 }
 
 #broom-select-wrapper {
@@ -487,6 +489,7 @@ export default {
     display: inline-block;
     width: 25%;
     margin-block-start: 0;
+    font-size: 2vh;
 }
 
 
