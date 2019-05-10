@@ -1,129 +1,129 @@
 <template>
     <div class="main-content-window-editor" id="match-config-editor">
     <!-- Central area that includes all the configuration options -->
-            <div id="match-config__left-panel">
-                <div class="match-config__number-panel">
-                    <h3>Dateiname</h3>
-                    <input
-                        type="text"
-                        id="match-config__text"
-                        v-model="matchConfig.name">
-                    <h3>Maximale Rundenzahl</h3>
+        <div id="match-config__left-panel">
+            <div class="match-config__number-panel">
+                <h3 class="match-config__main-header">Dateiname</h3>
+                <input
+                    type="text"
+                    id="match-config__text"
+                    v-model="matchConfig.name">
+                <h3 class="match-config__main-header">Maximale Rundenzahl</h3>
+                <!-- Set limits for input values here. @blur-event will call function 
+                'checkInput'. This will check if user enters number out of range. -->
+                <input
+                    type="number"
+                    step="1"
+                    max="1000"
+                    min="0"
+                    class="match-config__int-counter"
+                    v-model.number="matchConfig.config.maxRounds"
+                    :class="{questionable: matchConfig.config.maxRounds < 10}"
+                    @blur="checkInput($event, matchConfig.config, 'maxRounds')">
+            </div>
+            <div class="match-config__number-panel">
+                <h3 class="match-config__main-header">Zeitbegrenzungen (ms)</h3>
+                <section v-for="(item, key) in matchConfig.config.timings" :key="key">
+                    <label class="match-config__label" for="">{{ key }}</label>
                     <!-- Set limits for input values here. @blur-event will call function 
                     'checkInput'. This will check if user enters number out of range. -->
                     <input
                         type="number"
-                        step="1"
-                        max="1000"
+                        step="100"
+                        max="99999"
                         min="0"
-                        class="match-config__int-counter"
-                        v-model.number="matchConfig.config.maxRounds"
-                        :class="{questionable: matchConfig.config.maxRounds < 10}"
-                        @blur="checkInput($event, matchConfig.config, 'maxRounds')">
-                </div>
-                <div class="match-config__number-panel">
-                    <h3>Zeitbegrenzungen (ms)</h3>
-                    <section v-for="(item, key) in matchConfig.config.timings" :key="key">
+                        class="match-config__float-counter"
+                        :class="{questionable: matchConfig.config.timings[key] < 5000}"
+                        v-model.number="matchConfig.config.timings[key]"
+                        @blur="checkInput($event, matchConfig.config.timings, key)">
+                </section>
+            </div>
+        </div>
+        <div id="match-config__right-panel">
+            <h3 class="match-config__main-header">Wahrscheinlichkeiten (0,0 ... 1,0)</h3>
+            <div class="match-config__number-panel"> 
+                <h4 class="match-config__sub-header">Allgemein</h4>
+                <section v-for="(item, key) in matchConfig.config.probabilities" :key="key">
+                    <section v-if="key !== 'extraMove' && key !== 'foulDetection' && key !== 'fanFoulDetection'">
+                        <label class="match-config__label" for="">{{ key }}</label>
+                        <!-- Set limits for input values here. @blur-event will call function 
+                            'checkInput'. This will check if user enters number out of range. -->
+                        <input
+                            type="number"
+                            step="0.01"
+                            max="1.00"
+                            min="0.00"
+                            class="match-config__float-counter"
+                            :class="{questionable: (matchConfig.config.probabilities[key] === 0 || matchConfig.config.probabilities[key] === 1)}"
+                            v-model.number="matchConfig.config.probabilities[key]"
+                            @blur="checkInput($event, matchConfig.config.probabilities, key)">
+                    </section>    
+                </section>
+            </div>
+            <div class="match-config__number-panel">
+                <h4 class="match-config__sub-header">Extrazug</h4>
+                <section v-for="(item, key) in matchConfig.config.probabilities.extraMove" :key="key">
+                    <section>
                         <label class="match-config__label" for="">{{ key }}</label>
                         <!-- Set limits for input values here. @blur-event will call function 
                         'checkInput'. This will check if user enters number out of range. -->
                         <input
                             type="number"
-                            step="100"
-                            max="99999"
-                            min="0"
+                            step="0.01"
+                            max="1.00"
+                            min="0.00"
                             class="match-config__float-counter"
-                            :class="{questionable: matchConfig.config.timings[key] < 5000}"
-                            v-model.number="matchConfig.config.timings[key]"
-                            @blur="checkInput($event, matchConfig.config.timings, key)">
+                            :class="{questionable: (matchConfig.config.probabilities.extraMove[key] === 0 || matchConfig.config.probabilities.extraMove[key] === 1)}"
+                            v-model.number="matchConfig.config.probabilities.extraMove[key]"
+                            @blur="checkInput($event, matchConfig.config.probabilities.extraMove, key)">
                     </section>
-                </div>
+                </section>
             </div>
-            <div id="match-config__right-panel">
-                <h3>Wahrscheinlichkeiten (0,0 ... 1,0)</h3>
-                <div class="match-config__number-panel"> 
-                    <h4>Allgemein</h4>
-                    <section v-for="(item, key) in matchConfig.config.probabilities" :key="key">
-                        <section v-if="key !== 'extraMove' && key !== 'foulDetection' && key !== 'fanFoulDetection'">
-                            <label class="match-config__label" for="">{{ key }}</label>
-                            <!-- Set limits for input values here. @blur-event will call function 
-                             'checkInput'. This will check if user enters number out of range. -->
-                            <input
-                                type="number"
-                                step="0.01"
-                                max="1.00"
-                                min="0.00"
-                                class="match-config__float-counter"
-                                :class="{questionable: (matchConfig.config.probabilities[key] === 0 || matchConfig.config.probabilities[key] === 1)}"
-                                v-model.number="matchConfig.config.probabilities[key]"
-                                @blur="checkInput($event, matchConfig.config.probabilities, key)">
-                        </section>    
+            <div class="match-config__number-panel">
+                <h4 class="match-config__sub-header">Foulerkennung – Spieler</h4>
+                <section v-for="(item, key) in matchConfig.config.probabilities.foulDetection" :key="key">
+                    <section>
+                        <label class="match-config__label" for="">{{ key }}</label>
+                        <!-- Set limits for input values here. @blur-event will call function 
+                        'checkInput'. This will check if user enters number out of range. -->
+                        <input
+                            type="number"
+                            step="0.01"
+                            max="1.00"
+                            min="0.00"
+                            class="match-config__float-counter"
+                            :class="{questionable: (matchConfig.config.probabilities.foulDetection[key] === 0 || matchConfig.config.probabilities.foulDetection[key] === 1)}"
+                            v-model.number="matchConfig.config.probabilities.foulDetection[key]"
+                            @blur="checkInput($event, matchConfig.config.probabilities.foulDetection, key)">
                     </section>
-                </div>
-                <div class="match-config__number-panel">
-                    <h4>Extrazug</h4>
-                    <section v-for="(item, key) in matchConfig.config.probabilities.extraMove" :key="key">
-                        <section>
-                            <label class="match-config__label" for="">{{ key }}</label>
-                            <!-- Set limits for input values here. @blur-event will call function 
-                            'checkInput'. This will check if user enters number out of range. -->
-                            <input
-                                type="number"
-                                step="0.01"
-                                max="1.00"
-                                min="0.00"
-                                class="match-config__float-counter"
-                                :class="{questionable: (matchConfig.config.probabilities.extraMove[key] === 0 || matchConfig.config.probabilities.extraMove[key] === 1)}"
-                                v-model.number="matchConfig.config.probabilities.extraMove[key]"
-                                @blur="checkInput($event, matchConfig.config.probabilities.extraMove, key)">
-                        </section>
-                    </section>
-                </div>
-                <div class="match-config__number-panel">
-                    <h4>Foulerkennung – Spieler</h4>
-                    <section v-for="(item, key) in matchConfig.config.probabilities.foulDetection" :key="key">
-                        <section>
-                            <label class="match-config__label" for="">{{ key }}</label>
-                            <!-- Set limits for input values here. @blur-event will call function 
-                            'checkInput'. This will check if user enters number out of range. -->
-                            <input
-                                type="number"
-                                step="0.01"
-                                max="1.00"
-                                min="0.00"
-                                class="match-config__float-counter"
-                                :class="{questionable: (matchConfig.config.probabilities.foulDetection[key] === 0 || matchConfig.config.probabilities.foulDetection[key] === 1)}"
-                                v-model.number="matchConfig.config.probabilities.foulDetection[key]"
-                                @blur="checkInput($event, matchConfig.config.probabilities.foulDetection, key)">
-                        </section>
-                    </section>
-                </div>
-                <div class="match-config__number-panel">
-                    <h4>Foulerkennung – Fans</h4>
-                    <section v-for="(item, key) in matchConfig.config.probabilities.fanFoulDetection" :key="key">
-                        <section v-if="key !== 'extraMove' && key !== 'foulDetection' && key !== 'fanFoulDetection'">
-                            <label class="match-config__label" for="">{{ key }}</label>
-                            <!-- Set limits for input values here. @blur-event will call function 
-                            'checkInput'. This will check if user enters number out of range. -->
-                            <input
-                                type="number"
-                                step="0.01"
-                                max="1.00"
-                                min="0.00"
-                                class="match-config__float-counter"
-                                :class="{questionable: (matchConfig.config.probabilities.fanFoulDetection[key] === 0 || matchConfig.config.probabilities.fanFoulDetection[key] === 1)}"
-                                v-model.number="matchConfig.config.probabilities.fanFoulDetection[key]"
-                                @blur="checkInput($event, matchConfig.config.probabilities.fanFoulDetection, key)">
-                        </section>
-                    </section>
-                </div>
+                </section>
             </div>
+            <div class="match-config__number-panel">
+                <h4 class="match-config__sub-header">Foulerkennung – Fans</h4>
+                <section v-for="(item, key) in matchConfig.config.probabilities.fanFoulDetection" :key="key">
+                    <section v-if="key !== 'extraMove' && key !== 'foulDetection' && key !== 'fanFoulDetection'">
+                        <label class="match-config__label" for="">{{ key }}</label>
+                        <!-- Set limits for input values here. @blur-event will call function 
+                        'checkInput'. This will check if user enters number out of range. -->
+                        <input
+                            type="number"
+                            step="0.01"
+                            max="1.00"
+                            min="0.00"
+                            class="match-config__float-counter"
+                            :class="{questionable: (matchConfig.config.probabilities.fanFoulDetection[key] === 0 || matchConfig.config.probabilities.fanFoulDetection[key] === 1)}"
+                            v-model.number="matchConfig.config.probabilities.fanFoulDetection[key]"
+                            @blur="checkInput($event, matchConfig.config.probabilities.fanFoulDetection, key)">
+                    </section>
+                </section>
+            </div>
+        </div>
 
-            <!-- The two buttons on the bottom -->
-            <div class="main-menu__button-container">
-                <button @click="saveConfig()" class="app__small-button">Speichern</button>
-                <button @click="discardChanges()" class="app__small-button">Verwerfen</button>
-            </div>
+        <!-- The two buttons on the bottom -->
+        <div>
+            <button @click="saveConfig()" class="app__small-button">Speichern</button>
+            <button @click="discardChanges()" class="app__small-button">Verwerfen</button>
+        </div>
     </div>
 </template>
 
@@ -212,7 +212,7 @@ export default {
 
 #match-config__left-panel {
     width: 45%;
-    height: 100%;
+    height: 90%;
     position: relative;
     vertical-align: top;
     display: inline-block;
@@ -244,7 +244,7 @@ export default {
 }
 #match-config__right-panel {
     width: 55%;
-    height: 100%;
+    height: 90%;
     display: inline-block;
 }
 
@@ -254,6 +254,20 @@ export default {
 
 .match-config__int-counter {
     text-align: right;
+}
+
+.match-config__main-header {
+    margin: 1vh 0 1vh 0;
+    font-size: 2.3vh;
+}
+
+.match-config__sub-header {
+    margin: 2vh 0 2vh 0;
+    font-size: 1.9vh;
+}
+
+.match-config__label {
+    font-size: 1.8vh;
 }
 
 </style>
