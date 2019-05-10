@@ -133,6 +133,7 @@ export default {
             selectedEntity: undefined,
 
             highlightedTiles: [],
+            crossedTiles: [],
             // for later
             hoveredPlayerType: undefined,
 
@@ -632,32 +633,51 @@ export default {
          */
         clickEmptyTile: function(xPos, yPos){
             
+            //Make sure the player clicked a highlighted Tile
+            if(!highlighedtTiles.includes(this.getTileId(xPos, yPos))) return;
+
             this.clickedTile = [xPos, yPos];
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
                     this.highlighedtTiles = this.leftHalfTiles;
                     myTeam = this.snapShot.leftTeam;
+                    this.playerToPosition = myTeam.players.seeker;
                     for(let player in this.snapShot.leftTeam.players){
+                        var next = false;
                         if(this.snapShot.leftTeam.players[player].banned){
-                            this.snapShot.leftTeam.players[player].banned = false;
-                            this.snapShot.leftTeam.players[player].xPos = xPos;
-                            this.snapShot.leftTeam.players[player].yPos = yPos;
-                            this.selectedEntity = this.snapShot.leftTeam.players[player];
-                            break;
+                            if(!next){
+                                this.snapShot.leftTeam.players[player].banned = false;
+                                this.snapShot.leftTeam.players[player].xPos = xPos;
+                                this.snapShot.leftTeam.players[player].yPos = yPos;
+                                next = true;
+                            }
+                            else{
+                                this.playerToPosition = this.snapShot.leftTeam.players[player];
+                                break;
+                            }
+                            
                         }
                     }
                 }
                 else if(this.mySide === "right"){
                     this.highlightedTiles = this.rightHalfTiles;
                     myTeam = this.snapShot.rightTeam;
+                    this.playerToPosition = myTeam.players.seeker;
                     for(let player in this.snapShot.rightTeam.players){
+                        var next = false;
                         if(this.snapShot.rightTeam.players[player].banned){
-                            this.snapShot.rightTeam.players[player].banned = false;
-                            this.snapShot.rightTeam.players[player].xPos = xPos;
-                            this.snapShot.rightTeam.players[player].yPos = yPos;
-                            this.selectedEntity = this.snapShot.rightTeam.players[player];
-                            break;
+                            if(!next){
+                                this.snapShot.rightTeam.players[player].banned = false;
+                                this.snapShot.rightTeam.players[player].xPos = xPos;
+                                this.snapShot.rightTeam.players[player].yPos = yPos;
+                                next = true;
+                            }
+                            else{
+                                this.playerToPosition = this.snapShot.rightTeam.players[player];
+                                break;
+                            }
+                            
                         }
                     }
                 }
@@ -668,6 +688,7 @@ export default {
                     this.sendTeamFormation(myTeam);
                     this.highlightedTiles = [];
                 }
+                this.playerToPosition = null;
             }
             else if(this.turnType === "move"){
                 
