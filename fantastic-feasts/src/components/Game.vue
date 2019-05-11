@@ -808,8 +808,8 @@ export default {
         /**adds a square of tiles to the highlighted tiles */
         highlightTiles(xPos, yPos, radius) {
             this.highlightedTiles = [];
-            for(var x = xPos-radius;x<= xPos + radius;  x++) {
-                for(var y= yPos - radius; y <= yPos + radius; y ++) {
+            for(var x = xPos-radius;x <= xPos + radius;  x++) {
+                for(var y = yPos - radius; y <= yPos + radius; y ++) {
                     if(true) {
                         this.highlightTile(x, y); 
                     }
@@ -942,8 +942,8 @@ export default {
             }
             else if(obj.payload.type === "fan"){
                 if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
-                    for(x = 0; x < 17; x++){
-                        for(y = 0; y < 13; y++){
+                    for(var x = 0; x < 17; x++){
+                        for(var y = 0; y < 13; y++){
                             if(this.playerIdOnTile(x, y) !== null) highlighedtTiles.push(this.getTileId(x, y));
                         }
                     }
@@ -956,13 +956,20 @@ export default {
                     }
                 }
                 else{
-                    for(i = 0; i <= 220; i++){
+                    for(var i = 0; i <= 220; i++){
                         if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
                     }
                 }
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
-                //TODO
+                this.highlightedTiles = [];
+                for(var x = xPos-radius;x <= xPos + radius;  x++) {
+                    for(var y = yPos - radius; y <= yPos + radius; y ++) {
+                        if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y)) {
+                            this.highlightTile(x, y); 
+                        }
+                    }
+                }
             }
             
         },
@@ -1050,7 +1057,34 @@ export default {
                     && this.snapShot.balls[ball].yPos == yPos) free = false;
             }
             return free;
-        }
+        },
+        
+        /**Returns an array of crossed tiles */
+        getCrossedTiles: function(xStart, yStart, xDest, yDest){
+            var crossedTiles = [];
+            var k = (yDest-yStart)/(xDest-xStart);
+            var d = yStart - k * xStart;
+            for(var x = xStart; x < xDest; x += 0.1){
+                var y = k * x + d;
+                var xr = Math.round(x);
+                var yr = Math.round(y);
+                if(xr === xStart && yr === yStart) continue;
+                else if(xr === xDest && yr === yDest) break;
+                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
+            }
+            return crossedTiles;
+        },
+        /**Returns true if the path to the dest tile is free */
+        isFreePath: function(xStart, yStart, xDest, yDest){
+            var crossedTiles = this.getCrossedTiles(xStart, yStart, xDest, yDest);
+            var free = true;
+            for(let i = 0; i < crossedTiles.length; i++){
+                if(this.playerIdOnTile(crossedTiles[i]%17, (crossedTiles[i] - crossedTiles[i]%17)/17) !== null){
+                    free = false;
+                }
+            }
+            return free;
+        },
     },
     /**Is automatically called when the component loaded */
     mounted() {
