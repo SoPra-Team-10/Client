@@ -588,7 +588,8 @@ export default {
             
             var xPos = player.xPos;
             var yPos = player.yPos;
-            
+            if(!selectedEntityId.includes(this.mySide)) return;
+            if(!this.highlighedtTiles.includes(this.getTileId(xPos, yPos))) return;
             if(this.turnType === "move"){
                 
                 if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
@@ -599,7 +600,7 @@ export default {
                 if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
-                else if(selectedEntityId.includes("Chaser") && player.holdsQuaffle){
+                else if(this.selectedEntityId.includes("Chaser") && player.holdsQuaffle){
                     this.deltaRequest("wrestQuaffle", null, null, null, null, selectedEntityId, null, null, null, null, null);
                 }
                 else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
@@ -692,6 +693,8 @@ export default {
                 }
                 this.playerToPosition = null;
             }
+
+            //Chech for any possible action that is performed by clicking an empty tile if it is required
             else if(this.turnType === "move"){
                 
                 if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
@@ -932,13 +935,23 @@ export default {
             }
             if(obj.payload.turn.includes(this.mySide))this.turnType = obj.payload.type;
             
+            //Move is possible
             if(obj.payload.type === "move"){
                 this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
             }
-            else if((obj.payload.type === "action" && obj.payload.turn.includes("Chaser"))){
+            //Throw is possible
+            else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser") && this.selectedEntity.holdsQuaffle){
                 for(i = 0; i <= 220; i++){
                     if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
                 }
+            }
+            else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
+                //Check if wrestQuaffle is possible
+                for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1; x++){
+                        for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos; y++){
+                            if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
+                        }
+                    }
             }
             else if(obj.payload.type === "fan"){
                 if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
