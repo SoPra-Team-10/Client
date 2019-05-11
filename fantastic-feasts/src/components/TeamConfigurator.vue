@@ -111,15 +111,15 @@
                 class="team-config__fan-counter"
                 v-model.number="teamConfig.fans.trolls"
                 @blur="checkInput($event, teamConfig.fans, 'trolls')">
-            <label class="team-config__fan-label" for="team-elfs">Elfen</label>
+            <label class="team-config__fan-label" for="team-elves">Elfen</label>
             <input
                 type="number"
-                id="team-elfs"
+                id="team-elves"
                 min='1'
                 max='3'
                 class="team-config__fan-counter"
-                v-model.number="teamConfig.fans.elfs"
-                @blur="checkInput($event, teamConfig.fans, 'elfs')">
+                v-model.number="teamConfig.fans.elves"
+                @blur="checkInput($event, teamConfig.fans, 'elves')">
             <label class="team-config__fan-label" for="team-nifflers">Niffler</label>
             <input
                 type="number"
@@ -148,7 +148,7 @@ export default {
                 'Sucher', 'Hüter', 'Jäger', 'Jäger', 'Jäger', 'Treiber', 'Treiber'
             ],
             brooms: [
-                'tinderblast', 'cleansweep-11', 'comet-260', 'nimbus-2001', 'firebolt'
+                'tinderblast', 'cleansweep11', 'comet260', 'nimbus2001', 'firebolt'
             ],
             teamConfig: this.configs.teamConfigs[this.state.index],
             status: '',
@@ -222,13 +222,13 @@ export default {
                     case 'tinderblast':
                         broomCount[0]++;
                         break;
-                    case 'cleansweep-11':
+                    case 'cleansweep11':
                         broomCount[1]++;
                         break;
-                    case 'comet-260':
+                    case 'comet260':
                         broomCount[2]++;
                         break;
-                    case 'nimbus-2001':
+                    case 'nimbus2001':
                         broomCount[3]++;
                         break;
                     case 'firebolt':
@@ -297,12 +297,12 @@ export default {
             switch(broomType) {
                 case 'tinderblast':
                     return 'Zunderfauch';
-                case 'cleansweep-11':
+                case 'cleansweep11':
                     return 'Sauberwisch 11';
-                case 'comet-260':
+                case 'comet260':
                     return 'Comet-2-60';
-                case 'nimbus-2001':
-                    return 'Nimbus-2001';
+                case 'nimbus2001':
+                    return 'nimbus2001';
                 case 'firebolt':
                     return 'Feuerblitz';
                 default: undefined

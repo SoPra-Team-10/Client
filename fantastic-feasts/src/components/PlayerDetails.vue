@@ -57,14 +57,14 @@ export default {
         },
         mapBroom(broomType) {
             switch(broomType) {
-                case 'thinderblast':
+                case 'tinderblast':
                     return 'Zunderfauch';
-                case 'cleansweep-11':
+                case 'cleansweep11':
                     return 'Sauberwisch 11';
-                case 'comet-260':
+                case 'comet260':
                     return 'Comet-2-60';
-                case 'nimbus-2001':
-                    return 'Nimbus-2001';
+                case 'nimbus2001':
+                    return 'nimbus2001';
                 case 'firebolt':
                     return 'Feuerblitz';
                 default: undefined

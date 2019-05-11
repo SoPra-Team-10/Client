@@ -78,8 +78,6 @@ export default {
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
-                            alert(vm.teamConfig);
-                            
                             
                             var timestamp = Date.now();
                             var teamConf = {

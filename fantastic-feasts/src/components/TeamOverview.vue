@@ -163,7 +163,7 @@ export default {
                 fans: {
                     goblins: 1,
                     trolls: 1,
-                    elfs: 1,
+                    elves: 1,
                     nifflers: 1
                 },
                 players: {
@@ -174,17 +174,17 @@ export default {
                     },
                     keeper: {
                         name: 'Tom',
-                        broom: 'nimbus-2001',
+                        broom: 'nimbus2001',
                         sex: 'm'
                     },
                     chaser1: {
                         name: 'Arthur',
-                        broom: 'comet-260',
+                        broom: 'comet260',
                         sex: 'm'
                     },
                     chaser2: {
                         name: 'Rita',
-                        broom: 'cleansweep-11',
+                        broom: 'cleansweep11',
                         sex: 'f'
                     },
                     chaser3: {
@@ -194,12 +194,12 @@ export default {
                     },
                     beater1: {
                         name: 'Mafalda',
-                        broom: 'thinderblast',
+                        broom: 'tinderblast',
                         sex: 'f'
                     },
                     beater2: {
                         name: 'Phineus',
-                        broom: 'thinderblast',
+                        broom: 'tinderblast',
                         sex: 'm'
                     }
                 }   
