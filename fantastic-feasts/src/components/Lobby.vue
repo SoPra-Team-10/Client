@@ -46,7 +46,7 @@ export default {
             var port = document.getElementById("port").value;
             //out server for testing
             server = "134.60.29.234";
-            port = "8081";
+            port = "8080";
             web.websocket = new WebSocket("ws://"+server+":"+port);
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);

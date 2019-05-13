@@ -902,14 +902,14 @@ export default {
             if(obj.payload.turn === "leftSeeker") this.selectedEntity = this.snapShot.leftTeam.players.seeker;
             else if(obj.payload.turn === "leftKeeper") this.selectedEntity = this.snapShot.leftTeam.players.keeper;
             else if(obj.payload.turn === "leftChaser1") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
-            else if(obj.payload.turn === "leftChaser2") this.selectedEntity = this.snapShot.leftTeam.players.chaser1;
+            else if(obj.payload.turn === "leftChaser2") this.selectedEntity = this.snapShot.leftTeam.players.chaser2;
             else if(obj.payload.turn === "leftChaser3") this.selectedEntity = this.snapShot.leftTeam.players.chaser3;
             else if(obj.payload.turn === "leftBeater1") this.selectedEntity = this.snapShot.leftTeam.players.beater1;
             else if(obj.payload.turn === "leftBeater2") this.selectedEntity = this.snapShot.leftTeam.players.beater2;
             else if(obj.payload.turn === "rightSeeker") this.selectedEntity = this.snapShot.rightTeam.players.seeker;
             else if(obj.payload.turn === "rightKeeper") this.selectedEntity = this.snapShot.rightTeam.players.keeper;
             else if(obj.payload.turn === "rightChaser1") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
-            else if(obj.payload.turn === "rightChaser2") this.selectedEntity = this.snapShot.rightTeam.players.chaser1;
+            else if(obj.payload.turn === "rightChaser2") this.selectedEntity = this.snapShot.rightTeam.players.chaser2;
             else if(obj.payload.turn === "rightChaser3") this.selectedEntity = this.snapShot.rightTeam.players.chaser3;
             else if(obj.payload.turn === "rightBeater1") this.selectedEntity = this.snapShot.rightTeam.players.beater1;
             else if(obj.payload.turn === "rightBeater2") this.selectedEntity = this.snapShot.rightTeam.players.beater2;
@@ -942,14 +942,15 @@ export default {
             //Throw is possible
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser") && this.selectedEntity.holdsQuaffle){
                 for(i = 0; i <= 220; i++){
-                    if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
+                    if(!this.cornerTiles.includes(i)) this.highlighedtTiles.push(i);
                 }
             }
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
                 //Check if wrestQuaffle is possible
                 for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1; x++){
                         for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos; y++){
-                            if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
+                            if(this.snapshot.balls.quaffle.xPos === x &&
+                                this.snapshot.balls.quaffle.yPos === y) this.highlightTile(x, y);
                         }
                     }
             }
@@ -957,14 +958,14 @@ export default {
                 if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
-                            if(this.playerIdOnTile(x, y) !== null) highlighedtTiles.push(this.getTileId(x, y));
+                            if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
                         }
                     }
                 }
                 else if(obj.payload.turn.includes("Wombat")){
                     for(x = 0; x < 17; x++){
                         for(y = 0; y < 13; y++){
-                            if(this.isFreeTile(x, y)) highlighedtTiles.push(this.getTileId(x, y));
+                            if(this.isFreeTile(x, y)) this.highlightTile(x, y);
                         }
                     }
                 }
