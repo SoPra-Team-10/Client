@@ -332,20 +332,20 @@ export default {
                 },
                 balls: {
                     snitch: {
-                        xPos: 4,
-                        yPos: 5
+                        xPos: 8,
+                        yPos: 6
                     },
                     quaffle: {
-                        xPos: 7,
-                        yPos: 9
+                        xPos: 8,
+                        yPos: 6
                     },
                     bludger1: {
-                        xPos: 10,
-                        yPos: 4
+                        xPos: 8,
+                        yPos: 6
                     },
                     bludger2: {
-                        xPos: 6,
-                        yPos: 7
+                        xPos: 8,
+                        yPos: 6
                     }
                 }
             },
@@ -604,7 +604,7 @@ export default {
                     this.deltaRequest("wrestQuaffle", null, null, null, null, selectedEntityId, null, null, null, null, null);
                 }
                 else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
-                    var balls = this.snapshot.balls;
+                    var balls = this.snapShot.balls;
                     if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
                         this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
                     }
@@ -706,7 +706,7 @@ export default {
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
                 else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
-                    var balls = this.snapshot.balls;
+                    var balls = this.snapShot.balls;
                     if(this.selectedEntity.xPos === balls.bludger1.xPos && this.selectedEntity.yPos === balls.bludger1.yPos){
                         this.deltaRequest("bludgerBeating", balls.bludger1.xPos, balls.bludger1.yPos, xPos, yPos, this.selectedEntityId, "bludger1", null, null, null,  null);
                     }
@@ -949,8 +949,8 @@ export default {
                 //Check if wrestQuaffle is possible
                 for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1; x++){
                         for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos; y++){
-                            if(this.snapshot.balls.quaffle.xPos === x &&
-                                this.snapshot.balls.quaffle.yPos === y) this.highlightTile(x, y);
+                            if(this.snapShot.balls.quaffle.xPos === x &&
+                                this.snapShot.balls.quaffle.yPos === y) this.highlightTile(x, y);
                         }
                     }
             }
@@ -971,7 +971,7 @@ export default {
                 }
                 else{
                     for(var i = 0; i <= 220; i++){
-                        if(!this.cornerTiles.includes(i))highlighedtTiles.push(i);
+                        if(!this.cornerTiles.includes(i))this.highlighedtTiles.push(i);
                     }
                 }
             }
@@ -1021,9 +1021,11 @@ export default {
         },
         /**Sends a skip deltaRequest */
         skip: function(){
-            this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+            if(this.selectedEntityId.includes(this.mySide))this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
         },
-        /**finds the playerId of the entity standing in the given tile. */
+        /**finds the playerId of the entity standing in the given tile.
+         * Returns null if there is no player on the tile
+         */
         playerIdOnTile: function(xPos, yPos){
             var pLeft = this.snapShot.leftTeam.players;
             var pRight = this.snapShot.rightTeam.players;
@@ -1043,6 +1045,7 @@ export default {
             if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos) return "rightChaser3";
             if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
             if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
+            return null;
         },
         /**computes the id of the given tile */
         getTileId: function(xPos, yPos){
