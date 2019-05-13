@@ -104,7 +104,7 @@
                     </div>
                 </div>
                 <div class="skip-button-container">
-                    <button class="skip-button">Zug aussetzen</button>
+                    <button class="skip-button" @click="skip()">Zug aussetzen</button>
                 </div>
             </div>
         </section>
@@ -697,7 +697,7 @@ export default {
             //Chech for any possible action that is performed by clicking an empty tile if it is required
             else if(this.turnType === "move"){
                 
-                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
+                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos) < 2){
                     this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
             }
