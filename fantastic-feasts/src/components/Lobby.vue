@@ -41,7 +41,13 @@ export default {
     
     props: ['game', 'teamConfig'],
     methods: {
+        makeTimestamp: function(){
+            var date = new Date();
+            return date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2) + "." + ("0" + date.getMilliseconds()).slice(-3);
+        },
+        
         connect : function () {
+            var date = new Date();
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
             //out server for testing
@@ -57,7 +63,7 @@ export default {
                 vm.game.userName = userName;
                 var pw = document.getElementById("password").value;
                 var lobby = document.getElementById("lobby").value;
-                var timestamp = Date.now();
+                var timestamp = this.makeTimestamp();
                 
                 var joinRequest = {
                     "timestamp": timestamp,
@@ -79,7 +85,7 @@ export default {
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
                             
-                            var timestamp = Date.now();
+                            var timestamp = this.makeTimestamp();
                             var teamConf = {
                                 "timestamp": timestamp,
                                 "payloadType": "teamConfig",

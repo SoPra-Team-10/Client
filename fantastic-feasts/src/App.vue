@@ -29,8 +29,7 @@ export default {
         userName: ""
       },
       web:{
-        websocket: WebSocket
-        
+        websocket: WebSocket,
       },
       configs: {
         matchConfigs: [],
