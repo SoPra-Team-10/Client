@@ -53,7 +53,8 @@ export default {
             //out server for testing
             server = "134.60.29.234";
             port = "8080";
-            web.websocket = new WebSocket("ws://"+server+":"+port);
+            var addr = "ws://"+server+":"+port;
+            web.websocket = new WebSocket(addr);
             web.websocket.onerror = function (error) {
                 alert('Connection failed: ' + error.data);
             };
@@ -77,7 +78,9 @@ export default {
                     }
                 }
                 var msg = JSON.stringify(joinRequest);
-                
+                web.joinReq = msg;
+                web.addr = addr;
+
                 web.websocket.send(msg);
                 web.websocket.onmessage = function(msg){
          

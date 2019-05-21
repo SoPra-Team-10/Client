@@ -30,6 +30,8 @@ export default {
       },
       web:{
         websocket: WebSocket,
+        addr: String,
+        joinReq: String,
       },
       configs: {
         matchConfigs: [],

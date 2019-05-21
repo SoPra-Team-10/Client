@@ -156,6 +156,8 @@ export default {
                 rightTeamUserName: "Rechtes Team"
             },
 
+            // For reconnecting
+            reconnectAttempts: 0,
             // server message data formats
 
             // // can later be changed to undefined. Values are for debugging purposes
@@ -828,6 +830,23 @@ export default {
         startGame: function(){
             var vm = this;
             if(web.websocket) {
+                web.websocket.onerror = function (error) {
+                    web.websocket = new WebSocket(web.addr);
+                    web.websocket.onopen = function(){
+                        this.reconnectAttempts = 0;
+                        this.startGame();
+                        web.websocket.send(web.joinReq);
+                    };
+                    web.websocket.onerror = function (error) {
+                        setTimeout(function(){
+                            if(this.reconnectAttempts < 5){
+                                web.websocket = new WebSocket(web.addr);
+                                this.reconnectAttempts += 1;
+                            }
+                        }, 2000);
+                    };
+                    
+                };
                 web.websocket.onmessage = function(msg) {
                     var newText = "";
                     var jsonObject = JSON.parse(msg.data);
@@ -851,6 +870,12 @@ export default {
                         vm.handleSnapshot(jsonObject);
                     }
                     else if(jsonObject.payloadType === "next"){
+                        // debugging:
+                        vm.gameLog.unshift({message: 'Server sent: next'});
+
+                        vm.handleNext(jsonObject);
+                    }
+                    else if(jsonObject.payloadType === "reconnect"){
                         // debugging:
                         vm.gameLog.unshift({message: 'Server sent: next'});
 
@@ -1001,6 +1026,14 @@ export default {
             }
             
         },
+
+        /**Use Reconnect message to get up to date */
+        hanldeReconnect: function(obj){
+            this.handleMatchStart(obj.matchStart);
+            this.handleSnapshot(obj.payload.snapshot);
+            if(obj.next) this.handleNext(obj.next);
+        },
+
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
