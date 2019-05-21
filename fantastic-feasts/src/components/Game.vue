@@ -722,6 +722,9 @@ export default {
                 else if(this.selectedEntityId.includes("Troll")){
                     this.deltaRequest("trollRoar", null, null, null, null, null, null, null, null, null, null);
                 }
+                else if(this.selectedEntityId.includes("Wombat")){
+                    this.deltaRequest("wombatPoo", null, null, xPos, yPos, null, null, null, null, null, null);
+                }
             }
 
             else if(this.turnType === "removeBan"){
@@ -937,7 +940,18 @@ export default {
             
             //Move is possible
             if(obj.payload.type === "move"){
-                this.highlightTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, 1);
+                for(var x = xPos-radius;x <= xPos + radius;  x++) {
+                    for(var y = yPos - radius; y <= yPos + radius; y ++) {
+                        var cubes = this.snapshot.wombatCubes;
+                        var cubed = false;
+                        for(var i = 0; i < cubes.length; i++){
+                            if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
+                        }
+                        if(!cubed) {
+                            this.highlightTile(x, y); 
+                        }
+                    }
+                }
             }
             //Throw is possible
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser") && this.selectedEntity.holdsQuaffle){
