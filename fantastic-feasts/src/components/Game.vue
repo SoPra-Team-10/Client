@@ -768,7 +768,7 @@ export default {
                     }
                 }
             }
-            var timestamp = Date.now();
+            var timestamp = this.makeTimestamp();
             var teamFormation = {
                     timestamp: timestamp,
                     payloadType: "teamFormation",
@@ -948,7 +948,7 @@ export default {
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
                 //Check if wrestQuaffle is possible
                 for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1; x++){
-                        for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos; y++){
+                        for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos + 1; y++){
                             if(this.snapShot.balls.quaffle.xPos === x &&
                                 this.snapShot.balls.quaffle.yPos === y) this.highlightTile(x, y);
                         }
@@ -997,7 +997,7 @@ export default {
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
             this.highlightedTiles = [];
-            var timestamp = Date.now();
+            var timestamp = this.makeTimestamp();
             var payload = {
                 deltaType: deltaType,
                 success: null,
@@ -1030,21 +1030,21 @@ export default {
             var pLeft = this.snapShot.leftTeam.players;
             var pRight = this.snapShot.rightTeam.players;
 
-            if(pLeft.seeker.xPos === xPos && pLeft.seeker.yPos === yPos) return "leftSeeker";
-            if(pLeft.keeper.xPos === xPos && pLeft.keeper.yPos === yPos) return "leftKeeper";
-            if(pLeft.chaser1.xPos === xPos && pLeft.chaser1.yPos === yPos) return "leftChaser1";
-            if(pLeft.chaser2.xPos === xPos && pLeft.chaser2.yPos === yPos) return "leftChaser2";
-            if(pLeft.chaser3.xPos === xPos && pLeft.chaser3.yPos === yPos) return "leftChaser3";
-            if(pLeft.beater1.xPos === xPos && pLeft.beater1.yPos === yPos) return "leftBeater1";
-            if(pLeft.beater2.xPos === xPos && pLeft.beater2.yPos === yPos) return "leftBeater2";
+            if(pLeft.seeker.xPos === xPos && pLeft.seeker.yPos === yPos && !pLeft.seeker.banned) return "leftSeeker";
+            if(pLeft.keeper.xPos === xPos && pLeft.keeper.yPos === yPos && !pLeft.keeper.banned) return "leftKeeper";
+            if(pLeft.chaser1.xPos === xPos && pLeft.chaser1.yPos === yPos && !pLeft.chaser1.banned) return "leftChaser1";
+            if(pLeft.chaser2.xPos === xPos && pLeft.chaser2.yPos === yPos && !pLeft.chaser2.banned) return "leftChaser2";
+            if(pLeft.chaser3.xPos === xPos && pLeft.chaser3.yPos === yPos && !pLeft.chaser3.banned) return "leftChaser3";
+            if(pLeft.beater1.xPos === xPos && pLeft.beater1.yPos === yPos && !pLeft.beater1.banned) return "leftBeater1";
+            if(pLeft.beater2.xPos === xPos && pLeft.beater2.yPos === yPos && !pLeft.beater2.banned) return "leftBeater2";
 
-            if(pRight.seeker.xPos === xPos && pRight.seeker.yPos === yPos) return "rightSeeker";
-            if(pRight.keeper.xPos === xPos && pRight.keeper.yPos === yPos) return "rightKeeper";
-            if(pRight.chaser1.xPos === xPos && pRight.chaser1.yPos === yPos) return "rightChaser1";
-            if(pRight.chaser2.xPos === xPos && pRight.chaser2.yPos === yPos) return "rightChaser2";
-            if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos) return "rightChaser3";
-            if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos) return "rightBeater1";
-            if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos) return "rightBeater2";
+            if(pRight.seeker.xPos === xPos && pRight.seeker.yPos === yPos && !pRight.seeker.banned) return "rightSeeker";
+            if(pRight.keeper.xPos === xPos && pRight.keeper.yPos === yPos && !pRight.keeper.banned) return "rightKeeper";
+            if(pRight.chaser1.xPos === xPos && pRight.chaser1.yPos === yPos && !pRight.chaser1.banned) return "rightChaser1";
+            if(pRight.chaser2.xPos === xPos && pRight.chaser2.yPos === yPos && !pRight.chaser2.banned) return "rightChaser2";
+            if(pRight.chaser3.xPos === xPos && pRight.chaser3.yPos === yPos && !pRight.chaser3.banned) return "rightChaser3";
+            if(pRight.beater1.xPos === xPos && pRight.beater1.yPos === yPos && !pRight.beater1.banned) return "rightBeater1";
+            if(pRight.beater2.xPos === xPos && pRight.beater2.yPos === yPos && !pRight.beater2.banned) return "rightBeater2";
             return null;
         },
         /**computes the id of the given tile */
@@ -1061,12 +1061,14 @@ export default {
             //Check left team players
             for(let player in this.snapShot.leftTeam.players){
                 if(this.snapShot.leftTeam.players[player].xPos == xPos 
-                    && this.snapShot.leftTeam.players[player].yPos == yPos) free = false;
+                    && this.snapShot.leftTeam.players[player].yPos == yPos
+                    && !this.snapShot.leftTeam.players[player].banned) free = false;
             }
             //Check right team players
             for(let player in this.snapShot.rightTeam.players){
                 if(this.snapShot.rightTeam.players[player].xPos == xPos 
-                    && this.snapShot.rightTeam.players[player].yPos == yPos) free = false;
+                    && this.snapShot.rightTeam.players[player].yPos == yPos
+                    && !this.snapShot.rightTeam.players[player].banned) free = false;
             }
             //Check balls
             for(let ball in this.snapShot.balls){
