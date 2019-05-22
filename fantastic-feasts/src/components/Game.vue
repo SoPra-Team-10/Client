@@ -1153,21 +1153,14 @@ export default {
                 else if(xr === xDest && yr === yDest) break;
                 else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
             }
-            for(var y = yStart; y > yDest; y -= 0.1){
-                var x = (y - d) / k;
-                var xr = Math.round(x);
-                var yr = Math.round(y);
-                if(xr === xStart && yr === yStart) continue;
-                else if(xr === xDest && yr === yDest) break;
-                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
-            }
-            for(var y = yStart; y < yDest; y += 0.1){
-                var x = (y - d) / k;
-                var xr = Math.round(x);
-                var yr = Math.round(y);
-                if(xr === xStart && yr === yStart) continue;
-                else if(xr === xDest && yr === yDest) break;
-                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
+            
+            if(xDest === xStart){
+                for(var y = yStart + 1; y < yDest; y++){
+                    crossedTiles.push(this.getTileId(xDest, y));
+                }
+                for(var y = yStart - 1; y > yDest; y--){
+                    crossedTiles.push(this.getTileId(xDest, y));
+                }
             }
             return crossedTiles;
         },
