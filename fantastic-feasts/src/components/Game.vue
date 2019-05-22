@@ -728,7 +728,7 @@ export default {
             }
 
             else if(this.turnType === "removeBan"){
-                this.deltaRequest("unban", null, null, xPos, yPos, selectedEntityId, null, null, null, null, null);
+                this.deltaRequest("unban", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
             }
             
             //if(this.selectedEntity) {
@@ -1029,6 +1029,14 @@ export default {
                             this.highlightTile(x, y); 
                         }
                     }
+                }
+            }
+            else if(this.turnType === "removeBan"){
+                if(this.mySide === "left"){
+                    this.highlightedTiles = this.leftHalfTiles;
+                }
+                else{
+                    this.highlightedTiles = this.rightHalfTiles;
                 }
             }
             
