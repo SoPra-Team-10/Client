@@ -51,7 +51,7 @@ export default {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
             //out server for testing
-            server = "134.60.29.234";
+            server = "134.60.29.230";
             port = "8080";
             var addr = "ws://"+server+":"+port;
             web.websocket = new WebSocket(addr);
@@ -64,7 +64,7 @@ export default {
                 vm.game.userName = userName;
                 var pw = document.getElementById("password").value;
                 var lobby = document.getElementById("lobby").value;
-                var timestamp = this.makeTimestamp();
+                var timestamp = vm.makeTimestamp();
                 
                 var joinRequest = {
                     "timestamp": timestamp,
@@ -82,13 +82,14 @@ export default {
                 web.addr = addr;
 
                 web.websocket.send(msg);
+                var vm2 = vm;
                 web.websocket.onmessage = function(msg){
          
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(document.getElementById("spectator").value){
                             
-                            var timestamp = this.makeTimestamp();
+                            var timestamp = vm2.makeTimestamp();
                             var teamConf = {
                                 "timestamp": timestamp,
                                 "payloadType": "teamConfig",

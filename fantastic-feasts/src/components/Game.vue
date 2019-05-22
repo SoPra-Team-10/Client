@@ -590,20 +590,17 @@ export default {
             
             var xPos = player.xPos;
             var yPos = player.yPos;
-            if(!selectedEntityId.includes(this.mySide)) return;
-            if(!this.highlighedtTiles.includes(this.getTileId(xPos, yPos))) return;
+            if(!this.selectedEntityId.includes(this.mySide)) return;
+            if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
             if(this.turnType === "move"){
-                
-                if(Math.abs(xPos - this.selectedEntity.xPos) < 2 && Math.abs(yPos - this.selectedEntity.yPos)){
-                    this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
-                }
+                this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
             }
             else if(this.turnType === "action"){
-                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                if((this.selectedEntityId.includes("Chaser") || this.selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
-                else if(this.selectedEntityId.includes("Chaser") && player.holdsQuaffle){
-                    this.deltaRequest("wrestQuaffle", null, null, null, null, selectedEntityId, null, null, null, null, null);
+                else if(this.selectedEntityId.includes("Chaser")){
+                    this.deltaRequest("wrestQuaffle", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
                 }
                 else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
                     var balls = this.snapShot.balls;
@@ -639,13 +636,14 @@ export default {
         clickEmptyTile: function(xPos, yPos){
             
             //Make sure the player clicked a highlighted Tile
-            //if(!highlighedtTiles.includes(this.getTileId(xPos, yPos))) return;
+            //if(!highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
 
             this.clickedTile = [xPos, yPos];
+            if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
-                    this.highlighedtTiles = this.leftHalfTiles;
+                    this.highlightedTiles = this.leftHalfTiles;
                     myTeam = this.snapShot.leftTeam;
                     this.playerToPosition = myTeam.players.seeker;
                     for(let player in this.snapShot.leftTeam.players){
@@ -704,7 +702,7 @@ export default {
                 }
             }
             else if(this.turnType === "action"){
-                if((selectedEntityId.includes("Chaser") || selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                if((this.selectedEntityId.includes("Chaser") || this.selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                     this.deltaRequest("quaffleThrow", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
                 }
                 else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
@@ -924,6 +922,9 @@ export default {
         },
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
+
+            this.highlightedTiles = [];
+
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
             //if a player is chosen
@@ -962,42 +963,41 @@ export default {
                 }
             }
             if(obj.payload.turn.includes(this.mySide))this.turnType = obj.payload.type;
-            
+            else return;
             //Move is possible
             if(obj.payload.type === "move"){
-                for(var x = xPos-radius;x <= xPos + radius;  x++) {
-                    for(var y = yPos - radius; y <= yPos + radius; y ++) {
-                        var cubes = this.snapshot.wombatCubes;
-                        var cubed = false;
-                        for(var i = 0; i < cubes.length; i++){
-                            if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
-                        }
-                        if(!cubed) {
-                            this.highlightTile(x, y); 
-                        }
+                for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1;  x++) {
+                    for(var y = this.selectedEntity.yPos - 1; y <= this.selectedEntity.yPos + 1; y ++) {
+                        
+                        //var cubes = this.snapshot.wombatCubes;
+                        //var cubed = false;
+                        //for(var i = 0; i < cubes.length; i++){
+                        //    alert("err");
+                        //    if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
+                        //}
+                        //if(cubed) {
+                        //    alert("ok");
+                        //    this.highlightTile(x, y); 
+                        //}
+                        if(!this.cornerTiles.includes(this.getTileId(x, y)))this.highlightTile(x, y); 
                     }
                 }
             }
             //Throw is possible
-            else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser") && this.selectedEntity.holdsQuaffle){
-                for(i = 0; i <= 220; i++){
-                    if(!this.cornerTiles.includes(i)) this.highlighedtTiles.push(i);
-                }
-            }
-            else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
-                //Check if wrestQuaffle is possible
-                for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1; x++){
-                        for(var y = this.selectedEntity.yPos; y <= this.selectedEntity.yPos + 1; y++){
-                            if(this.snapShot.balls.quaffle.xPos === x &&
-                                this.snapShot.balls.quaffle.yPos === y) this.highlightTile(x, y);
-                        }
+            else if(obj.payload.type === "action" && (obj.payload.turn.includes("Chaser") || obj.payload.turn.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                for(var i = 0; i <= 220; i++){
+                        if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
                     }
+            }
+            //WrestQuaffle is possible
+            else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
+                this.highlightTile(this.snapShot.balls.quaffle.xPos, this.snapShot.balls.quaffle.yPos);
             }
             else if(obj.payload.type === "fan"){
                 if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
-                            if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
+                            if(this.playerIdOnTile(x, y) !== null && !this.playerIdOnTile(x, y).includes(this.mySide)) this.highlightTile(x, y);
                         }
                     }
                 }
@@ -1010,14 +1010,14 @@ export default {
                 }
                 else{
                     for(var i = 0; i <= 220; i++){
-                        if(!this.cornerTiles.includes(i))this.highlighedtTiles.push(i);
+                        if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
                     }
                 }
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
                 this.highlightedTiles = [];
-                for(var x = xPos-radius;x <= xPos + radius;  x++) {
-                    for(var y = yPos - radius; y <= yPos + radius; y ++) {
+                for(var x = this.selectedEntity.xPos - 3; x <= this.selectedEntity.xPos + 3;  x++) {
+                    for(var y = this.selectedEntity.yPos - 3; y <= this.selectedEntity.yPos + 3; y ++) {
                         if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y)) {
                             this.highlightTile(x, y); 
                         }
@@ -1131,6 +1131,14 @@ export default {
             var k = (yDest-yStart)/(xDest-xStart);
             var d = yStart - k * xStart;
             for(var x = xStart; x < xDest; x += 0.1){
+                var y = k * x + d;
+                var xr = Math.round(x);
+                var yr = Math.round(y);
+                if(xr === xStart && yr === yStart) continue;
+                else if(xr === xDest && yr === yDest) break;
+                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
+            }
+            for(var x = xStart; x > xDest; x -= 0.1){
                 var y = k * x + d;
                 var xr = Math.round(x);
                 var yr = Math.round(y);
