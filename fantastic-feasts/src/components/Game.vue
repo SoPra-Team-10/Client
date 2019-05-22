@@ -994,10 +994,17 @@ export default {
                 this.highlightTile(this.snapShot.balls.quaffle.xPos, this.snapShot.balls.quaffle.yPos);
             }
             else if(obj.payload.type === "fan"){
-                if(obj.payload.turn.includes("Goblin") || obj.payload.turn.includes("Elf")){
+                if(obj.payload.turn.includes("Goblin")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
                             if(this.playerIdOnTile(x, y) !== null && !this.playerIdOnTile(x, y).includes(this.mySide)) this.highlightTile(x, y);
+                        }
+                    }
+                }
+                else if(obj.payload.turn.includes("Elf")){
+                    for(x = 0; x < 17; x++){
+                        for(y = 0; y < 13; y++){
+                            if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
                         }
                     }
                 }
@@ -1140,6 +1147,22 @@ export default {
             }
             for(var x = xStart; x > xDest; x -= 0.1){
                 var y = k * x + d;
+                var xr = Math.round(x);
+                var yr = Math.round(y);
+                if(xr === xStart && yr === yStart) continue;
+                else if(xr === xDest && yr === yDest) break;
+                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
+            }
+            for(var y = yStart; y > yDest; y -= 0.1){
+                var x = (y - d) / k;
+                var xr = Math.round(x);
+                var yr = Math.round(y);
+                if(xr === xStart && yr === yStart) continue;
+                else if(xr === xDest && yr === yDest) break;
+                else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
+            }
+            for(var y = yStart; y < yDest; y += 0.1){
+                var x = (y - d) / k;
                 var xr = Math.round(x);
                 var yr = Math.round(y);
                 if(xr === xStart && yr === yStart) continue;
