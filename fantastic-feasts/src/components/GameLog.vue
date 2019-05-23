@@ -5,8 +5,8 @@
         <!-- <h5 id="game-log"></h5> -->
         <div class="log-entry-container">
             <transition-group name="slide">
-                <div v-for="(log, i) in gameLog" :key=log.id :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
-                    {{log.message}}
+                <div v-for="(log, i) in gameLog" :key="log.message" :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
+                    {{log.message}} <span v-if="log.time" style="color: gray">@{{ log.time }}</span>
                 </div>
             </transition-group>
         </div>
@@ -20,7 +20,7 @@ export default {
         return {
             //gameLog: [{message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'} ]
         }
-    } 
+    }
 }
 </script>
 
@@ -33,21 +33,29 @@ export default {
     overflow-y: auto;
     padding: .2vw .2vw;
     max-height: 30vh;
+    height: 100%;
 }
 
 
 
 .log-entry {
     font-size: 1vw;
-    background: #00000028;
-    padding: .2vw;
-    border-radius: .2vw;
-    margin: .2vw 0;
-
-
+    background: radial-gradient(#ffffff, #eeeeee);
+    border: 1px solid #eeeeee;
+    padding: .6vw .4vw;
+    box-shadow: 0 0 3px #00000056;
+    margin: .4vw 0;
+    border-radius: .5vw;
+    overflow-x: hidden;
 }
+
 .highlighted-log-entry {
-    background: #00000010;
-
+    
 }
+
+.log-entry:hover {
+    background: radial-gradient(#ffffff, #f5f5f5);
+    box-shadow: 0 0 3px #0000008c;
+}
+
 </style>

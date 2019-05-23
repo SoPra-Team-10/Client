@@ -52,6 +52,7 @@ export default {
     position: relative;
     width: calc(100vh * 0.0769 * 0.9 * 0.8);
     height: calc(100vh * 0.0769 * 0.9 * 0.8);
+    min-height: calc(100vh * 0.0769 * 0.9 * 0.8);
     margin: calc(100vh * 0.0769 * 0.035 * 0.8) calc(100vh * 0.0588 * 0.05 * 0.8);
     border: 1.5px solid #e0a500;
     border-radius: 1vh;
@@ -88,10 +89,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 85%;
+    height: 90%;
     width: 50%;
-    top: 15%;
+    top: 10%;
     left: 0;
+    overflow-y: auto;
 }
 
 .right-banned-players {
@@ -99,9 +101,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 85%;
+    height: 90%;
     width: 50%;
-    top: 15%;
+    top: 10%;
     right: 0;
+    overflow-y: auto;
 }
 </style>

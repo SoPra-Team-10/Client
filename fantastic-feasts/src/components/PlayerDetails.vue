@@ -38,7 +38,9 @@ export default {
     // have to be passed over from paren component
     props: ['matchStart', 'selectedEntityId', 'selectedEntity', 'snapShot'],
     computed: {
-
+        // returns all required variables that are needed to display player information
+        // this computed property combines the different information from above props to 
+        // one property called playerToDisplay. This makes debugging much easier
         playerToDisplay() {
             // selectedEntityId -> left or right; type
             //

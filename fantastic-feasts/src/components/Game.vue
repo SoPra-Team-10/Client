@@ -96,6 +96,9 @@
                     <input id="in" type="text">
                     <button @click="sendMsg()" class="info-panel-button">Senden</button>
                     <hr class="inner-separation-line">
+                    <input v-model="gameLogTest" type="text">
+                    <button @click="gameLog.unshift({message: gameLogTest, time: getTime()})" class="info-panel-button">Log</button>
+                    <hr class="inner-separation-line">
                     <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
                     <br>
                     <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
@@ -131,6 +134,10 @@ export default {
     },
     data() {
         return {
+            // just for testing (start)
+            gameLogTest: 'Enter log entry',
+            // just for testing (end)
+
             gameState: 'inGame',
             grid: [],
 
@@ -562,11 +569,17 @@ export default {
     },
     methods: {
 
+
         // test-methods
         sendMsg: function(){
             web.websocket.send(document.getElementById("in").value);
         },
 
+        getTime() {
+            const today = new Date();
+            return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        },
+        
         // test method for animation
         shuffleBalls() {
             for (var key in this.snapShot.balls) {
@@ -1817,7 +1830,7 @@ h1 {
 
 #player-info-panel {
     top: 2%;
-    height: 50%;
+    height: 40%;
 }
 
 #game-log-panel {
@@ -1825,7 +1838,8 @@ h1 {
 }
 
 #banned-players-panel {
-    top: 54%;
+    top: 44%;
+    height: 54%;
 }
 
 #test-functions-panel {
