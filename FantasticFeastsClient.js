@@ -1,3 +1,5 @@
+var socket;
+
 function toMainMenu(){
     document.getElementById("MainMenu").style.display="initial";
     document.getElementById("Matchmaking").style.display="none";
@@ -70,5 +72,20 @@ function toInGame(){
 
 function openFileChooser(){
     //TODO: Open a file chooser popup
+}
+
+function connectToServer(){
+    var address = document.getElementById("server").value;
+    socket = new WebSocket(server);
+    socket.onerror = function(err){
+        alert("Connection failed: " + err);
+    }
+    socket.onopen = function(evt){
+        socket.send("echo");
+    }
+    socket.onmessage = function(msg){
+        alert(msg);
+    }
+
 }
 

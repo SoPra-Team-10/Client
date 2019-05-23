@@ -1,0 +1,57 @@
+{
+    "points":"(int)",
+    "fans": [
+      {
+        "fanType": "(string/fanType)",
+        "banned": "(boolean)"
+  } ],
+    "players": {
+      "seeker": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+         "banned": "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "keeper": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsQuaffle" : "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "chaser1": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsQuaffle" : "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "chaser2": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsQuaffle" : "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "chaser3": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsQuaffle" : "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "beater1": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsBludger" : "(boolean)",
+        "turnUsed" : "(boolean)"
+      },
+      "beater2": {
+        "xPos": "(int/posx)",
+        "yPos": "(int/posy)",
+        "banned": "(boolean)",
+        "holdsBludger" : "(boolean)",
+        "turnUsed" : "(boolean)"
+  } }
+  }

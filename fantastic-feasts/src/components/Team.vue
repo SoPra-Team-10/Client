@@ -1,17 +1,78 @@
 <template>
-    <div>
-        <h1>Team auswählen</h1>
-        <button>Dateien</button>
-        <button>Zurück zum Menü</button>
-    </div>
+    <section>
+        <h1 class="app__header">Team auswählen</h1>
+        <div class="app__content">
+            <div class="team-overview__team-list" id="team-selection__team-list">
+                <div v-for="(team, index) in configs.teamConfigs" :key="team.name + team.motto" :class="[index === configs.selectedTeam ? 'selected-team' : '']" class="team-overview__team-preview">
+                    <li @click="selectTeam(index)" class="team-overview__team-preview-item">{{ team.name }}</li>
+                </div>
+            </div>
+            <app-team-selection v-if="configs.selectedTeam != undefined" :configs="configs" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-team-selection> 
+            <div class="app__large-button-container">
+                <!-- function for import is yet to be implemented!! -->
+                <button class="app__small-button">Importieren</button>
+            </div>   
+        </div>
+        <div class="app__footer">
+            <hr class="app__footer-separation-line">
+            <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Zurück zum Menü</button>
+        </div>
+    </section>
 </template>
 
 <script>
+import TeamSelection from './TeamSelection.vue';
+
 export default {
-    
+    methods:{
+        readFile : function(){
+            var files = document.getElementById("fileChooser").files;
+            var file = files[0];
+            if(files.length !== 1){
+                alert("Please choose one file only");
+            }
+            else if(file.type !== "application/json"){
+                alert("Please choose a json-file");
+            }
+            else{
+                var reader = new FileReader();
+                reader.readAsText(file);
+                var data;
+                reader.onload = function(){
+                    data = JSON.parse(reader.result);
+                    alert(data.name);
+                }
+                
+                
+            }
+        },
+        selectTeam(index) {
+            this.configs.selectedTeam = index;
+            console.log(this.configs.selectedTeam);
+            const parsed = JSON.stringify(this.configs);
+            localStorage.setItem('configs', parsed);
+        }
+    },
+    props: ['game', 'configs'],
+    components: {
+        'app-team-selection': TeamSelection
+    }
 }
 </script>
 
 <style>
+
+#team-selection__team-list {
+    display: inline-block;
+    margin-top: 40px;
+    width: 20%;
+}
+
+.selected-team {
+    background: #ddc78a;
+    border-radius: 3px;
+    color: #5a4222;
+    
+}
 
 </style>
