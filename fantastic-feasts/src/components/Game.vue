@@ -1145,28 +1145,28 @@ export default {
             var crossedTiles = [];
             var k = (yDest-yStart)/(xDest-xStart);
             var d = yStart - k * xStart;
-            for(var x = xStart; x < xDest; x += 0.1){
-                var y = k * x + d;
-                var xr = Math.round(x);
-                var yr = Math.round(y);
+            for(let x = xStart; x < xDest; x += 0.1){
+                let y = k * x + d;
+                let xr = Math.round(x);
+                let yr = Math.round(y);
                 if(xr === xStart && yr === yStart) continue;
                 else if(xr === xDest && yr === yDest) break;
                 else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
             }
-            for(var x = xStart; x > xDest; x -= 0.1){
-                var y = k * x + d;
-                var xr = Math.round(x);
-                var yr = Math.round(y);
+            for(let x = xStart; x > xDest; x -= 0.1){
+                let y = k * x + d;
+                let xr = Math.round(x);
+                let yr = Math.round(y);
                 if(xr === xStart && yr === yStart) continue;
                 else if(xr === xDest && yr === yDest) break;
                 else if(!crossedTiles.includes(this.getTileId(xr, yr))) crossedTiles.push(this.getTileId(xr, yr));
             }
             
             if(xDest === xStart){
-                for(var y = yStart + 1; y < yDest; y++){
+                for(let y = yStart + 1; y < yDest; y++){
                     crossedTiles.push(this.getTileId(xDest, y));
                 }
-                for(var y = yStart - 1; y > yDest; y--){
+                for(let y = yStart - 1; y > yDest; y--){
                     crossedTiles.push(this.getTileId(xDest, y));
                 }
             }
