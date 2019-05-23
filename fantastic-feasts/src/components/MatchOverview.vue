@@ -4,8 +4,11 @@
             <div class="team-container">
                 <div class="overview-list">
                     <!-- List of selectable configurations -->
-                    <li v-for="(match, index) in configs.matchConfigs" :key="match.id" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ match.name }}
+                    <transition-group name="slide">
+                        <li v-for="(match, index) in configs.matchConfigs" :key="match.name" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ match.name }}
                     </li>
+                    </transition-group>
+                    
                 </div>
                 <!-- The buttons on the right -->
                 <div class="overview-options">

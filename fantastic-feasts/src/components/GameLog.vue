@@ -4,9 +4,11 @@
         <hr class="inner-separation-line">
         <!-- <h5 id="game-log"></h5> -->
         <div class="log-entry-container">
-            <div v-for="(log, i) in gameLog" :key=log.id :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
-            {{log.message}}
-        </div>
+            <transition-group name="slide">
+                <div v-for="(log, i) in gameLog" :key=log.id :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
+                    {{log.message}}
+                </div>
+            </transition-group>
         </div>
     </div>
 </template>

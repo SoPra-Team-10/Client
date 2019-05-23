@@ -16,10 +16,10 @@
                 </div>
             </header>
             <div class="sidebar-left">
-                <player-details :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
+                <player-details :snapShot="snapShot" :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
                 </player-details>
                 <!-- <hr class="normal-separation-line"> -->
-                <banned-players>
+                <banned-players :matchStart="matchStart" :bannedPlayersTeamLeft="bannedPlayersTeamLeft" :bannedPlayersTeamRight="bannedPlayersTeamRight">
                 </banned-players>
             </div>
             <div class="center">
@@ -50,18 +50,21 @@
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
-                                :key="key" :class="['player-tile', 'left-team-player', key]"
-                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
+                                :key="key" :class="['player-tile', 'left-team-player']"
+                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
-                                @mouseenter="hoveredPlayerType = key"
-                                @mouseleave="hoveredPlayerType = undefined"> <div :id="key.slice(0,6)"></div>
-                                </div>
+                            > 
+                                <div :class="key.slice(0,6)"></div>
+                            </div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamRight" 
-                                :key="key" :class="['player-tile', 'right-team-player', key]" 
-                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', }"
-                                @click="targetPlayer(player, key)"> <div :id="key.slice(0,6)"></div></div>
+                                :key="key" :class="['player-tile', 'right-team-player']" 
+                                :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
+                                @click="targetPlayer(player, key)"
+                            > 
+                                <div :class="key.slice(0,6)"></div>
+                            </div>
                         </transition-group>
                     </div>
                 </div>
@@ -1576,7 +1579,7 @@ h1 {
     padding-top: .65vh;
 }
 
-#chaser {
+.chaser {
     background: url(../resources/chaser.svg);
     position: absolute;
     height: 90%;
@@ -1587,7 +1590,7 @@ h1 {
     pointer-events: none;
 }
 
-#beater {
+.beater {
     background: url(../resources/beater.svg);
     position: absolute;
     height: 90%;
@@ -1598,7 +1601,7 @@ h1 {
     pointer-events: none;
 }
 
-#keeper {
+.keeper {
     background: url(../resources/keeper.svg);
     position: absolute;
     height: 90%;
@@ -1609,7 +1612,7 @@ h1 {
     pointer-events: none;
 }
 
-#seeker {
+.seeker {
     background: url(../resources/seeker.svg);
     position: absolute;
     height: 90%;

@@ -4,8 +4,11 @@
             <div class="team-container">
                 <div class="overview-list">
                     <!-- List of selectable configurations -->
-                    <li v-for="(team, index) in configs.teamConfigs" :key="team.id" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ team.name }}
-                    </li>
+                    <transition-group name="slide">
+                        <li v-for="(team, index) in configs.teamConfigs" :key="team.name + team.motto + team.players.chaser1.broom" @click="selectListItem(index)" class="overview-list-item" :class="{ 'selected-list-item': index ===  selectedItem}">{{ team.name }}
+                        </li>
+                    </transition-group>
+                    
                 </div>
                 <!-- Buttons on the right -->
                 <div class="overview-options">
@@ -161,10 +164,11 @@ export default {
                 },
                 image: '',
                 fans: {
-                    goblins: 1,
-                    trolls: 1,
+                    goblins: 3,
+                    trolls: 2,
                     elves: 1,
-                    nifflers: 1
+                    nifflers: 1,
+                    wombats: 0,
                 },
                 players: {
                     seeker: {
@@ -276,6 +280,49 @@ export default {
     border-top: 1px solid #d1cb94;
 }
 
+
+    .slide-enter {
+        opacity: 0;
+        /*transform: translateY(20px);*/
+    }
+
+    .slide-enter-active {
+        animation: slide-in 1s ease-out forwards;
+        transition: opacity 1s;
+    }
+
+    .slide-leave {
+
+    }
+
+    .slide-leave-active {
+        animation: slide-out 1s ease-out forwards;
+        transition: opacity 1s;
+        opacity: 0;
+        position: absolute;
+    }
+
+    .slide-move {
+        transition: transform 1s;
+    }
+
+    @keyframes slide-in {
+        from {
+            transform: translateY(20px);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slide-out {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(20px);
+        }
+    }
 
 
 </style>
