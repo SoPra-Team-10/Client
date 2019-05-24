@@ -982,8 +982,8 @@ export default {
             else return;
             //Move is possible
             if(obj.payload.type === "move"){
-                for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1;  x++) {
-                    for(var y = this.selectedEntity.yPos - 1; y <= this.selectedEntity.yPos + 1; y ++) {
+                for(var x = Math.max(this.selectedEntity.xPos - 1, 0); x <= Math.min(this.selectedEntity.xPos + 1, 16);  x++) {
+                    for(var y = Math.max(this.selectedEntity.yPos - 1, 0); y <= Math.min(this.selectedEntity.yPos + 1, 16); y ++) {
                         
                         //var cubes = this.snapshot.wombatCubes;
                         //var cubed = false;
