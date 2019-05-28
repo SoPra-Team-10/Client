@@ -1017,7 +1017,7 @@ export default {
             }
             //Interference is possible
             else if(obj.payload.type === "fan"){
-                if(!document.getElementById("autoSkipFans").checked){
+                if(document.getElementById("autoSkipFans").checked){
                     this.skip();
                     return;
                 }
