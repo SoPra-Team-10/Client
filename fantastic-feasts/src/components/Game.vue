@@ -10,7 +10,7 @@
                 <game-info :matchStart="matchStart" :snapShot="snapShot">
                 </game-info>
                 <div class="header__panel" id="pause-panel">
-                    <div id="pause-button">
+                    <div id="pause-button" @click="pauseResume()">
                         Pause
                     </div>
                 </div>
@@ -143,6 +143,8 @@ export default {
 
             selectedEntityId: undefined,
             selectedEntity: undefined,
+
+            paused: false,
 
             highlightedTiles: [],
             crossedTiles: [],
@@ -867,33 +869,36 @@ export default {
                     // all message types are assigned to their corresponding handlers
                     if(jsonObject.payloadType === "matchStart"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: matchStart'});
+                        //vm.gameLog.unshift({message: 'Server sent: matchStart'});
 
                         vm.handleMatchStart(jsonObject);
                     }
                     else if(jsonObject.payloadType === "matchFinish"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: matchFinish'});
+                        //vm.gameLog.unshift({message: 'Server sent: matchFinish'});
 
                         vm.handleMatchFinish(jsonObject);
                     }
                     else if(jsonObject.payloadType === "snapshot"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: snapshot'});
+                        //vm.gameLog.unshift({message: 'Server sent: snapshot'});
 
                         vm.handleSnapshot(jsonObject);
                     }
                     else if(jsonObject.payloadType === "next"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: next'});
+                        //vm.gameLog.unshift({message: 'Server sent: next'});
 
                         vm.handleNext(jsonObject);
                     }
                     else if(jsonObject.payloadType === "reconnect"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: next'});
+                        //vm.gameLog.unshift({message: 'Server sent: next'});
 
-                        vm.handleNext(jsonObject);
+                        vm.handleReconnect(jsonObject);
+                    }
+                    else if(jsonObject.payloadType ==="pauseResponse"){
+                        vm.handlePauseResponse(jsonObject);
                     }
                 }
             }  
@@ -935,10 +940,11 @@ export default {
         /**Update local snapShot */
         handleSnapshot: function(obj){
             this.snapShot = obj.payload;
+            // if(obj.payload.goalWasThrownThisRound)
+            //     this.gameLog.unshift({message: 'Server sent: next'});
         },
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
-
             this.highlightedTiles = [];
 
             this.selectedEntity = undefined;
@@ -982,6 +988,7 @@ export default {
             else return;
             //Move is possible
             if(obj.payload.type === "move"){
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf ziehen"});
                 for(var x = Math.max(this.selectedEntity.xPos - 1, 0); x <= Math.min(this.selectedEntity.xPos + 1, 16);  x++) {
                     for(var y = Math.max(this.selectedEntity.yPos - 1, 0); y <= Math.min(this.selectedEntity.yPos + 1, 16); y ++) {
                         
@@ -1003,12 +1010,15 @@ export default {
             else if(obj.payload.type === "action" && (obj.payload.turn.includes("Chaser") || obj.payload.turn.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                 for(var i = 0; i <= 220; i++){
                         if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
-                    }
+                }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf schießen"});
             }
             //WrestQuaffle is possible
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
                 this.highlightTile(this.snapShot.balls.quaffle.xPos, this.snapShot.balls.quaffle.yPos);
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf den Quaffel stehlen"});
             }
+            //Interference is possible
             else if(obj.payload.type === "fan"){
                 if(obj.payload.turn.includes("Goblin")){
                     for(var x = 0; x < 17; x++){
@@ -1016,6 +1026,7 @@ export default {
                             if(this.playerIdOnTile(x, y) !== null && !this.playerIdOnTile(x, y).includes(this.mySide)) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "Ein Goblin kann eingreifen"});
                 }
                 else if(obj.payload.turn.includes("Elf")){
                     for(x = 0; x < 17; x++){
@@ -1023,6 +1034,7 @@ export default {
                             if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "ein Elf kann eingreifen"});
                 }
                 else if(obj.payload.turn.includes("Wombat")){
                     for(x = 0; x < 17; x++){
@@ -1030,11 +1042,14 @@ export default {
                             if(this.isFreeTile(x, y)) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "ein Wombat kann eingreifen"});
                 }
                 else{
                     for(var i = 0; i <= 220; i++){
                         if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
                     }
+                    if(obj.payload.turn.includes("Troll")) this.gameLog.unshift({message: "ein Troll kann eingreifen"});
+                    else if(obj.payload.turn.includes("Niffler")) this.gameLog.unshift({message: "ein Niffler kann eingreifen"});
                 }
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
@@ -1046,6 +1061,7 @@ export default {
                         }
                     }
                 }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf auf die Fresse geben"});
             }
             else if(this.turnType === "removeBan"){
                 if(this.mySide === "left"){
@@ -1054,17 +1070,22 @@ export default {
                 else{
                     this.highlightedTiles = this.rightHalfTiles;
                 }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
             }
             
         },
 
         /**Use Reconnect message to get up to date */
-        hanldeReconnect: function(obj){
+        handleReconnect: function(obj){
             this.handleMatchStart(obj.matchStart);
             this.handleSnapshot(obj.payload.snapshot);
             if(obj.next) this.handleNext(obj.next);
         },
 
+        /**Sets the paused variable */
+        handlePauseResponse: function(obj){
+            this.paused = obj.payload.pause;
+        },
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
@@ -1100,6 +1121,24 @@ export default {
         /**Sends a skip deltaRequest */
         skip: function(){
             if(this.selectedEntityId.includes(this.mySide))this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+        },
+
+        pauseResume: function(){
+            var jsonObject;
+            var timestamp = this.makeTimestamp();
+            var jsonObject = {
+                timestamp: timestamp,
+                payloadType: "pauseRequest",
+                payload: {
+                    message: ""
+                }
+            }
+            if(this.paused){
+                jsonObject.payloadType = "continueRequest";
+            }
+            
+
+            web.websocket.send(JSON.stringify(jsonObject));
         },
         /**finds the playerId of the entity standing in the given tile.
          * Returns null if there is no player on the tile
@@ -1204,6 +1243,43 @@ export default {
             var date = new Date();
             return date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2) + "." + ("0" + date.getMilliseconds()).slice(-3);
         },
+
+        getPlayerName: function(playerId){
+            switch(playerId){
+                case "leftSeeker":
+                    return this.matchStart.leftTeamConfig.players.seeker.name;
+                case "leftKeeper":
+                    return this.matchStart.leftTeamConfig.players.keeper.name;
+                case "leftChaser1":
+                    return this.matchStart.leftTeamConfig.players.chaser1.name;
+                case "leftChaser2":
+                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                case "leftChaser3":
+                    return this.matchStart.leftTeamConfig.players.chaser3.name;
+                case "leftBeater1":
+                    return this.matchStart.leftTeamConfig.players.beater1.name;
+                case "leftChaser2":
+                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                
+                case "rightSeeker":
+                    return this.matchStart.rightTeamConfig.players.seeker.name;
+                case "rightKeeper":
+                    return this.matchStart.rightTeamConfig.players.keeper.name;
+                case "rightChaser1":
+                    return this.matchStart.rightTeamConfig.players.chaser1.name;
+                case "rightChaser2":
+                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+                case "rightChaser3":
+                    return this.matchStart.rightTeamConfig.players.chaser3.name;
+                case "rightBeater1":
+                    return this.matchStart.rightTeamConfig.players.beater1.name;
+                case "rightChaser2":
+                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+
+                default:
+                    return null;
+            }
+        }
     },
     /**Is automatically called when the component loaded */
     mounted() {
