@@ -93,12 +93,11 @@
                 <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Testfunktionen</h3>
                     <hr class="inner-separation-line">
-                    <input id="in" type="text">
-                    <button @click="sendMsg()" class="info-panel-button">Senden</button>
-                    <hr class="inner-separation-line">
                     <input v-model="gameLogTest" type="text">
                     <button @click="gameLog.unshift({message: gameLogTest, time: getTime()})" class="info-panel-button">Log</button>
                     <hr class="inner-separation-line">
+                    <label for="autoSkipFans">Fans automatisch überspringen</label>
+                    <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
                     <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
                     <br>
                     <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
@@ -573,10 +572,6 @@ export default {
 
 
         // test-methods
-        sendMsg: function(){
-            web.websocket.send(document.getElementById("in").value);
-        },
-
         getTime() {
             const today = new Date();
             return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -994,17 +989,17 @@ export default {
                 for(var x = Math.max(this.selectedEntity.xPos - 1, 0); x <= Math.min(this.selectedEntity.xPos + 1, 16);  x++) {
                     for(var y = Math.max(this.selectedEntity.yPos - 1, 0); y <= Math.min(this.selectedEntity.yPos + 1, 16); y ++) {
                         
-                        //var cubes = this.snapshot.wombatCubes;
-                        //var cubed = false;
-                        //for(var i = 0; i < cubes.length; i++){
-                        //    alert("err");
-                        //    if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
-                        //}
-                        //if(cubed) {
-                        //    alert("ok");
-                        //    this.highlightTile(x, y); 
-                        //}
-                        if(!this.cornerTiles.includes(this.getTileId(x, y)))this.highlightTile(x, y); 
+                        var cubes = this.snapShot.wombatCubes;
+                        var cubed = false;
+                        for(var i = 0; i < cubes.length; i++){
+                           
+                           if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
+                        }
+                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))) {
+                           
+                           this.highlightTile(x, y); 
+                        }
+                        //if(!this.cornerTiles.includes(this.getTileId(x, y)))this.highlightTile(x, y); 
                     }
                 }
             }
@@ -1022,6 +1017,10 @@ export default {
             }
             //Interference is possible
             else if(obj.payload.type === "fan"){
+                if(!document.getElementById("autoSkipFans").checked){
+                    this.skip();
+                    return;
+                }
                 if(obj.payload.turn.includes("Goblin")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
@@ -1124,7 +1123,10 @@ export default {
         },
         /**Sends a skip deltaRequest */
         skip: function(){
-            if(this.selectedEntityId.includes(this.mySide))this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+            if(this.selectedEntityId.includes(this.mySide)){
+                this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+                this.selectedEntityId = null;
+            }
         },
 
         pauseResume: function(){
@@ -1195,6 +1197,12 @@ export default {
             for(let ball in this.snapShot.balls){
                 if(this.snapShot.balls[ball].xPos == xPos 
                     && this.snapShot.balls[ball].yPos == yPos) free = false;
+            }
+            //Check shit
+            var cubes = this.snapShot.wombatCubes;
+            for(var i = 0; i < cubes.length; i++){
+                
+                if(cubes[i].xPos === xPos && cubes[i].yPos === yPos) free = false;
             }
             return free;
         },
