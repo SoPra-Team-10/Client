@@ -609,6 +609,7 @@ export default {
             var xPos = player.xPos;
             var yPos = player.yPos;
             if(!this.selectedEntityId.includes(this.mySide)) return;
+            if(this.paused) return;
             if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
             if(this.turnType === "move"){
                 this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
@@ -658,6 +659,7 @@ export default {
 
             this.clickedTile = [xPos, yPos];
             if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
+            if(this.paused) return;
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
@@ -1039,7 +1041,7 @@ export default {
                 else if(obj.payload.turn.includes("Wombat")){
                     for(x = 0; x < 17; x++){
                         for(y = 0; y < 13; y++){
-                            if(this.isFreeTile(x, y)) this.highlightTile(x, y);
+                            if(this.isFreeTile(x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) this.highlightTile(x, y);
                         }
                     }
                     this.gameLog.unshift({message: "ein Wombat kann eingreifen"});
@@ -1085,6 +1087,8 @@ export default {
         /**Sets the paused variable */
         handlePauseResponse: function(obj){
             this.paused = obj.payload.pause;
+            if(this.paused) document.getElementById("pause-button").innerHTML = "Fortsetzen";
+            else document.getElementById("pause-button").innerHTML = "Pause";
         },
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
