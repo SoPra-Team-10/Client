@@ -11,10 +11,6 @@ before_install:
 script:
   - npm run build-dev
 
-
-after_script:
-  - cd ..
-
 deploy:
   provider: script
   skip-cleanup: true

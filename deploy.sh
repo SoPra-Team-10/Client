@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ..
 echo "On Branch: $TRAVIS_BRANCH"
 
 #deploy gh-pages
