@@ -6,7 +6,7 @@ node_js:
 
 before_install:
   - cd fantastic-feasts  
-  - sudo npm install
+  - npm install
 
 script:
   - npm run build
