@@ -10,7 +10,7 @@
                 <game-info :matchStart="matchStart" :snapShot="snapShot">
                 </game-info>
                 <div class="header__panel" id="pause-panel">
-                    <div id="pause-button">
+                    <div id="pause-button" @click="pauseResume()">
                         Pause
                     </div>
                 </div>
@@ -79,12 +79,11 @@
                 <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Testfunktionen</h3>
                     <hr class="inner-separation-line">
-                    <input id="in" type="text">
-                    <button @click="sendMsg()" class="info-panel-button">Senden</button>
-                    <hr class="inner-separation-line">
                     <input v-model="gameLogTest" type="text">
                     <button @click="gameLog.unshift({message: gameLogTest, time: getTime()})" class="info-panel-button">Log</button>
                     <hr class="inner-separation-line">
+                    <label for="autoSkipFans">Fans automatisch überspringen</label>
+                    <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
                     <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
                     <br>
                     <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
@@ -135,6 +134,8 @@ export default {
 
             selectedEntityId: undefined,
             selectedEntity: undefined,
+
+            paused: false,
 
             highlightedTiles: [],
             crossedTiles: [],
@@ -559,6 +560,11 @@ export default {
         },
 
 
+        getTime() {
+            const today = new Date();
+            return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        },
+        
         // test method for animation
         shuffleBalls() {
             for (var key in this.snapShot.balls) {
@@ -586,6 +592,7 @@ export default {
             var xPos = player.xPos;
             var yPos = player.yPos;
             if(!this.selectedEntityId.includes(this.mySide)) return;
+            if(this.paused) return;
             if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
             if(this.turnType === "move"){
                 this.deltaRequest("move", null, null, xPos, yPos, this.selectedEntityId, null, null, null, null, null);
@@ -635,6 +642,7 @@ export default {
 
             this.clickedTile = [xPos, yPos];
             if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
+            if(this.paused) return;
             if(!this.started){
                 var myTeam;
                 if(this.mySide === "left"){
@@ -872,7 +880,10 @@ export default {
                         // debugging:
                         vm.logMessage(jsonObject.payload);
 
-                        vm.handleNext(jsonObject);
+                        vm.handleReconnect(jsonObject);
+                    }
+                    else if(jsonObject.payloadType ==="pauseResponse"){
+                        vm.handlePauseResponse(jsonObject);
                     }
                 }
             }  
@@ -914,6 +925,8 @@ export default {
         /**Update local snapShot */
         handleSnapshot: function(obj){
             this.snapShot = obj.payload;
+            // if(obj.payload.goalWasThrownThisRound)
+            //     this.gameLog.unshift({message: 'Server sent: next'});
         },
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
@@ -961,20 +974,21 @@ export default {
             else return;
             //Move is possible
             if(obj.payload.type === "move"){
-                for(var x = this.selectedEntity.xPos - 1; x <= this.selectedEntity.xPos + 1;  x++) {
-                    for(var y = this.selectedEntity.yPos - 1; y <= this.selectedEntity.yPos + 1; y ++) {
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf ziehen"});
+                for(var x = Math.max(this.selectedEntity.xPos - 1, 0); x <= Math.min(this.selectedEntity.xPos + 1, 16);  x++) {
+                    for(var y = Math.max(this.selectedEntity.yPos - 1, 0); y <= Math.min(this.selectedEntity.yPos + 1, 16); y ++) {
                         
-                        //var cubes = this.snapshot.wombatCubes;
-                        //var cubed = false;
-                        //for(var i = 0; i < cubes.length; i++){
-                        //    alert("err");
-                        //    if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
-                        //}
-                        //if(cubed) {
-                        //    alert("ok");
-                        //    this.highlightTile(x, y); 
-                        //}
-                        if(!this.cornerTiles.includes(this.getTileId(x, y)))this.highlightTile(x, y); 
+                        var cubes = this.snapShot.wombatCubes;
+                        var cubed = false;
+                        for(var i = 0; i < cubes.length; i++){
+                           
+                           if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
+                        }
+                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))) {
+                           
+                           this.highlightTile(x, y); 
+                        }
+                        //if(!this.cornerTiles.includes(this.getTileId(x, y)))this.highlightTile(x, y); 
                     }
                 }
             }
@@ -982,19 +996,27 @@ export default {
             else if(obj.payload.type === "action" && (obj.payload.turn.includes("Chaser") || obj.payload.turn.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                 for(var i = 0; i <= 220; i++){
                         if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
-                    }
+                }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf schießen"});
             }
             //WrestQuaffle is possible
             else if(obj.payload.type === "action" && obj.payload.turn.includes("Chaser")){
                 this.highlightTile(this.snapShot.balls.quaffle.xPos, this.snapShot.balls.quaffle.yPos);
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf den Quaffel stehlen"});
             }
+            //Interference is possible
             else if(obj.payload.type === "fan"){
+                if(document.getElementById("autoSkipFans").checked){
+                    this.skip();
+                    return;
+                }
                 if(obj.payload.turn.includes("Goblin")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
                             if(this.playerIdOnTile(x, y) !== null && !this.playerIdOnTile(x, y).includes(this.mySide)) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "Ein Goblin kann eingreifen"});
                 }
                 else if(obj.payload.turn.includes("Elf")){
                     for(x = 0; x < 17; x++){
@@ -1002,18 +1024,22 @@ export default {
                             if(this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "ein Elf kann eingreifen"});
                 }
                 else if(obj.payload.turn.includes("Wombat")){
                     for(x = 0; x < 17; x++){
                         for(y = 0; y < 13; y++){
-                            if(this.isFreeTile(x, y)) this.highlightTile(x, y);
+                            if(this.isFreeTile(x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) this.highlightTile(x, y);
                         }
                     }
+                    this.gameLog.unshift({message: "ein Wombat kann eingreifen"});
                 }
                 else{
                     for(var i = 0; i <= 220; i++){
                         if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
                     }
+                    if(obj.payload.turn.includes("Troll")) this.gameLog.unshift({message: "ein Troll kann eingreifen"});
+                    else if(obj.payload.turn.includes("Niffler")) this.gameLog.unshift({message: "ein Niffler kann eingreifen"});
                 }
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
@@ -1025,6 +1051,7 @@ export default {
                         }
                     }
                 }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf auf die Fresse geben"});
             }
             else if(this.turnType === "removeBan"){
                 if(this.mySide === "left"){
@@ -1033,17 +1060,24 @@ export default {
                 else{
                     this.highlightedTiles = this.rightHalfTiles;
                 }
+                this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
             }
             
         },
 
         /**Use Reconnect message to get up to date */
-        hanldeReconnect: function(obj){
+        handleReconnect: function(obj){
             this.handleMatchStart(obj.matchStart);
             this.handleSnapshot(obj.payload.snapshot);
             if(obj.next) this.handleNext(obj.next);
         },
 
+        /**Sets the paused variable */
+        handlePauseResponse: function(obj){
+            this.paused = obj.payload.pause;
+            if(this.paused) document.getElementById("pause-button").innerHTML = "Fortsetzen";
+            else document.getElementById("pause-button").innerHTML = "Pause";
+        },
         /**increases displayed score of given team by given amount */
         scorePoints(increment, team) {
             this.snapShot[team].points += increment;
@@ -1078,7 +1112,28 @@ export default {
         },
         /**Sends a skip deltaRequest */
         skip: function(){
-            if(this.selectedEntityId.includes(this.mySide))this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+            if(this.selectedEntityId.includes(this.mySide)){
+                this.deltaRequest("skip", null, null, null, null, this.selectedEntityId, null, null, null, null, null);
+                this.selectedEntityId = null;
+            }
+        },
+
+        pauseResume: function(){
+            var jsonObject;
+            var timestamp = this.makeTimestamp();
+            var jsonObject = {
+                timestamp: timestamp,
+                payloadType: "pauseRequest",
+                payload: {
+                    message: ""
+                }
+            }
+            if(this.paused){
+                jsonObject.payloadType = "continueRequest";
+            }
+            
+
+            web.websocket.send(JSON.stringify(jsonObject));
         },
         /**finds the playerId of the entity standing in the given tile.
          * Returns null if there is no player on the tile
@@ -1132,6 +1187,12 @@ export default {
                 if(this.snapShot.balls[ball].xPos == xPos 
                     && this.snapShot.balls[ball].yPos == yPos) free = false;
             }
+            //Check shit
+            var cubes = this.snapShot.wombatCubes;
+            for(var i = 0; i < cubes.length; i++){
+                
+                if(cubes[i].xPos === xPos && cubes[i].yPos === yPos) free = false;
+            }
             return free;
         },
         
@@ -1183,6 +1244,43 @@ export default {
             var date = new Date();
             return date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2) + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2) + "." + ("0" + date.getMilliseconds()).slice(-3);
         },
+
+        getPlayerName: function(playerId){
+            switch(playerId){
+                case "leftSeeker":
+                    return this.matchStart.leftTeamConfig.players.seeker.name;
+                case "leftKeeper":
+                    return this.matchStart.leftTeamConfig.players.keeper.name;
+                case "leftChaser1":
+                    return this.matchStart.leftTeamConfig.players.chaser1.name;
+                case "leftChaser2":
+                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                case "leftChaser3":
+                    return this.matchStart.leftTeamConfig.players.chaser3.name;
+                case "leftBeater1":
+                    return this.matchStart.leftTeamConfig.players.beater1.name;
+                case "leftChaser2":
+                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                
+                case "rightSeeker":
+                    return this.matchStart.rightTeamConfig.players.seeker.name;
+                case "rightKeeper":
+                    return this.matchStart.rightTeamConfig.players.keeper.name;
+                case "rightChaser1":
+                    return this.matchStart.rightTeamConfig.players.chaser1.name;
+                case "rightChaser2":
+                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+                case "rightChaser3":
+                    return this.matchStart.rightTeamConfig.players.chaser3.name;
+                case "rightBeater1":
+                    return this.matchStart.rightTeamConfig.players.beater1.name;
+                case "rightChaser2":
+                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+
+                default:
+                    return null;
+            }
+        }
     },
     /**Is automatically called when the component loaded */
     mounted() {
