@@ -927,6 +927,7 @@ export default {
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
+            web.websocket.close();
             this.game.currentState = "inLobby";
         },
         /**Update local snapShot */
