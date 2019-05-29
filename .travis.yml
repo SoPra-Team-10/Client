@@ -1,0 +1,15 @@
+dist: trusty
+language: node_js
+
+script:
+  - npm install
+  - npm run build
+
+deploy:
+  provider: script
+  skip-cleanup: true
+  keep-history: true
+  script: bash deploy.sh
+  on:
+    all_branches: true
+
