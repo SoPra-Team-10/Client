@@ -5,7 +5,7 @@
         <!-- <h5 id="game-log"></h5> -->
         <div class="log-entry-container">
             <transition-group name="slide">
-                <div v-for="(log, i) in gameLog" :key="log.message" :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
+                <div v-for="(log, i) in gameLog" :key="log.time" :class="['log-entry', {'highlighted-log-entry': i % 2 === 0}]">
                     {{log.message}} <span v-if="log.time" style="color: gray">@{{ log.time }}</span>
                 </div>
             </transition-group>

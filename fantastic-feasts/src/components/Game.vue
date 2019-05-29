@@ -68,23 +68,9 @@
                         </transition-group>
                     </div>
                 </div>
-                <div class="spectator-stand-panel">
-                    <div class="spectator-stand-left">
-                        <div v-for="(fan, index) in activeFansTeamLeft" 
-                            :key="index"
-                            :class="['fan', 'fan-left-team']"
-                            @click="fan.banned = true"> 
-                            <div :class="fan.fanType"></div>
-                        </div>
-                    </div>
-                    <div class="spectator-stand-right">
-                        <div v-for="(fan, index) in activeFansTeamRight" 
-                            :key="index"
-                            :class="['fan', 'fan-right-team']">
-                            <div :class="fan.fanType"></div>
-                        </div> 
-                    </div>
-                </div>
+                <game-fans :snapShot="snapShot">
+                </game-fans>
+                <game-timer :time="timeout"></game-timer>
             </div>
             <div class="sidebar-right">
                 <game-log :gameLog="gameLog">
@@ -123,6 +109,8 @@ import BannedPlayers from './BannedPlayers.vue';
 import GameLog from './GameLog.vue';
 import PlayerDetails from './PlayerDetails.vue';
 import GameInfo from './GameInfo.vue';
+import GameFans from './GameFans.vue';
+import GameTimer from './GameTimer.vue';
 
 export default {
     props: ['game', 'teamConfig'],
@@ -130,10 +118,14 @@ export default {
         'game-log': GameLog,
         'player-details': PlayerDetails,
         'banned-players': BannedPlayers,
-        'game-info': GameInfo
+        'game-info': GameInfo,
+        'game-fans': GameFans,
+        'game-timer': GameTimer
     },
     data() {
         return {
+            timeout: 0,
+            pauseTimer: false,
             // just for testing (start)
             gameLogTest: 'Enter log entry',
             // just for testing (end)
@@ -155,7 +147,7 @@ export default {
             turnType: String,
 
             // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
-            gameLog: [{message: 'test1'}, {message: 'test2'}],
+            gameLog: [{message: 'test1', time: '123123123123'}, {message: 'test2', time: '5234123332'}],
             
             // can later be changed to undefined.
             matchStart: {
@@ -479,17 +471,6 @@ export default {
             }
             return activePlayers;
         },
-        activeFansTeamLeft() {
-            var fans = this.snapShot.leftTeam.fans;
-            var activeFans = {};
-            for ( var key in fans ) {
-                if(!fans[key].banned) {
-                    activeFans[key] = fans[key];
-                    
-                }
-            }
-            return activeFans;
-        },
         activePlayersTeamRight() {
             var players = this.snapShot.rightTeam.players;
             var activePlayers = {};
@@ -500,17 +481,6 @@ export default {
                 }
             }
             return activePlayers;
-        },
-        activeFansTeamRight() {
-            var fans = this.snapShot.rightTeam.fans;
-            var activeFans = {};
-            for ( var key in fans ) {
-                if(!fans[key].banned) {
-                    activeFans[key] = fans[key];
-                    
-                }
-            }
-            return activeFans;
         },
         getEntity(entityID) {
             if(entityID.startsWith('left')) {
@@ -568,6 +538,19 @@ export default {
         }
     },
     methods: {
+        startTimer() {
+            setInterval(() => {
+                if(this.timeout != 0) {
+                    this.timeout--;
+                }
+            }, 1000);
+        },
+
+        logMessage(message) {
+            console.log(message);
+            const time = new Date();
+            this.gameLog.unshift({message: 'new message', time: time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds()});
+        },
 
 
         // test-methods
@@ -575,11 +558,7 @@ export default {
             web.websocket.send(document.getElementById("in").value);
         },
 
-        getTime() {
-            const today = new Date();
-            return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        },
-        
+
         // test method for animation
         shuffleBalls() {
             for (var key in this.snapShot.balls) {
@@ -867,31 +846,31 @@ export default {
                     // all message types are assigned to their corresponding handlers
                     if(jsonObject.payloadType === "matchStart"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: matchStart'});
+                        vm.logMessage(jsonObject.payload);
 
                         vm.handleMatchStart(jsonObject);
                     }
                     else if(jsonObject.payloadType === "matchFinish"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: matchFinish'});
+                        vm.logMessage(jsonObject.payload);
 
                         vm.handleMatchFinish(jsonObject);
                     }
                     else if(jsonObject.payloadType === "snapshot"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: snapshot'});
+                        vm.logMessage(jsonObject.payload);
 
                         vm.handleSnapshot(jsonObject);
                     }
                     else if(jsonObject.payloadType === "next"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: next'});
+                        vm.logMessage(jsonObject.payload);
 
                         vm.handleNext(jsonObject);
                     }
                     else if(jsonObject.payloadType === "reconnect"){
                         // debugging:
-                        vm.gameLog.unshift({message: 'Server sent: next'});
+                        vm.logMessage(jsonObject.payload);
 
                         vm.handleNext(jsonObject);
                     }
@@ -938,8 +917,8 @@ export default {
         },
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
-
             this.highlightedTiles = [];
+            this.timeout = parseInt(parseInt(obj.payload.timeout)/1000);
 
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
@@ -1207,6 +1186,7 @@ export default {
     },
     /**Is automatically called when the component loaded */
     mounted() {
+        this.startTimer();
         this.grid = this.generateGrid();
         this.startGame();
         this.matchStart.leftTeamConfig = this.teamConfig;
@@ -1421,52 +1401,6 @@ export default {
 }
 
 
-
-.spectator-stand-panel {
-    background:radial-gradient(#797979, #525252);
-    position: fixed;
-    height: 10%;
-    width: 60%;
-    left: 20%;
-    bottom: 0;
-    border: 1px solid #adadad;
-    border-bottom: none;
-    border-radius: 1vh 1vh 0 0;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5), 0 0 19px 0 rgba(0, 0, 0, 0.19);
-}
-
-.spectator-stand-left {
-    position: absolute;
-    text-align: center;
-    background:radial-gradient(#6b6b6b, #525252);
-    color: white;
-    border-radius: 1vh;
-    width: 42.5%;
-    height: 70%;
-    top: 15%;
-    left: 5%;
-    border: 1px solid #7e7e7e;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-}
-
-.spectator-stand-right {
-    position: absolute;
-    text-align: center;
-    background:radial-gradient(#6b6b6b, #525252);
-    color: white;
-    border-radius: 1vh;
-    width: 42.5%;
-    height: 70%;
-    top: 15%;
-    right: 5%;
-    border: 1px solid #7e7e7e;
-    -moz-box-shadow:    inset 0 0 3px #00000086;
-    -webkit-box-shadow: inset 0 0 3px #000000;
-    box-shadow:         inset 0 0 3px #000000;
-}
-
 .ball {
     z-index: 60;
 
@@ -1482,36 +1416,6 @@ export default {
     z-index: 50;
 }
 
-.fan {
-    display: inline-block;
-    z-index: 50;
-    position: relative;
-    width: 5vh;
-    height: 5vh;
-    margin: 0.85vh 0.3vh;
-    border: 1.5px solid #e0a500;
-    border-radius: 1vh;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
-    font-size: 3vh;
-    padding-top: .6vh; 
-}
-
-.troll {
-    display: inline-block;
-    z-index: 51;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    border-radius: .9vh;
-    overflow: hidden;
-    background: url(../resources/troll.svg), radial-gradient(#ffffffcb, #ffffff00);
-}
-
-.fan:hover {
-    background: radial-gradient(#e7c87300, #e9cf8894);
-}
 
 h1 {
   color: transparent;
@@ -1805,15 +1709,15 @@ h1 {
 }
 
 .game-balls-move {
-    transition: transform 1s;
+    transition: transform .3s;
 }
 
 .game-players-move {
-    transition: transform 1s;
+    transition: transform .3s;
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity .3s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
