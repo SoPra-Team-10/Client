@@ -35,7 +35,7 @@ git add --all
 git commit -m "Deploy code docs to GitHub Pages Travis build: ${TRAVIS_BUILD_NUMBER}" -m "Commit: ${TRAVIS_COMMIT}"
 
 echo '[deploy_gh-pages]: git push'
-git push --force "https://${GH_REPO_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" > /dev/null 2>&1
+git push --force "https://${GH_REPO_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git"
 
 echo '[deploy_gh-pages]: remove temp dir'
 cd ../..
