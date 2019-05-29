@@ -129,6 +129,15 @@
                 class="team-config__fan-counter"
                 v-model.number="teamConfig.fans.nifflers"
                 @blur="checkInput($event, teamConfig.fans, 'nifflers')">
+            <label class="team-config__fan-label" for="team-wombats">Wombats</label>
+            <input
+                type="number"
+                id="team-wombats"
+                min='1'
+                max='3'
+                class="team-config__fan-counter"
+                v-model.number="teamConfig.fans.wombats"
+                @blur="checkInput($event, teamConfig.fans, 'wombats')">
             
         </div>
         <div>
@@ -302,7 +311,7 @@ export default {
                 case 'comet260':
                     return 'Comet-2-60';
                 case 'nimbus2001':
-                    return 'nimbus2001';
+                    return 'Nimbus 2001';
                 case 'firebolt':
                     return 'Feuerblitz';
                 default: undefined

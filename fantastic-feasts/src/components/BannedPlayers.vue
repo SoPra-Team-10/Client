@@ -12,9 +12,9 @@
         
         <div class="left-banned-players">
             <p class="banned-players-label">links</p>
-            <div v-for="(player, key) in bannedPlayersTeamLeft.players"
+            <div v-for="(player, key, index) in bannedPlayersTeamLeft.players"
                 :key = key
-                :class="['banned-player-tile', {'selected-banned-player-tile': player === playerToPosition}]" 
+                :class="['banned-player-tile', {'selected-banned-player-tile': index === 0}]" 
                 :style="{ background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
             >
                 <div @click="printKey(key)" :class="key.slice(0, 6)"></div>
@@ -22,9 +22,9 @@
         </div>
         <div class="right-banned-players">
             <p class="banned-players-label">rechts</p>
-            <div v-for="(player, key) in bannedPlayersTeamRight.players"
+            <div v-for="(player, key, index) in bannedPlayersTeamRight.players"
                 :key = key
-                :class="['banned-player-tile', {'selected-banned-player-tile': player === playerToPosition}]" 
+                :class="['banned-player-tile', {'selected-banned-player-tile': index === 0}]" 
                 :style="{ background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
             >
                 <div @click="printKey(key)" :class="key.slice(0, 6)"></div>

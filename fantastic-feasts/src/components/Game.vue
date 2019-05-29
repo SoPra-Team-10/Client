@@ -50,7 +50,7 @@
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
-                                :key="key" :class="['player-tile', 'left-team-player']"
+                                :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout': player.knockout }]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
                             > 
@@ -66,6 +66,13 @@
                                 <div :class="key.slice(0,6)"></div>
                             </div>
                         </transition-group>
+                        <transition-group name="wombat-cubes" tag="div">
+                            <div v-for="(wombatCube, index) in snapShot.wombatCubes" 
+                                :key="index" :class="['wombat-cube']"
+                                :style="{ left: 5.88 * wombatCube.xPos + '%', top: 7.69 * wombatCube.yPos + '%'}"
+                            > 
+                            </div>
+                        </transition-group>
                     </div>
                 </div>
                 <game-fans :snapShot="snapShot">
@@ -73,8 +80,8 @@
                 <game-timer :time="timeout"></game-timer>
             </div>
             <div class="sidebar-right">
-                <game-log :gameLog="gameLog">
-                </game-log>
+                <!-- <game-log :gameLog="gameLog">
+                </game-log> -->
                 <!-- <hr class="normal-separation-line"> -->
                 <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Testfunktionen</h3>
@@ -1581,6 +1588,19 @@ h1 {
     border: 1px solid #fdff6d;
 }
 
+.wombat-cube {
+    position: absolute;
+    width: calc(5.88% * 0.6);
+    height: calc(7.69% * 0.6);
+    margin: calc(7.69% * 0.024) calc(5.88% * 0.033);
+    border: 1.5px solid #6d3609;
+    background: radial-gradient(#6d3609, #4b2709);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
+    font-size: 3vh;
+    z-index: 50;
+    padding-top: .65vh;
+}
+
 .player-tile {
     position: absolute;
     width: calc(5.88% * 0.9);
@@ -1592,6 +1612,10 @@ h1 {
     font-size: 3vh;
     z-index: 50;
     padding-top: .65vh;
+}
+
+.player-knockout {
+    opacity: 0.5;
 }
 
 .chaser {
