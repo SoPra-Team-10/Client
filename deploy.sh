@@ -19,9 +19,6 @@ git config user.email "deploy@travis-ci.org"
 
 echo '[deploy_gh-pages]: copy new files'
 
-ls ../../fantastic-feasts/dist/
-
-#@TODO
 if [ "$TRAVIS_BRANCH" == "master" ]; then
     rm -f *
 else
@@ -29,6 +26,8 @@ else
     mkdir -p "$TRAVIS_BRANCH"
     cd "$TRAVIS_BRANCH"
 fi
+
+cp -r ../../fantastic-feasts/dist/* .
 
 echo '[deploy_gh-pages]: git add & commit'
 git add --all
