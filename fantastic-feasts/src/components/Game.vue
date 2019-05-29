@@ -1051,9 +1051,9 @@ export default {
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
                 this.highlightedTiles = [];
-                for(var x = this.selectedEntity.xPos - 3; x <= this.selectedEntity.xPos + 3;  x++) {
-                    for(var y = this.selectedEntity.yPos - 3; y <= this.selectedEntity.yPos + 3; y ++) {
-                        if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y)) {
+                for(var x = Math.max(this.selectedEntity.xPos - 3); x <= Math.min(this.selectedEntity.xPos + 3, 16);  x++) {
+                    for(var y = Math.max(this.selectedEntity.yPos - 3, 0); y <= Math.min(this.selectedEntity.yPos + 3, 16); y ++) {
+                        if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) {
                             this.highlightTile(x, y); 
                         }
                     }

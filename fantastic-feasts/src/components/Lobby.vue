@@ -88,7 +88,7 @@ export default {
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
                         if(!document.getElementById("spectator").checked){
-                            
+                            alert("Player");
                             var timestamp = vm2.makeTimestamp();
                             var teamConf = {
                                 "timestamp": timestamp,
