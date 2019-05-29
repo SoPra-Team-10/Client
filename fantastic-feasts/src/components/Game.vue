@@ -16,7 +16,7 @@
                 </div>
             </header>
             <div class="sidebar-left">
-                <player-details :snapShot="snapShot" :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
+                <player-details v-if="this.selectedEntity && this.selectedEntityId" :snapShot="snapShot" :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
                 </player-details>
                 <!-- <hr class="normal-separation-line"> -->
                 <banned-players :matchStart="matchStart" :bannedPlayersTeamLeft="bannedPlayersTeamLeft" :bannedPlayersTeamRight="bannedPlayersTeamRight">
@@ -1592,9 +1592,10 @@ h1 {
     position: absolute;
     width: calc(5.88% * 0.6);
     height: calc(7.69% * 0.6);
-    margin: calc(7.69% * 0.024) calc(5.88% * 0.033);
-    border: 1.5px solid #6d3609;
-    background: radial-gradient(#6d3609, #4b2709);
+    margin: calc(7.69% * 0.0525) calc(5.88% * 0.075);
+    border: 1.5px solid #4b2709;
+    background: radial-gradient(#97643a, #4b2709);
+    border-radius: 3px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
     font-size: 3vh;
     z-index: 50;

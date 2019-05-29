@@ -9,17 +9,16 @@
         @click="fan.banned = true"
       >
         <div :class="fan.fanType"></div>
-      </div> -->
+      </div>-->
       <div v-for="(count, key) in fanCountTeamLeft" :key="key" class="fan">
-        <div  :class="key">
+        <div :class="key">
           <div class="fan-counter">{{ count }}</div>
         </div>
-        
       </div>
     </div>
     <div class="spectator-stand spectator-stand-right">
-      <div v-for="(count, key) in fanCountTeamLeft" :key="key" class="fan">
-        <div  :class="key">
+      <div v-for="(count, key) in fanCountTeamRight" :key="key" class="fan">
+        <div :class="key">
           <div class="fan-counter">{{ count }}</div>
         </div>
       </div>
@@ -32,35 +31,37 @@ export default {
   props: {
     snapShot: {
       type: Object,
-      required: true,
+      required: true
     }
   },
   computed: {
     fanCountTeamLeft() {
       var fans = this.snapShot.leftTeam.fans;
       const fanDict = {};
-      for(var key in fans) {
-        if (fanDict[fans[key].fanType]) {
-          fanDict[fans[key].fanType] ++;
-        } else {
-          fanDict[fans[key].fanType] = 1;
+      for (var key in fans) {
+        if (!fans[key].banned) {
+          if (fanDict[fans[key].fanType]) {
+            fanDict[fans[key].fanType]++;
+          } else {
+            fanDict[fans[key].fanType] = 1;
+          }
         }
       }
       return fanDict;
-
     },
     fanCountTeamRight() {
       var fans = this.snapShot.rightTeam.fans;
       const fanDict = {};
-      for(var key in fans) {
+      for (var key in fans) {
         if (fanDict[fans[key].fanType]) {
-          fanDict[fans[key].fanType] ++;
-        } else {
-          fanDict[fans[key].fanType] = 1;
+          if (fanDict[fans[key].fanType]) {
+            fanDict[fans[key].fanType]++;
+          } else {
+            fanDict[fans[key].fanType] = 1;
+          }
         }
       }
       return fanDict;
-
     },
     activeFansTeamRight() {
       var fans = this.snapShot.rightTeam.fans;
@@ -147,7 +148,7 @@ export default {
   align-items: center;
   align-content: center;
   justify-content: center;
-  font-size: .7rem;
+  font-size: 0.7rem;
   background: radial-gradient(#000000a2, #0000003d);
   border-radius: 100%;
   /* border: 1px solid #ffffff; */
