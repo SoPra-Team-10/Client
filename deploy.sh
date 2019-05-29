@@ -21,13 +21,14 @@ echo '[deploy_gh-pages]: copy new files'
 
 if [ "$TRAVIS_BRANCH" == "master" ]; then
     rm -f *
+    cp -r ../../fantastic-feasts/dist/* .
 else
     rm -rf "$TRAVIS_BRANCH"
     mkdir -p "$TRAVIS_BRANCH"
     cd "$TRAVIS_BRANCH"
+    cp -r ../../../fantastic-feasts/dist/* .
 fi
 
-cp -r ../../fantastic-feasts/dist/* .
 
 echo '[deploy_gh-pages]: git add & commit'
 git add --all
@@ -37,5 +38,5 @@ echo '[deploy_gh-pages]: git push'
 git push --force "https://${GH_REPO_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" > /dev/null 2>&1
 
 echo '[deploy_gh-pages]: remove temp dir'
-cd ../../..
+cd ../..
 rm -rf deployGH-PAGES
