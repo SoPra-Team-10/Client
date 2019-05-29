@@ -9,7 +9,7 @@ cd deployGH-PAGES
 
 echo '[deploy_gh-pages]: clone gh-pages branch'
 git clone -b gh-pages https://github.com/${TRAVIS_REPO_SLUG}.git
-export TRAVIS_REPO_NAME=${TRAVIS_REPO_SLUG}
+export TRAVIS_REPO_NAME=${TRAVIS_REPO_SLUG#*/}
 cd ${TRAVIS_REPO_NAME}
 
 echo '[deploy_gh-pages]: configuring git'
