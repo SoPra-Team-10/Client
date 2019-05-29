@@ -1,9 +1,14 @@
+sudo: required
 dist: trusty
 language: node_js
+node_js:
+  - "7"
+
+before_install:
+  - cd fantastic-feasts  
+  - sudo npm install
 
 script:
-  - cd fantastic-feasts
-  - npm install
   - npm run build
 
 deploy:
