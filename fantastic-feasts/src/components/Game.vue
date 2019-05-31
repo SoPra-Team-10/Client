@@ -387,7 +387,7 @@ export default {
                     184, 185, 201
                     ],
             cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],   
-            
+            goalTiles: [70, 104, 138, 82, 116, 150],
             
             reconnect: {
                 matchStart: undefined,
@@ -661,6 +661,9 @@ export default {
                             this.snapShot.leftTeam.players[player].banned = false;
                             this.snapShot.leftTeam.players[player].xPos = xPos;
                             this.snapShot.leftTeam.players[player].yPos = yPos;
+                            for(let i = 0; i < this.highlightedTiles.length; i ++){
+                                if(this.highlightedTiles[i] === this.getTileId(xPos, yPos)) this.highlightedTiles.splice(i, 1);
+                            }
                             break;
                         }
                     }
@@ -682,6 +685,9 @@ export default {
                             this.snapShot.rightTeam.players[player].banned = false;
                             this.snapShot.rightTeam.players[player].xPos = xPos;
                             this.snapShot.rightTeam.players[player].yPos = yPos;
+                            for(let i = 0; i < this.highlightedTiles.length; i ++){
+                                if(this.highlightedTiles[i] === this.getTileId(xPos, yPos)) this.highlightedTiles.splice(i, 1);
+                            }
                             break;  
                         }
                     }
@@ -924,6 +930,9 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
+            for(let i = 0; i < this.highlightedTiles.length; i++){
+                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+                }
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
@@ -1067,6 +1076,9 @@ export default {
                 }
                 else{
                     this.highlightedTiles = this.rightHalfTiles;
+                }
+                for(let i = 0; i < this.highlightedTiles.length; i++){
+                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
             }
@@ -1267,8 +1279,8 @@ export default {
                     return this.matchStart.leftTeamConfig.players.chaser3.name;
                 case "leftBeater1":
                     return this.matchStart.leftTeamConfig.players.beater1.name;
-                case "leftChaser2":
-                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                case "leftBeater2":
+                    return this.matchStart.leftTeamConfig.players.beater2.name;
                 
                 case "rightSeeker":
                     return this.matchStart.rightTeamConfig.players.seeker.name;
@@ -1282,8 +1294,8 @@ export default {
                     return this.matchStart.rightTeamConfig.players.chaser3.name;
                 case "rightBeater1":
                     return this.matchStart.rightTeamConfig.players.beater1.name;
-                case "rightChaser2":
-                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+                case "rightBeater2":
+                    return this.matchStart.rightTeamConfig.players.beater2.name;
 
                 default:
                     return null;
