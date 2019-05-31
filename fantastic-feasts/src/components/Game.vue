@@ -1070,15 +1070,27 @@ export default {
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf auf die Fresse geben"});
             }
+            // else if(this.turnType === "removeBan"){
+            //     if(this.mySide === "left"){
+            //         this.highlightedTiles = this.leftHalfTiles;
+            //     }
+            //     else{
+            //         this.highlightedTiles = this.rightHalfTiles;
+            //     }
+            //     for(let i = 0; i < this.highlightedTiles.length; i++){
+            //          if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+            //     }
+            //     this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
+            // }
             else if(this.turnType === "removeBan"){
-                if(this.mySide === "left"){
-                    this.highlightedTiles = this.leftHalfTiles;
-                }
-                else{
-                    this.highlightedTiles = this.rightHalfTiles;
-                }
-                for(let i = 0; i < this.highlightedTiles.length; i++){
-                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+                for(x = 0; x < 17; x++){
+                    for(y = 0; y < 13; y++){
+                        var id = this.getTileId(x, y);
+                        if((this.mySide === "left" && this.leftHalfTiles.includes(i)) || 
+                            (this.mySide === "right" && this.rightHalfTiles.includes(i)) &&
+                            !this.goalTiles.includes(i) && this.isFreeTile(x, y))
+                            this.highlightTiles(x, y); 
+                    }
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
             }
