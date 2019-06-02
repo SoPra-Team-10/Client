@@ -845,6 +845,7 @@ export default {
             var vm = this;
             if(web.websocket) {
                 web.websocket.onerror = function (error) {
+                    alert("Connection lost");
                     web.websocket = new WebSocket(web.addr);
                     web.websocket.onopen = function(){
                         this.reconnectAttempts = 0;
