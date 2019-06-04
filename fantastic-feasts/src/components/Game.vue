@@ -1087,10 +1087,20 @@ export default {
                 for(x = 0; x < 17; x++){
                     for(y = 0; y < 13; y++){
                         var id = this.getTileId(x, y);
-                        if((this.mySide === "left" && this.leftHalfTiles.includes(id)) || 
-                            (this.mySide === "right" && this.rightHalfTiles.includes(id)) &&
-                            !this.goalTiles.includes(id) && this.isFreeTile(x, y))
-                            this.highlightTiles(x, y); 
+                        // if((this.mySide === "left" && this.leftHalfTiles.includes(id)) || 
+                        //     (this.mySide === "right" && this.rightHalfTiles.includes(id)) &&
+                        //     !this.goalTiles.includes(id) && this.isFreeTile(x, y))
+                        //     this.highlightTiles(x, y); 
+                        if(this.mySide === "left"){
+                            if(x < 8 && !this.cornerTiles.includes(id) && !this.goalTiles.includes(id) &&
+                                this.isFreeTile(x, y) && !this.centerTiles.includes(id)) 
+                                this.highlightTile(x, y);
+                        }
+                        else if(this.mySide === "right"){
+                            if(x > 8 && !this.cornerTiles.includes(id) && !this.goalTiles.includes(id) &&
+                                this.isFreeTile(x, y) && !this.centerTiles.includes(id)) 
+                                this.highlightTile(x, y);
+                        }
                     }
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
