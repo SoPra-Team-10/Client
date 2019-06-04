@@ -72,7 +72,7 @@ export default {
                     "payload": {
                         "lobby": lobby,
                         "userName": userName,
-                        "password": password,
+                        "password": pw,
                         "isArtificialIntelligence": false,
                         "mods":[]
                     }
