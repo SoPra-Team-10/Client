@@ -51,8 +51,8 @@ export default {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
             //out server for testing
-            server = "134.60.29.230";
-            port = "8080";
+            //server = "134.60.29.230";
+            //port = "8080";
             var addr = "ws://"+server+":"+port;
             web.websocket = new WebSocket(addr);
             web.websocket.onerror = function (error) {
@@ -70,9 +70,9 @@ export default {
                     "timestamp": timestamp,
                     "payloadType": "joinRequest",
                     "payload": {
-                        "lobby": "lobby",
+                        "lobby": lobby,
                         "userName": userName,
-                        "password": "testpw",
+                        "password": password,
                         "isArtificialIntelligence": false,
                         "mods":[]
                     }

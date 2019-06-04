@@ -1087,9 +1087,9 @@ export default {
                 for(x = 0; x < 17; x++){
                     for(y = 0; y < 13; y++){
                         var id = this.getTileId(x, y);
-                        if((this.mySide === "left" && this.leftHalfTiles.includes(i)) || 
-                            (this.mySide === "right" && this.rightHalfTiles.includes(i)) &&
-                            !this.goalTiles.includes(i) && this.isFreeTile(x, y))
+                        if((this.mySide === "left" && this.leftHalfTiles.includes(id)) || 
+                            (this.mySide === "right" && this.rightHalfTiles.includes(id)) &&
+                            !this.goalTiles.includes(id) && this.isFreeTile(x, y))
                             this.highlightTiles(x, y); 
                     }
                 }
