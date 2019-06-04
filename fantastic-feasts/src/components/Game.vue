@@ -1110,9 +1110,9 @@ export default {
 
         /**Use Reconnect message to get up to date */
         handleReconnect: function(obj){
-            this.handleMatchStart(obj.matchStart);
+            this.handleMatchStart(obj.payload.matchStart);
             this.handleSnapshot(obj.payload.snapshot);
-            if(obj.next) this.handleNext(obj.next);
+            if(obj.next) this.handleNext(obj.payload.next);
         },
 
         /**Sets the paused variable */
