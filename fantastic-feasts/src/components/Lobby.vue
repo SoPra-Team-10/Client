@@ -51,8 +51,8 @@ export default {
             var server = document.getElementById("server").value;
             var port = document.getElementById("port").value;
             //out server for testing
-            server = "134.60.29.230";
-            port = "8080";
+            //server = "134.60.29.230";
+            //port = "8080";
             var addr = "ws://"+server+":"+port;
             web.websocket = new WebSocket(addr);
             web.websocket.onerror = function (error) {
@@ -70,9 +70,9 @@ export default {
                     "timestamp": timestamp,
                     "payloadType": "joinRequest",
                     "payload": {
-                        "lobby": "lobby",
+                        "lobby": lobby,
                         "userName": userName,
-                        "password": "testpw",
+                        "password": pw,
                         "isArtificialIntelligence": false,
                         "mods":[]
                     }
@@ -87,8 +87,7 @@ export default {
          
                     var obj = JSON.parse(msg.data);
                     if(obj.payloadType === "loginGreeting"){
-                        if(document.getElementById("spectator").value){
-                            
+                        if(!document.getElementById("spectator").checked){
                             var timestamp = vm2.makeTimestamp();
                             var teamConf = {
                                 "timestamp": timestamp,

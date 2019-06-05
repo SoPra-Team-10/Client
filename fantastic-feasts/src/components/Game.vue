@@ -387,7 +387,7 @@ export default {
                     184, 185, 201
                     ],
             cornerTiles: [0, 1, 2, 14, 15, 16, 17, 18, 34, 51, 32, 33, 50, 67, 153, 170, 187, 204, 188, 205, 206, 218, 219, 220, 202, 203, 186, 169],   
-            
+            goalTiles: [70, 104, 138, 82, 116, 150],
             
             reconnect: {
                 matchStart: undefined,
@@ -661,6 +661,9 @@ export default {
                             this.snapShot.leftTeam.players[player].banned = false;
                             this.snapShot.leftTeam.players[player].xPos = xPos;
                             this.snapShot.leftTeam.players[player].yPos = yPos;
+                            for(let i = 0; i < this.highlightedTiles.length; i ++){
+                                if(this.highlightedTiles[i] === this.getTileId(xPos, yPos)) this.highlightedTiles.splice(i, 1);
+                            }
                             break;
                         }
                     }
@@ -682,6 +685,9 @@ export default {
                             this.snapShot.rightTeam.players[player].banned = false;
                             this.snapShot.rightTeam.players[player].xPos = xPos;
                             this.snapShot.rightTeam.players[player].yPos = yPos;
+                            for(let i = 0; i < this.highlightedTiles.length; i ++){
+                                if(this.highlightedTiles[i] === this.getTileId(xPos, yPos)) this.highlightedTiles.splice(i, 1);
+                            }
                             break;  
                         }
                     }
@@ -839,6 +845,7 @@ export default {
             var vm = this;
             if(web.websocket) {
                 web.websocket.onerror = function (error) {
+                    alert("Connection lost");
                     web.websocket = new WebSocket(web.addr);
                     web.websocket.onopen = function(){
                         this.reconnectAttempts = 0;
@@ -924,9 +931,13 @@ export default {
                 this.mySide = "right";
                 this.highlightedTiles = this.rightHalfTiles;
             }
+            for(let i = 0; i < this.highlightedTiles.length; i++){
+                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+                }
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
+            web.websocket.close();
             this.game.currentState = "inLobby";
         },
         /**Update local snapShot */
@@ -1051,21 +1062,46 @@ export default {
             }
             else if((obj.payload.type === "action" && obj.payload.turn.includes("Beater"))){
                 this.highlightedTiles = [];
-                for(var x = this.selectedEntity.xPos - 3; x <= this.selectedEntity.xPos + 3;  x++) {
-                    for(var y = this.selectedEntity.yPos - 3; y <= this.selectedEntity.yPos + 3; y ++) {
-                        if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y)) {
+                for(var x = Math.max(this.selectedEntity.xPos - 3); x <= Math.min(this.selectedEntity.xPos + 3, 16);  x++) {
+                    for(var y = Math.max(this.selectedEntity.yPos - 3, 0); y <= Math.min(this.selectedEntity.yPos + 3, 16); y ++) {
+                        if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) {
                             this.highlightTile(x, y); 
                         }
                     }
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf auf die Fresse geben"});
             }
+            // else if(this.turnType === "removeBan"){
+            //     if(this.mySide === "left"){
+            //         this.highlightedTiles = this.leftHalfTiles;
+            //     }
+            //     else{
+            //         this.highlightedTiles = this.rightHalfTiles;
+            //     }
+            //     for(let i = 0; i < this.highlightedTiles.length; i++){
+            //          if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+            //     }
+            //     this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
+            // }
             else if(this.turnType === "removeBan"){
-                if(this.mySide === "left"){
-                    this.highlightedTiles = this.leftHalfTiles;
-                }
-                else{
-                    this.highlightedTiles = this.rightHalfTiles;
+                for(x = 0; x < 17; x++){
+                    for(y = 0; y < 13; y++){
+                        var id = this.getTileId(x, y);
+                        // if((this.mySide === "left" && this.leftHalfTiles.includes(id)) || 
+                        //     (this.mySide === "right" && this.rightHalfTiles.includes(id)) &&
+                        //     !this.goalTiles.includes(id) && this.isFreeTile(x, y))
+                        //     this.highlightTiles(x, y); 
+                        if(this.mySide === "left"){
+                            if(x < 8 && !this.cornerTiles.includes(id) && !this.goalTiles.includes(id) &&
+                                this.isFreeTile(x, y) && !this.centerTiles.includes(id)) 
+                                this.highlightTile(x, y);
+                        }
+                        else if(this.mySide === "right"){
+                            if(x > 8 && !this.cornerTiles.includes(id) && !this.goalTiles.includes(id) &&
+                                this.isFreeTile(x, y) && !this.centerTiles.includes(id)) 
+                                this.highlightTile(x, y);
+                        }
+                    }
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
             }
@@ -1074,9 +1110,9 @@ export default {
 
         /**Use Reconnect message to get up to date */
         handleReconnect: function(obj){
-            this.handleMatchStart(obj.matchStart);
+            this.handleMatchStart(obj.payload.matchStart);
             this.handleSnapshot(obj.payload.snapshot);
-            if(obj.next) this.handleNext(obj.next);
+            if(obj.next) this.handleNext(obj.payload.next);
         },
 
         /**Sets the paused variable */
@@ -1266,8 +1302,8 @@ export default {
                     return this.matchStart.leftTeamConfig.players.chaser3.name;
                 case "leftBeater1":
                     return this.matchStart.leftTeamConfig.players.beater1.name;
-                case "leftChaser2":
-                    return this.matchStart.leftTeamConfig.players.chaser2.name;
+                case "leftBeater2":
+                    return this.matchStart.leftTeamConfig.players.beater2.name;
                 
                 case "rightSeeker":
                     return this.matchStart.rightTeamConfig.players.seeker.name;
@@ -1281,8 +1317,8 @@ export default {
                     return this.matchStart.rightTeamConfig.players.chaser3.name;
                 case "rightBeater1":
                     return this.matchStart.rightTeamConfig.players.beater1.name;
-                case "rightChaser2":
-                    return this.matchStart.rightTeamConfig.players.chaser2.name;
+                case "rightBeater2":
+                    return this.matchStart.rightTeamConfig.players.beater2.name;
 
                 default:
                     return null;
