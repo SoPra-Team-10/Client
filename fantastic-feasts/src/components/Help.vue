@@ -4,7 +4,7 @@
         <div class="app__content">
             <div class="text-content-container">
                 <h3 class="help__title">Spielanleitung</h3>
-                <h4 class="help__sub-title">Teil 1</h4>
+                <h4 class="help__sub-title"></h4>
                 <p class="help__text" style="width: 900px; height: 340px; overflow: scroll; position: relative">In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry Potter" bekannte
                     Spiel "Quidditch" in Form eines Brettspiels spielen.<br>
                     Jeder Spieler steuert dabei ein Team aus sieben Spielfiguren:<br>
@@ -69,7 +69,7 @@
         <div class="app__footer">
             <hr class="app__footer-separation-line">
             <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Zurück zum Menü</button>
-            <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Shortcuts anzeigen</button>
+            <!--<button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Shortcuts anzeigen</button>-->
         </div>
     </section>
 </template>

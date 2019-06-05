@@ -27,7 +27,8 @@
                     <div id="game-grid-panel">
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
-                            @click="clickEmptyTile(tile.xPos, tile.yPos)" 
+                            @click="clickEmptyTile(tile.xPos, tile.yPos)"
+                            @wheel="showChance(tile.xPos, tile.yPos)" 
                             :class="[tile.class,
                                 {'highlighted-gras-tile': highlightedTiles.includes(index)
                             }]"
@@ -53,7 +54,8 @@
                                 :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout': player.knockout }]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
-                            > 
+                                @wheel="showChance(player.xPos, player.yPos)"
+                            >   
                                 <div :class="key.slice(0,6)"></div>
                             </div>
                         </transition-group>
@@ -62,6 +64,7 @@
                                 :key="key" :class="['player-tile', 'right-team-player']" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
+                                @wheel="showChance(player.xPos, player.yPos)"
                             > 
                                 <div :class="key.slice(0,6)"></div>
                             </div>
@@ -84,22 +87,17 @@
                 </game-log> -->
                 <!-- <hr class="normal-separation-line"> -->
                 <div class="info-panel" id="test-functions-panel">
-                    <h3 class="panel-title">Testfunktionen</h3>
+                    <h3 class="panel-title">Zusatzfunktionen</h3>
                     <hr class="inner-separation-line">
-                    <input v-model="gameLogTest" type="text">
-                    <button @click="gameLog.unshift({message: gameLogTest, time: getTime()})" class="info-panel-button">Log</button>
                     <hr class="inner-separation-line">
                     <label for="autoSkipFans">Fans automatisch überspringen</label>
                     <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
-                    <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
-                    <br>
-                    <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
-                    <br>
-                    <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
-                    <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
+                    
                     <hr class="inner-separation-line">
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
+                    <hr class="inner-separation-line">
+                    <h3 class="panel-title" id="chance-view"></h3>
                 </div>
                 <div class="skip-button-container">
                     <button class="skip-button" @click="skip()">Zug aussetzen</button>
@@ -571,23 +569,6 @@ export default {
             const today = new Date();
             return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         },
-        
-        // test method for animation
-        shuffleBalls() {
-            for (var key in this.snapShot.balls) {
-                var ball = this.snapShot.balls[key];
-                ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
-                ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
-            }
-        },
-
-        banLeftTeam() {
-            var players = this.snapShot.leftTeam.players;
-            for (var key  in players) {
-                players[key].banned = !players[key].banned;
-            }
-            this.gameState = 'teamFormation';
-        },
 
         /**function to be called when a player on the field is clicked. 
          * Sends a deltaRequest message if an action is required if possible
@@ -752,6 +733,44 @@ export default {
             //    this.selectedEntity.yPos = yPos;
             //}
         },
+
+        /**Displays the success chance for certain actions */
+        showChance: function(xPos, yPos){
+            if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
+            if(this.turnType === "action"){
+                //Quaffle throw
+                if((this.selectedEntityId.includes("Chaser") || this.selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                    //determine number of intercepting players
+                    var crossedTiles = this.getCrossedTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, xPos, yPos);
+                    var nInterceptPlayers = 0;
+                    for(let i = 0; i < crossedTiles.length; i++){
+                        var x = crossedTiles[i] % 17;
+                        var y = (crossedTiles[i] - crossedTiles[i]%17)/17;
+                        if(this.playerIdOnTile(x, y) !== null){
+                            if(!this.playerIdOnTile(x, y).includes(this.mySide)){
+                                nInterceptPlayers++;
+                                
+                            }
+                        } 
+                    }
+                    //determine distance
+                    var dx = Math.abs(this.selectedEntity.xPos - xPos);
+                    var dy = Math.abs(this.selectedEntity.yPos - yPos);
+                    var dist = dx + Math.max(0, dy - dx);
+                    var chance = Math.pow(1-this.matchStart.matchConfig.probabilities.catchQuaffle, nInterceptPlayers) * Math.pow(this.matchStart.matchConfig.probabilities.throwSuccess, dist);
+                    chance = Math.round(chance * 100);
+                    document.getElementById("chance-view").innerHTML = "Chance für erfolgreichen Wurf: " + chance + "%";
+                }
+
+                // else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
+                //     if(this.playerIdOnTile(x, y) !== null){
+                //         var chance = Math.round(this.matchStart.matchConfig.probabilities.knockOut * 100);
+                //         document.getElementById("chance-view").innerHTML = "Chance für erfolgreichen Knockout: " + chance + "%";
+                //     }
+                // }
+            }
+        },
+
         /**Reads data from the current snapShot to sends the current team formation to the server */
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
@@ -1130,6 +1149,7 @@ export default {
          */
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
+            document.getElementById("chance-view").innerHTML = "";
             this.highlightedTiles = [];
             var timestamp = this.makeTimestamp();
             var payload = {
