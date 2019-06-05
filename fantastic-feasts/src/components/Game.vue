@@ -2,6 +2,17 @@
     <div id="game-container">
         <section id="game-panel">
             <header class="header">
+                
+                    <div  id="main-menu-button" @click="game.currentState='inMenu'">
+                        Menü
+                    </div>
+                <game-info :matchStart="matchStart" :snapShot="snapShot">
+                </game-info>
+                    <div id="pause-button" @click="pauseResume()">
+                        Pause
+                    </div>
+            </header>
+            <!-- <header class="header">
                 <div class="header__panel" id="main-menu-panel">
                     <div  id="main-menu-button" @click="game.currentState='inMenu'">
                         Menü
@@ -14,7 +25,7 @@
                         Pause
                     </div>
                 </div>
-            </header>
+            </header> -->
             <div class="sidebar-left">
                 <player-details v-if="this.selectedEntity && this.selectedEntityId" :snapShot="snapShot" :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
                 </player-details>
@@ -47,7 +58,7 @@
                         <div class="goal-post-left-center"></div>
                         <div class="goal-post-left-bottom"></div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-for="(ball, key) in snapShot.balls" :key="key" @click="Old(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-show="ball.xPos" v-for="(ball, key) in snapShot.balls" :key="key" @click="Old(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
                         </transition-group>
                         <transition-group name="game-players" tag="div">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
@@ -88,6 +99,7 @@
                 <!-- <hr class="normal-separation-line"> -->
                 <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Zusatzfunktionen</h3>
+
                     <hr class="inner-separation-line">
                     <hr class="inner-separation-line">
                     <label for="autoSkipFans">Fans automatisch überspringen</label>
@@ -98,7 +110,8 @@
                     </div>
                     <hr class="inner-separation-line">
                     <h3 class="panel-title" id="chance-view"></h3>
-                </div>
+                </div> -->
+
                 <div class="skip-button-container">
                     <button class="skip-button" @click="skip()">Zug aussetzen</button>
                 </div>
@@ -129,7 +142,6 @@ export default {
     data() {
         return {
             timeout: 0,
-            pauseTimer: false,
             // just for testing (start)
             gameLogTest: 'Enter log entry',
             // just for testing (end)
@@ -171,193 +183,22 @@ export default {
             // // can later be changed to undefined. Values are for debugging purposes
 
             snapShot: {    
-                phase: 'ballPhase',
+                phase: 'positioning',
                 spectatorUserName: ['Gast'],
-                round: 5,
+                round: 0,
                 leftTeam: {
                     points: 0,
-                    fans: [
-                        {
-                            fanType: 'troll',
-                            banned: false
-                        },
-                        {
-                            fanType: 'troll',
-                            banned: false
-                        },
-                        {
-                            fanType: 'elf',
-                            banned: false
-                        },
-                        {
-                            fanType: 'elf',
-                            banned: false
-                        },
-                        {
-                            fanType: 'goblin',
-                            banned: false
-                        },
-                        {
-                            fanType: 'goblin',
-                            banned: false
-                        },
-                        {
-                            fanType: 'niffler',
-                            banned: false
-                        }
-                    ],
+                    fans: [],
                     players: {
-                        seeker: {
-                            xPos: 2,
-                            yPos: 5,
-                            banned: false,
-                            turnUsed : false
-                        },
-                        keeper: {
-                            xPos: 7,
-                            yPos: 3,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser1: {
-                            xPos: 7,
-                            yPos: 8,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser2: {
-                            xPos: 4,
-                            yPos: 2,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser3: {
-                            xPos: 4,
-                            yPos: 11,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        beater1: {
-                            xPos: 8,
-                            yPos: 9,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        },
-                        beater2: {
-                            xPos: 3,
-                            yPos: 8,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        } 
                     }
                 },
                 rightTeam:{
                     points: 0,
-                    fans: [
-                        {
-                            fanType: 'troll',
-                            banned: false
-                        },
-                        {
-                            fanType: 'elf',
-                            banned: false
-                        },
-                        {
-                            fanType: 'elf',
-                            banned: false
-                        },
-                        {
-                            fanType: 'elf',
-                            banned: false
-                        },
-                        {
-                            fanType: 'goblin',
-                            banned: false
-                        },
-                        {
-                            fanType: 'niffler',
-                            banned: false
-                        },
-                        {
-                            fanType: 'niffler',
-                            banned: false
-                        }   
+                    fans: [ 
                     ],
-                    players: {
-                        seeker: {
-                            xPos: 10,
-                            yPos: 2,
-                            banned: false,
-                            turnUsed : false
-                        },
-                        keeper: {
-                            xPos: 13,
-                            yPos: 3,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser1: {
-                            xPos: 10,
-                            yPos: 10,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser2: {
-                            xPos: 14,
-                            yPos: 8,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        chaser3: {
-                            xPos: 16,
-                            yPos: 5,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
-                        },
-                        beater1: {
-                            xPos: 9,
-                            yPos: 11,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        },
-                        beater2: {
-                            xPos: 11,
-                            yPos: 6,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        } 
-                    }
-                },
-                balls: {
-                    snitch: {
-                        xPos: 8,
-                        yPos: 6
-                    },
-                    quaffle: {
-                        xPos: 8,
-                        yPos: 6
-                    },
-                    bludger1: {
-                        xPos: 8,
-                        yPos: 6
-                    },
-                    bludger2: {
-                        xPos: 8,
-                        yPos: 6
-                    }
-                }
+                    players: {},
+                },  
+                balls: {}
             },
 
             matchFinish: {
@@ -546,7 +387,7 @@ export default {
     methods: {
         startTimer() {
             setInterval(() => {
-                if(this.timeout != 0) {
+                if(this.timeout != 0 && !this.paused) {
                     this.timeout--;
                 }
             }, 1000);
@@ -1379,12 +1220,17 @@ export default {
 
 .header {
     position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     height: 8%;
     width: 100%;
     background: radial-gradient(#5e3d19, #503315);
     z-index: 100;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
     border-bottom: 2px solid #533515;
+    padding: 0 1rem;
 }
 
 
@@ -1411,18 +1257,39 @@ export default {
     background: radial-gradient(#bb3434, #802020);
     border: 1px solid #e0a500;
     color: #e0a500;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2.5vh;
+    padding: 1.5vh 0.5vh;
+    padding: .7rem 1rem;
+}
+
+/* #main-menu-button {
+    background: radial-gradient(#bb3434, #802020);
+    border: 1px solid #e0a500;
+    color: #e0a500;
     position: absolute;
     width: 100%;
     top: 10%;
     height: 80%;
     border-radius: 5px;
-    min-width: 48px;
+    min-width: 58px;
     text-align: center;
     font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
-}
+} */
 
 #pause-button {
+    background: radial-gradient(#5e923f, #406d24);
+    border: 1px solid #e0a500;
+    color: #e0a500;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2.5vh;
+    padding: .7rem 1rem;
+}
+
+/* #pause-button {
     background: radial-gradient(#5e923f, #406d24);
     border: 1px solid #e0a500;
     color: #e0a500;
@@ -1431,11 +1298,11 @@ export default {
     height: 80%;
     width: 100%;
     border-radius: 5px;
-    min-width: 48px;
+    min-width: 58px;
     text-align: center;
     font-size: 2.5vh;
     padding: 1.5vh 0.5vh;
-}
+} */
 
 #main-menu-button:hover {
     background: #81623e;
@@ -1977,8 +1844,7 @@ h1 {
     color: #e0a500;
 }
 
-.skip-button:active,
-.skip-button:focus {
+.skip-button:active {
     background: #ac8d6b;
     border: 1.5px solid #e0a500;
     color: #e0a500;
