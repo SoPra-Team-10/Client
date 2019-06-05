@@ -1,6 +1,6 @@
 <template>
   <div class="spectator-stand-panel">
-    <div class="spectator-stand -stand-left">
+    <div class="spectator-stand">
       <!-- old version where every fan has his own icon -->
       <!-- <div
         v-for="(fan, index) in activeFansTeamLeft"
@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div class="spectator-stand spectator-stand-right">
+    <div class="spectator-stand">
       <div v-for="(count, key) in fanCountTeamRight" :key="key" class="fan">
         <div :class="key">
           <div class="fan-counter">{{ count }}</div>
@@ -165,6 +165,62 @@ export default {
   border-radius: 0.9vh;
   overflow: hidden;
   background: url(../resources/troll.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background-repeat: no-repeat;
+}
+
+.elf {
+  display: inline-block;
+  z-index: 51;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 0.9vh;
+  overflow: hidden;
+  background: url(../resources/elf.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background-repeat: no-repeat;
+}
+
+.niffler {
+  display: inline-block;
+  z-index: 51;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 0.9vh;
+  overflow: hidden;
+  background: url(../resources/niffler.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background-repeat: no-repeat;
+}
+
+.goblin {
+  display: inline-block;
+  z-index: 51;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 0.9vh;
+  overflow: hidden;
+  /* background: url(../resources/goblin.svg), radial-gradient(#ffffffcb, #ffffff00); */
+  background-repeat: no-repeat;
+}
+
+.wombat {
+  display: inline-block;
+  z-index: 51;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 0.9vh;
+  overflow: hidden;
+  /* background: url(../resources/wombat.svg), radial-gradient(#ffffffcb, #ffffff00); */
   background-repeat: no-repeat;
 }
 
