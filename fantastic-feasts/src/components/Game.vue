@@ -110,7 +110,7 @@
                     </div>
                     <hr class="inner-separation-line">
                     <h3 class="panel-title" id="chance-view"></h3>
-                </div> -->
+                </div> 
 
                 <div class="skip-button-container">
                     <button class="skip-button" @click="skip()">Zug aussetzen</button>
@@ -190,13 +190,112 @@ export default {
                     points: 0,
                     fans: [],
                     players: {
+                        seeker:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        keeper:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser3:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        beater1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        beater2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
                     }
                 },
                 rightTeam:{
                     points: 0,
                     fans: [ 
                     ],
-                    players: {},
+                    players: {
+                        seeker:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        keeper:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        chaser3:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        beater1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                        beater2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
+                    },
                 },  
                 balls: {}
             },
