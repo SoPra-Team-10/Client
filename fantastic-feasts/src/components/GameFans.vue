@@ -53,7 +53,7 @@ export default {
       var fans = this.snapShot.rightTeam.fans;
       const fanDict = {};
       for (var key in fans) {
-        if (fanDict[fans[key].fanType]) {
+        if (!fans[key].banned) {
           if (fanDict[fans[key].fanType]) {
             fanDict[fans[key].fanType]++;
           } else {
