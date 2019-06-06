@@ -961,7 +961,8 @@ export default {
                            
                            if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
                         }
-                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))) {
+                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))
+                            && !(this.selectedEntity.xPos == x && this.selectedEntity.yPos == y)) {
                            
                            this.highlightTile(x, y); 
                         }
@@ -972,7 +973,7 @@ export default {
             //Throw is possible
             else if(obj.payload.type === "action" && (obj.payload.turn.includes("Chaser") || obj.payload.turn.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                 for(var i = 0; i <= 220; i++){
-                        if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
+                        if(!this.cornerTiles.includes(i) && i != this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos))this.highlightedTiles.push(i);
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf schießen"});
             }
@@ -1024,7 +1025,7 @@ export default {
                 for(var x = Math.max(this.selectedEntity.xPos - 3); x <= Math.min(this.selectedEntity.xPos + 3, 16);  x++) {
                     for(var y = Math.max(this.selectedEntity.yPos - 3, 0); y <= Math.min(this.selectedEntity.yPos + 3, 16); y ++) {
                         if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) {
-                            this.highlightTile(x, y); 
+                            if(this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos) != this.getTileId(x, y))this.highlightTile(x, y); 
                         }
                     }
                 }
