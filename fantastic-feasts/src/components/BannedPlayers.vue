@@ -1,5 +1,5 @@
 <template>
-    <div class="info-panel" id="banned-players-panel">
+    <div class="info-panel banned-players-panel">
         <h3 class="panel-title">Verbannte Spieler</h3>
         <hr class="inner-separation-line">
         <!-- <div class="banned-players-container">
@@ -10,38 +10,22 @@
             </div>
         </div> -->
         
-        <div class="left-banned-players">
-            <p class="banned-players-label">links</p>
-            <div v-for="(player, key, index) in bannedPlayersTeamLeft.players"
-                :key = key
-                :class="['banned-player-tile', {'selected-banned-player-tile': index === 0}]" 
-                :style="{ background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
-            >
-                <div @click="printKey(key)" :class="key.slice(0, 6)"></div>
-            </div>
+        <transition-group name="fade" class="banned-players" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+            <div v-for="(player, key, index) in bannedPlayers"
+            :key = key
+            :class="['banned-player-tile', {'selected-banned-player-tile': index === 0}]" 
+            :style="{ background: 'radial-gradient(#00000000, #0000003f), #' + teamConfig.colors.primary }"
+        >
+            <div :class="key.slice(0, 6)"></div>
         </div>
-        <div class="right-banned-players">
-            <p class="banned-players-label">rechts</p>
-            <div v-for="(player, key, index) in bannedPlayersTeamRight.players"
-                :key = key
-                :class="['banned-player-tile', {'selected-banned-player-tile': index === 0}]" 
-                :style="{ background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
-            >
-                <div @click="printKey(key)" :class="key.slice(0, 6)"></div>
-            </div>
-        </div>
+        </transition-group>
     </div>
 </template>
 
 <script>
 export default {
     // have to be passed over from paren component
-    props: ['bannedPlayersTeamLeft', 'bannedPlayersTeamRight', 'playerToPosition', 'matchStart'],
-    methods: {
-        printKey(key) {
-            console.log(key);
-        }
-    }
+    props: ['bannedPlayers', 'teamConfig'],
 }
 </script>
 
@@ -84,27 +68,17 @@ export default {
     color: #382a17;
 }
 
-.left-banned-players {
-    position: absolute;
+.banned-players {
+    position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    align-content: center;
+    justify-content: space-evenly;
     height: 90%;
-    width: 50%;
-    top: 10%;
-    left: 0;
+    width: 100%;
     overflow-y: auto;
 }
 
-.right-banned-players {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 90%;
-    width: 50%;
-    top: 10%;
-    right: 0;
-    overflow-y: auto;
-}
 </style>

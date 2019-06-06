@@ -1,33 +1,31 @@
 <template>
-    <div class="header__game-info">
-        <div class="game-info-panel">
-            <div class="header__panel" id="team-panel-left">
-                <div id="left-teamname-label"><span class="inward-shadow">{{ matchStart.leftTeamConfig.name }}</span></div>
-                <div id="left-username-label">{{ matchStart.leftTeamUserName }}</div>
-            </div>
-            <div class="header__panel" id="score-panel">
-                <div class="score-panel-content">
-                    {{ snapShot.leftTeam.points }} : {{ snapShot.rightTeam.points }}
-                </div>
-            </div>
-            <div class="header__panel" id="round-panel">
-                <div class="round-panel-content">
-                    
-                    <div class="round-label">Runde {{ snapShot.round }}</div>
-                    <div class="round-phase-label">{{ snapShot.phase }}</div>
-                </div>
-            </div>
-            <div class="header__panel" id="round-phase-panel">
-                <div class="round-phase-panel-content">
-                    
-                </div>
-            </div>
-            <div class="header__panel" id="team-panel-right">
-                <div id="right-teamname-label">{{ matchStart.rightTeamConfig.name }}</div>
-                <div id="right-username-label">{{ matchStart.rightTeamUserName }}</div>
+    <div class="game-info-panel">
+        <div class="header__panel" id="team-panel-left">
+            <div id="left-teamname-label"><span class="inward-shadow">{{ matchStart.leftTeamConfig.name }}</span></div>
+            <div id="left-username-label">{{ matchStart.leftTeamUserName }}</div>
+        </div>
+        <div class="header__panel" id="score-panel">
+            <div class="score-panel-content">
+                {{ snapShot.leftTeam.points }} : {{ snapShot.rightTeam.points }}
             </div>
         </div>
-    </div>   
+        <div class="header__panel" id="round-panel">
+            <div class="round-panel-content">
+                
+                <div class="round-label">Runde {{ snapShot.round }}</div>
+                <div class="round-phase-label">{{ snapShot.phase }}</div>
+            </div>
+        </div>
+        <div class="header__panel" id="round-phase-panel">
+            <div class="round-phase-panel-content">
+                
+            </div>
+        </div>
+        <div class="header__panel" id="team-panel-right">
+            <div id="right-teamname-label">{{ matchStart.rightTeamConfig.name }}</div>
+            <div id="right-username-label">{{ matchStart.rightTeamUserName }}</div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -38,13 +36,6 @@ export default {
 </script>
 
 <style>
-
-.header__game-info {
-    position: absolute;
-    width: 86%;
-    height: 100%;
-    left: 7%;
-}
 
 #team-panel-right {
     position: absolute;
@@ -154,11 +145,9 @@ export default {
 
 
 .game-info-panel {
-    position: absolute;
+    position: relative;
     width: 60%;
     min-height: 80%;
-    top: 10%;
-    left: 20%;
     background: radial-gradient(#ffffff, #ece3ca);
     border-radius: 8px;
     border: 1px solid #e4d8b8;
