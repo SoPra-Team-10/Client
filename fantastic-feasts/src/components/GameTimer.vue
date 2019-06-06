@@ -33,34 +33,41 @@ export default {
   position: fixed;
   width: 6.5vw;
   height: 6.5vw;
-  left: 46.75vw;
+  max-height: 130px;
+  max-width: 130px;
+  min-height: 40px;
+  min-width: 40px;
+  left: 50%; 
+    -webkit-transform: translate(-50%, 0); 
   bottom: 1vh;
-  background: radial-gradient(#664c18, #473106);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  background: #d1be0e;
   z-index: 150;
-  border-radius: 4vw;
-  border: 2px solid #d1be0e;
+  border-radius: 50%;
   box-shadow: 0 0 4px #ffffff69;
 }
 
 .clock-container-inner {
-  position: fixed;
-  width: 6.2vw;
-  height: 6.2vw;
-  left: 46.9vw;
-  bottom: 1.2vh;
-  background: radial-gradient(#664c18, #473106);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  width: 93%;
+  height: 93%;
+  background: #c5b100;
   z-index: 151;
-  border-radius: 4vw;
-  border: 2px solid #c5b100;
+  border-radius: 50%;
   box-shadow: 0 0 4px #ffffff69;
 }
 
 .clock-display {
-  position: fixed;
-  width: 5.9vw;
-  height: 5.9vw;
-  left: 47.05vw;
-  bottom: 1.43vh;
+  width: 92%;
+  height: 92%;
   z-index: 152;
   border: 1px solid #ebd18a;
   background: radial-gradient(#ffffff, #e0e0e0);
@@ -72,9 +79,10 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  justify-content: center;
   align-content: center;
   color: #4b4b4b;
-  font-size: 2.5rem;
+  font-size: 2.7vw;
 
 }
 </style>

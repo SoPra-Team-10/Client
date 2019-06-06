@@ -10,14 +10,15 @@
       >
         <div :class="fan.fanType"></div>
       </div>-->
-      <div v-for="(count, key) in fanCountTeamLeft" :key="key" class="fan">
+      <div v-for="(count, key) in fanCountTeamLeft" :key="key" class="fan" :class="{'fan-active animated pulse': key === selectedFanTypeLeftTeam}">
         <div :class="key">
           <div class="fan-counter">{{ count }}</div>
         </div>
       </div>
     </div>
     <div class="spectator-stand">
-      <div v-for="(count, key) in fanCountTeamRight" :key="key" class="fan">
+      <div v-for="(count, key) in fanCountTeamRight" :key="key"  class="fan" :class="{'fan-active animated pulse': key === selectedFanTypeRightTeam}">
+        <!-- selectedFanTypeRightTeam === key -->
         <div :class="key">
           <div class="fan-counter">{{ count }}</div>
         </div>
@@ -32,6 +33,12 @@ export default {
     snapShot: {
       type: Object,
       required: true
+    },
+    selectedFanTypeRightTeam: {
+      type: String
+    },
+    selectedFanTypeLeftTeam: {
+      type: String
     }
   },
   computed: {
@@ -87,7 +94,10 @@ export default {
 };
 </script>
 
-<style scoped>
+
+<style scoped animate>
+
+
 .spectator-stand-panel {
   background: radial-gradient(#797979, #525252);
   position: fixed;
@@ -130,10 +140,19 @@ export default {
   width: 6vh;
   height: 6vh;
   margin: 0.85vh 0.3vh;
-  border: 1.5px solid #e0a500;
+  border: 1px solid #e0a500;
   border-radius: 1vh;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
   font-size: 3vh;
+  animation-duration: 1s;
+  animation-iteration-count: 3;
+  overflow: hidden;
+}
+
+.fan-active {
+  border: 2px solid #e9e0c9;
+  transform: scale(1.1);
+  box-shadow: 0 0 3px 3px #e9e0c93a;
 }
 
 .fan-counter {
@@ -162,7 +181,6 @@ export default {
   width: 100%;
   left: 0;
   top: 0;
-  border-radius: 0.9vh;
   overflow: hidden;
   background: url(../resources/troll.svg), radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
@@ -176,7 +194,6 @@ export default {
   width: 100%;
   left: 0;
   top: 0;
-  border-radius: 0.9vh;
   overflow: hidden;
   background: url(../resources/elf.svg), radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
@@ -190,7 +207,6 @@ export default {
   width: 100%;
   left: 0;
   top: 0;
-  border-radius: 0.9vh;
   overflow: hidden;
   background: url(../resources/niffler.svg), radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
@@ -204,9 +220,8 @@ export default {
   width: 100%;
   left: 0;
   top: 0;
-  border-radius: 0.9vh;
   overflow: hidden;
-  /* background: url(../resources/goblin.svg), radial-gradient(#ffffffcb, #ffffff00); */
+  background: url(../resources/goblin.svg), radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -220,7 +235,7 @@ export default {
   top: 0;
   border-radius: 0.9vh;
   overflow: hidden;
-  /* background: url(../resources/wombat.svg), radial-gradient(#ffffffcb, #ffffff00); */
+  background: url(../resources/wombat.svg), radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 

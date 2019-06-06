@@ -2,15 +2,16 @@
     <div id="game-container">
         <section id="game-panel">
             <header class="header">
-                
-                    <div  id="main-menu-button" @click="game.currentState='inMenu'">
-                        Menü
-                    </div>
+                <div  id="main-menu-button" @click="game.currentState='inMenu'">
+                    Menü
+                </div>
+                <team-crest v-if="this.snapShot.phase!=='positioning-test'" :teamConfig="matchStart.leftTeamConfig" :active="leftTeamToMove"></team-crest>
                 <game-info :matchStart="matchStart" :snapShot="snapShot">
                 </game-info>
-                    <div id="pause-button" @click="pauseResume()">
-                        Pause
-                    </div>
+                <team-crest v-if="this.snapShot.phase!=='positioning-test'" :teamConfig="matchStart.rightTeamConfig" :active="rightTeamToMove"></team-crest>
+                <div id="pause-button" @click="pauseResume()">
+                    Pause
+                </div>
             </header>
             <!-- <header class="header">
                 <div class="header__panel" id="main-menu-panel">
@@ -30,11 +31,11 @@
                 <player-details v-if="this.selectedEntity && this.selectedEntityId" :snapShot="snapShot" :selectedEntityId="selectedEntityId" :matchStart="matchStart" :selectedEntity="selectedEntity">
                 </player-details>
                 <!-- <hr class="normal-separation-line"> -->
-                <banned-players :matchStart="matchStart" :bannedPlayersTeamLeft="bannedPlayersTeamLeft" :bannedPlayersTeamRight="bannedPlayersTeamRight">
+                <banned-players :teamConfig="matchStart.leftTeamConfig" :bannedPlayers="bannedPlayersTeamLeft.players">
                 </banned-players>
             </div>
             <div class="center">
-                <div id="game-conainer">
+                <div id="game-container">
                     <div id="game-grid-panel">
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
@@ -57,18 +58,18 @@
                         <div class="goal-post-left-center"></div>
                         <div class="goal-post-left-bottom"></div>
                         <transition-group name="game-balls" tag="div">
-                            <div v-show="ball.xPos" v-for="(ball, key) in snapShot.balls" :key="key" @click="Old(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + '%', top: 7.69 * ball.yPos + '%', }"></div>
+                            <div v-show="!(!ball.xPos && !ball.yPos)" v-for="(ball, key) in snapShot.balls" :key="key" @click="Old(ball.xPos, ball.yPos)" :class="[key]" :style="{ left: 5.88 * ball.xPos + 0 * Math.random()  - 0 + '%', top: 7.69 * ball.yPos + 1.7 * Math.random() - .5 + '%', }"></div>
                         </transition-group>
-                        <transition-group name="game-players" tag="div">
+                        <transition-group name="game-players" tag="div" enter-active-class="animated zoomIn" leave-active-class="animated rollOut">
                             <div v-for="(player, key) in activePlayersTeamLeft" 
-                                :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout': player.knockout }]"
+                                :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout animated shake': player.knockout }]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
                             > 
                                 <div :class="key.slice(0,6)"></div>
                             </div>
                         </transition-group>
-                        <transition-group name="game-players" tag="div">
+                        <transition-group name="game-players" tag="div" enter-active-class="animated zoomIn" leave-active-class="animated rollOut">
                             <div v-for="(player, key) in activePlayersTeamRight" 
                                 :key="key" :class="['player-tile', 'right-team-player']" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
@@ -77,7 +78,7 @@
                                 <div :class="key.slice(0,6)"></div>
                             </div>
                         </transition-group>
-                        <transition-group name="wombat-cubes" tag="div">
+                        <transition-group name="wombat-cubes" enter-active-class="animated bounceInDown" leave-active-class="animated fadeOut slow" tag="div">
                             <div v-for="(wombatCube, index) in snapShot.wombatCubes" 
                                 :key="index" :class="['wombat-cube']"
                                 :style="{ left: 5.88 * wombatCube.xPos + '%', top: 7.69 * wombatCube.yPos + '%'}"
@@ -86,11 +87,12 @@
                         </transition-group>
                     </div>
                 </div>
-                <game-fans :snapShot="snapShot">
+                <game-fans :snapShot="snapShot" :selectedFanTypeRightTeam="selectedFanTypeRightTeam" :selectedFanTypeLeftTeam="selectedFanTypeLeftTeam">
                 </game-fans>
                 <game-timer :time="timeout"></game-timer>
             </div>
             <div class="sidebar-right">
+                <game-instructions></game-instructions>
                 <!-- <game-log :gameLog="gameLog">
                 </game-log> -->
                 <!-- <hr class="normal-separation-line"> -->
@@ -112,11 +114,15 @@
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
                 </div> -->
+                <banned-players :teamConfig="matchStart.rightTeamConfig" :bannedPlayers="bannedPlayersTeamRight.players">
+                </banned-players>
                 <div class="skip-button-container">
-                    <button class="skip-button" @click="skip()">Zug aussetzen</button>
+                    <button class="skip-button" @click="skip()">Aussetzen</button>
                 </div>
             </div>
         </section>
+
+        <match-finish v-of="matchFinish" @to-lobby="game.currentState = 'inLobby'" :matchFinish="matchFinish"></match-finish>
     </div>
 </template>
 
@@ -128,6 +134,9 @@ import PlayerDetails from './PlayerDetails.vue';
 import GameInfo from './GameInfo.vue';
 import GameFans from './GameFans.vue';
 import GameTimer from './GameTimer.vue';
+import TeamCrest from './TeamCrest.vue';
+import GameInstructions from './GameInstructions.vue';
+import MatchFinish from './MatchFinish.vue';
 
 export default {
     props: ['game', 'teamConfig'],
@@ -137,10 +146,24 @@ export default {
         'banned-players': BannedPlayers,
         'game-info': GameInfo,
         'game-fans': GameFans,
-        'game-timer': GameTimer
+        'game-timer': GameTimer,
+        'team-crest': TeamCrest,
+        'game-instructions': GameInstructions,
+        'match-finish': MatchFinish,
     },
     data() {
         return {
+            // test matchFinish component
+            // matchFinish: {
+            //     endRound: 12,
+            //     leftPoints: 90,
+            //     rightPoints: 50,
+            //     winnerUserName: "user1",
+            //     victoryReason: "mostPoints",
+            // },
+            matchFinish: null,
+           
+
             timeout: 0,
             // just for testing (start)
             gameLogTest: 'Enter log entry',
@@ -148,6 +171,12 @@ export default {
 
             gameState: 'inGame',
             grid: [],
+
+            leftTeamToMove: false,
+            rightTeamToMove: false,
+
+            selectedFanTypeRightTeam: "",
+            selectedFanTypeLeftTeam: "",
 
             selectedEntityId: undefined,
             selectedEntity: undefined,
@@ -188,26 +217,174 @@ export default {
                 round: 0,
                 leftTeam: {
                     points: 0,
-                    fans: [],
+                    fans: [
+                        {
+                            fanType: 'troll',
+                            banned: true
+                        },
+                        {
+                            fanType: 'troll',
+                            banned: true
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: true
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: true
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: true
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: true
+                        },
+                        {
+                            fanType: 'niffler',
+                            banned: true
+                        }
+                    ],
                     players: {
+                        seeker: {
+                            xPos: 2,
+                            yPos: 5,
+                            banned: false,
+                            turnUsed : false
+                        },
+                        keeper: {
+                            xPos: 7,
+                            yPos: 3,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser1: {
+                            xPos: 7,
+                            yPos: 8,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser2: {
+                            xPos: 4,
+                            yPos: 2,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser3: {
+                            xPos: 4,
+                            yPos: 11,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        beater1: {
+                            xPos: 8,
+                            yPos: 9,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        },
+                        beater2: {
+                            xPos: 3,
+                            yPos: 8,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        } 
                     }
                 },
                 rightTeam:{
                     points: 0,
                     fans: [ 
+                        {
+                            fanType: 'troll',
+                            banned: true
+                        },
+                        {
+                            fanType: 'troll',
+                            banned: true
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: true
+                        },
+                        {
+                            fanType: 'elf',
+                            banned: true
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: true
+                        },
+                        {
+                            fanType: 'goblin',
+                            banned: true
+                        },
+                        {
+                            fanType: 'niffler',
+                            banned: true
+                        }
                     ],
-                    players: {},
+                    players: {
+                        seeker: {
+                            xPos: 10,
+                            yPos: 2,
+                            banned: false,
+                            turnUsed : false
+                        },
+                        keeper: {
+                            xPos: 13,
+                            yPos: 3,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser1: {
+                            xPos: 10,
+                            yPos: 10,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser2: {
+                            xPos: 14,
+                            yPos: 8,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        chaser3: {
+                            xPos: 16,
+                            yPos: 5,
+                            banned: false,
+                            holdsQuaffle : false,
+                            turnUsed : false
+                        },
+                        beater1: {
+                            xPos: 9,
+                            yPos: 11,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        },
+                        beater2: {
+                            xPos: 11,
+                            yPos: 6,
+                            banned: false,
+                            holdsBludger : false,
+                            turnUsed : false
+                        } 
+                    },
                 },  
                 balls: {}
             },
 
-            matchFinish: {
-                endRound: undefined,
-                leftPoints: undefined,
-                rightPoints: undefined,
-                winnerUserName: undefined,
-                victoryReason: undefined
-            },
+            
 
             next: {
                 turn: undefined,
@@ -461,6 +638,12 @@ export default {
                 }
             }
             else if(this.turnType === "fan"){
+                if(this.mySide === "right") {
+                    this.selectedFanTypeRightTeam = "";
+                } else {
+                    this.selectedFanTypeLeftTeam = "";
+                }
+                
                 if(this.selectedEntityId.includes("Elf")){
                     this.deltaRequest("elfTeleportation", null, null, null, null, null, id, null, null, null, null);
                 }
@@ -571,6 +754,11 @@ export default {
                 }
             }
             else if(this.turnType === "fan"){
+                if(this.mySide === "right") {
+                    this.selectedFanTypeRightTeam = "";
+                } else {
+                    this.selectedFanTypeLeftTeam = "";
+                }
                 if(this.selectedEntityId.includes("Niffler")){
                     this.deltaRequest("snitchSnatch", null, null, null, null, null, null, null, null, null, null);
                 }
@@ -776,11 +964,17 @@ export default {
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
+            this.paused = true;
+            this.matchFinish = obj.payload;
             web.websocket.close();
-            this.game.currentState = "inLobby";
         },
         /**Update local snapShot */
         handleSnapshot: function(obj){
+            if(this.mySide === "right") {
+                this.selectedFanTypeLeftTeam = "";
+            } else {
+                this.selectedFanTypeRightTeam = "";
+            }
             this.snapShot = obj.payload;
             // if(obj.payload.goalWasThrownThisRound)
             //     this.gameLog.unshift({message: 'Server sent: next'});
@@ -792,6 +986,16 @@ export default {
 
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
+
+            // determine which team is to move
+            if (obj.payload.turn.includes("left")) {
+                this.leftTeamToMove = true;
+                this.rightTeamToMove = false;
+            } else if (obj.payload.turn.includes("right")) {
+                this.leftTeamToMove = false;
+                this.rightTeamToMove = true;
+            }
+
             //if a player is chosen
             if(obj.payload.turn === "leftSeeker") this.selectedEntity = this.snapShot.leftTeam.players.seeker;
             else if(obj.payload.turn === "leftKeeper") this.selectedEntity = this.snapShot.leftTeam.players.keeper;
@@ -810,9 +1014,10 @@ export default {
             
             //if a fan is chosen
             else if(obj.payload.turn.includes("left")){
-                
+
                 for(let fan in this.snapShot.leftTeam.fans){
                     if(obj.payload.turn.toLowerCase().includes(this.snapShot.leftTeam.fans[fan].fanType)){
+                        this.selectedFanTypeLeftTeam = this.snapShot.leftTeam.fans[fan].fanType;
                         this.selectedEntity = this.snapShot.leftTeam.fans[fan];
                         break;
                     }
@@ -822,6 +1027,7 @@ export default {
                 
                 for(let fan in this.snapShot.rightTeam.fans){
                     if(obj.payload.turn.toLowerCase().includes(this.snapShot.rightTeam.fans[fan].fanType)){
+                        this.selectedFanTypeRightTeam = this.snapShot.rightTeam.fans[fan].fanType;
                         this.selectedEntity = this.snapShot.rightTeam.fans[fan];
                         break;
                     }
@@ -863,10 +1069,11 @@ export default {
             }
             //Interference is possible
             else if(obj.payload.type === "fan"){
-                if(document.getElementById("autoSkipFans").checked){
-                    this.skip();
-                    return;
-                }
+                // Just for debugging
+                // if(document.getElementById("autoSkipFans").checked){
+                //     this.skip();
+                //     return;
+                // }
                 if(obj.payload.turn.includes("Goblin")){
                     for(var x = 0; x < 17; x++){
                         for(var y = 0; y < 13; y++){
@@ -957,7 +1164,7 @@ export default {
         /**Sets the paused variable */
         handlePauseResponse: function(obj){
             this.paused = obj.payload.pause;
-            if(this.paused) document.getElementById("pause-button").innerHTML = "Fortsetzen";
+            if(this.paused) document.getElementById("pause-button").innerHTML = "Weiter";
             else document.getElementById("pause-button").innerHTML = "Pause";
         },
         /**increases displayed score of given team by given amount */
@@ -1456,28 +1663,54 @@ h1 {
 }
 
 .lighter-gras-tile {
+    background: radial-gradient(#87b86b, #6da14f);
+}
+
+.darker-gras-tile {
+    background: radial-gradient(#99cf79, #8acc63);
+}
+
+
+/* .lighter-gras-tile {
     background: radial-gradient(#99cf79, #8acc63);
 }
 
 .darker-gras-tile {
     background: radial-gradient(#85b36b, #6ea34f);
-}
+} */
+
 
 .lighter-attack-gras-tile {
+    background: radial-gradient(#72a156, #67a344);
+}
+
+.darker-attack-gras-tile {
+    background: radial-gradient(#638b4b, #4c7932);
+}
+
+/* .lighter-attack-gras-tile {
     background: radial-gradient(#8cbe6f, #7fbd5b);
 }
 
 .darker-attack-gras-tile {
     background: radial-gradient(#78a161, #608f45);
-}
+} */
 
 .lighter-center-gras-tile {
+    background: radial-gradient(#72a156, #67a344);
+}
+
+.darker-center-gras-tile {
+    background: radial-gradient(#638b4b, #4c7932);
+}
+
+/* .lighter-center-gras-tile {
     background: radial-gradient(#a3db82, #8fd467);
 }
 
 .darker-center-gras-tile {
     background: radial-gradient(#97ca79, #7cb859);
-}
+} */
 
 .highlighted-gras-tile {
     background: radial-gradient(#fbfccf00, #fafc8960), radial-gradient(#97ca79, #7cb859);
@@ -1493,7 +1726,7 @@ h1 {
     position: absolute;
     width: calc(5.88% * 0.6);
     height: calc(7.69% * 0.6);
-    margin: calc(7.69% * 0.0525) calc(5.88% * 0.075);
+    margin: calc(7.69% * 0.15) calc(5.88% * 0.2);
     border: 1.5px solid #4b2709;
     background: radial-gradient(#97643a, #4b2709);
     border-radius: 3px;
@@ -1733,7 +1966,7 @@ h1 {
 }
 
 .game-balls-move {
-    transition: transform .3s;
+    transition: transform 1s;
 }
 
 .game-players-move {
@@ -1758,16 +1991,16 @@ h1 {
 
 #player-info-panel {
     top: 2%;
-    height: 40%;
+    height: 50%;
 }
 
 #game-log-panel {
     top: 2%;
 }
 
-#banned-players-panel {
-    top: 44%;
-    height: 54%;
+.banned-players-panel {
+    top: 54%;
+    height: 34%;
 }
 
 #test-functions-panel {

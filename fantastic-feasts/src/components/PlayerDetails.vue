@@ -21,7 +21,10 @@
           >{{ playerToDisplay.broom }}</div>
           <div
             class="player-detail-type"
-          >{{ playerToDisplay.role }} – ({{ playerToDisplay.xPos }} | {{ playerToDisplay.yPos }})</div>
+          >{{ playerToDisplay.role }}</div>
+          <div
+            class="player-detail-type"
+          >({{ playerToDisplay.xPos }} | {{ playerToDisplay.yPos }})</div>
         </div>
 
         <div class="player-detail-body">
@@ -114,8 +117,11 @@ export default {
 
 <style scoped>
 .player-detail-container {
-  display: block;
-  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
   font-size: 1.8vh;
   color: #3a3a3a;
   margin: 5% 5%;
