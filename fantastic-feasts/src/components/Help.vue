@@ -5,7 +5,7 @@
             <div class="text-content-container">
                 <h3 class="help__title">Spielanleitung</h3>
                 <h4 class="help__sub-title"></h4>
-                <p class="help__text" style="width: 900px; height: 340px; overflow: scroll; position: relative">In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry Potter" bekannte
+                <p class="help__text" style="width: 70vw; height: 60vh; overflow: scroll; position: relative">In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry Potter" bekannte
                     Spiel "Quidditch" in Form eines Brettspiels spielen.<br>
                     Jeder Spieler steuert dabei ein Team aus sieben Spielfiguren:<br>
                     1 Sucher, der für sein Team den Schnatz fängt.<br>

@@ -165,7 +165,7 @@ export default {
             turnType: String,
 
             // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
-            gameLog: [{message: 'test1', time: '123123123123'}, {message: 'test2', time: '5234123332'}],
+            gameLog: [{message: '', time: ''}, {message: '', time: ''}],
             
             // can later be changed to undefined.
             matchStart: {
@@ -891,8 +891,8 @@ export default {
                 this.highlightedTiles = this.rightHalfTiles;
             }
             for(let i = 0; i < this.highlightedTiles.length; i++){
-                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
-                }
+                if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+            }
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
@@ -908,7 +908,7 @@ export default {
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
             this.highlightedTiles = [];
-            this.timeout = parseInt(parseInt(obj.payload.timeout)/1000);
+            this.timeout = Math.round(parseInt(obj.payload.timeout)/1000);
 
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
@@ -1025,7 +1025,7 @@ export default {
                 for(var x = Math.max(this.selectedEntity.xPos - 3); x <= Math.min(this.selectedEntity.xPos + 3, 16);  x++) {
                     for(var y = Math.max(this.selectedEntity.yPos - 3, 0); y <= Math.min(this.selectedEntity.yPos + 3, 16); y ++) {
                         if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) {
-                            if(this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos) != this.getTileId(x, y))this.highlightTile(x, y); 
+                            if(this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos) != this.getTileId(x,))this.highlightTile(x, y); 
                         }
                     }
                 }
