@@ -33,13 +33,17 @@
                 <!-- <hr class="normal-separation-line"> -->
                 <banned-players :teamConfig="matchStart.leftTeamConfig" :bannedPlayers="bannedPlayersTeamLeft.players">
                 </banned-players>
+                <div class="skip-button-container">
+                    <h3 class="panel-title" id="chance-view"></h3>
+                </div>
             </div>
             <div class="center">
                 <div id="game-container">
                     <div id="game-grid-panel">
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
-                            @click="clickEmptyTile(tile.xPos, tile.yPos)" 
+                            @click="clickEmptyTile(tile.xPos, tile.yPos)"
+                            @wheel="showChance(tile.xPos, tile.yPos)" 
                             :class="[tile.class,
                                 {'highlighted-gras-tile': highlightedTiles.includes(index)
                             }]"
@@ -65,7 +69,8 @@
                                 :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout animated shake': player.knockout }]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
-                            > 
+                                @wheel="showChance(player.xPos, player.yPos)"
+                            >   
                                 <div :class="key.slice(0,6)"></div>
                             </div>
                         </transition-group>
@@ -74,6 +79,7 @@
                                 :key="key" :class="['player-tile', 'right-team-player']" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
+                                @wheel="showChance(player.xPos, player.yPos)"
                             > 
                                 <div :class="key.slice(0,6)"></div>
                             </div>
@@ -96,26 +102,21 @@
                 <!-- <game-log :gameLog="gameLog">
                 </game-log> -->
                 <!-- <hr class="normal-separation-line"> -->
-                <!-- <div class="info-panel" id="test-functions-panel">
-                    <h3 class="panel-title">Testfunktionen</h3>
+                <div class="info-panel" id="test-functions-panel">
+                    <h3 class="panel-title">Zusatzfunktionen</h3>
+
                     <hr class="inner-separation-line">
-                    <input v-model="gameLogTest" type="text">
-                    <button @click="gameLog.unshift({message: gameLogTest, time: getTime()})" class="info-panel-button">Log</button>
                     <hr class="inner-separation-line">
                     <label for="autoSkipFans">Fans automatisch überspringen</label>
                     <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
-                    <button @click="shuffleBalls()" class="info-panel-button">Bälle mischen</button>
-                    <br>
-                    <button @click="scorePoints(5, 'leftTeam')" class="info-panel-button" >Punkte links</button>
-                    <br>
-                    <button @click="scorePoints(5, 'rightTeam')" class="info-panel-button" >Punkte rechts</button>
-                    <button @click="banLeftTeam()" class="info-panel-button" >Team links verbannen</button>
+                    
                     <hr class="inner-separation-line">
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
                 </div> -->
                 <banned-players :teamConfig="matchStart.rightTeamConfig" :bannedPlayers="bannedPlayersTeamRight.players">
                 </banned-players>
+
                 <div class="skip-button-container">
                     <button class="skip-button" @click="skip()">Aussetzen</button>
                 </div>
@@ -194,7 +195,7 @@ export default {
             turnType: String,
 
             // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
-            gameLog: [{message: 'test1', time: '123123123123'}, {message: 'test2', time: '5234123332'}],
+            gameLog: [{message: '', time: ''}, {message: '', time: ''}],
             
             // can later be changed to undefined.
             matchStart: {
@@ -248,54 +249,55 @@ export default {
                         }
                     ],
                     players: {
-                        seeker: {
-                            xPos: 2,
-                            yPos: 5,
-                            banned: false,
-                            turnUsed : false
+                        seeker:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        keeper: {
-                            xPos: 7,
-                            yPos: 3,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        keeper:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser1: {
-                            xPos: 7,
-                            yPos: 8,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser2: {
-                            xPos: 4,
-                            yPos: 2,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser3: {
-                            xPos: 4,
-                            yPos: 11,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser3:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        beater1: {
-                            xPos: 8,
-                            yPos: 9,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
+                        beater1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        beater2: {
-                            xPos: 3,
-                            yPos: 8,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        } 
+                        beater2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
                     }
                 },
                 rightTeam:{
@@ -331,54 +333,55 @@ export default {
                         }
                     ],
                     players: {
-                        seeker: {
-                            xPos: 10,
-                            yPos: 2,
-                            banned: false,
-                            turnUsed : false
+                        seeker:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        keeper: {
-                            xPos: 13,
-                            yPos: 3,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        keeper:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser1: {
-                            xPos: 10,
-                            yPos: 10,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser2: {
-                            xPos: 14,
-                            yPos: 8,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        chaser3: {
-                            xPos: 16,
-                            yPos: 5,
-                            banned: false,
-                            holdsQuaffle : false,
-                            turnUsed : false
+                        chaser3:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        beater1: {
-                            xPos: 9,
-                            yPos: 11,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
+                        beater1:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
                         },
-                        beater2: {
-                            xPos: 11,
-                            yPos: 6,
-                            banned: false,
-                            holdsBludger : false,
-                            turnUsed : false
-                        } 
+                        beater2:{
+                            xPos: 0,
+                            yPos: 0,
+                            banned: true,
+                            turnUsed: false,
+                            knockOut: false,
+                        },
                     },
                 },  
                 balls: {}
@@ -587,23 +590,6 @@ export default {
             const today = new Date();
             return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         },
-        
-        // test method for animation
-        shuffleBalls() {
-            for (var key in this.snapShot.balls) {
-                var ball = this.snapShot.balls[key];
-                ball.xPos = Math.floor(Math.random() * Math.floor(11)) +3;
-                ball.yPos = Math.floor(Math.random() * Math.floor(7)) +3;
-            }
-        },
-
-        banLeftTeam() {
-            var players = this.snapShot.leftTeam.players;
-            for (var key  in players) {
-                players[key].banned = !players[key].banned;
-            }
-            this.gameState = 'teamFormation';
-        },
 
         /**function to be called when a player on the field is clicked. 
          * Sends a deltaRequest message if an action is required if possible
@@ -779,6 +765,44 @@ export default {
             //    this.selectedEntity.yPos = yPos;
             //}
         },
+
+        /**Displays the success chance for certain actions */
+        showChance: function(xPos, yPos){
+            if(!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
+            if(this.turnType === "action"){
+                //Quaffle throw
+                if((this.selectedEntityId.includes("Chaser") || this.selectedEntityId.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
+                    //determine number of intercepting players
+                    var crossedTiles = this.getCrossedTiles(this.selectedEntity.xPos, this.selectedEntity.yPos, xPos, yPos);
+                    var nInterceptPlayers = 0;
+                    for(let i = 0; i < crossedTiles.length; i++){
+                        var x = crossedTiles[i] % 17;
+                        var y = (crossedTiles[i] - crossedTiles[i]%17)/17;
+                        if(this.playerIdOnTile(x, y) !== null){
+                            if(!this.playerIdOnTile(x, y).includes(this.mySide)){
+                                nInterceptPlayers++;
+                                
+                            }
+                        } 
+                    }
+                    //determine distance
+                    var dx = Math.abs(this.selectedEntity.xPos - xPos);
+                    var dy = Math.abs(this.selectedEntity.yPos - yPos);
+                    var dist = dx + Math.max(0, dy - dx);
+                    var chance = Math.pow(1-this.matchStart.matchConfig.probabilities.catchQuaffle, nInterceptPlayers) * Math.pow(this.matchStart.matchConfig.probabilities.throwSuccess, dist);
+                    chance = Math.round(chance * 100);
+                    document.getElementById("chance-view").innerHTML = "Chance für erfolgreichen Wurf: " + chance + "%";
+                }
+
+                // else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
+                //     if(this.playerIdOnTile(x, y) !== null){
+                //         var chance = Math.round(this.matchStart.matchConfig.probabilities.knockOut * 100);
+                //         document.getElementById("chance-view").innerHTML = "Chance für erfolgreichen Knockout: " + chance + "%";
+                //     }
+                // }
+            }
+        },
+
         /**Reads data from the current snapShot to sends the current team formation to the server */
         sendTeamFormation(myTeam) {
             // so wie es jetzt da steht sind das JSON-Dateien und keine JS-Objekte (die Anführungszeichen müssen weg)
@@ -959,8 +983,8 @@ export default {
                 this.highlightedTiles = this.rightHalfTiles;
             }
             for(let i = 0; i < this.highlightedTiles.length; i++){
-                     if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
-                }
+                if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);  
+            }
         },
         /**Loads the lobby component */
         handleMatchFinish: function(obj){
@@ -982,7 +1006,7 @@ export default {
         /**Finds out which action is required from which entity and gives the player feedback */
         handleNext: function(obj){
             this.highlightedTiles = [];
-            this.timeout = parseInt(parseInt(obj.payload.timeout)/1000);
+            this.timeout = Math.round(parseInt(obj.payload.timeout)/1000);
 
             this.selectedEntity = undefined;
             this.selectedEntityId = obj.payload.turn;
@@ -1047,7 +1071,8 @@ export default {
                            
                            if(cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
                         }
-                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))) {
+                        if(!cubed && !this.cornerTiles.includes(this.getTileId(x, y))
+                            && !(this.selectedEntity.xPos == x && this.selectedEntity.yPos == y)) {
                            
                            this.highlightTile(x, y); 
                         }
@@ -1058,7 +1083,7 @@ export default {
             //Throw is possible
             else if(obj.payload.type === "action" && (obj.payload.turn.includes("Chaser") || obj.payload.turn.includes("Keeper")) && this.selectedEntity.holdsQuaffle){
                 for(var i = 0; i <= 220; i++){
-                        if(!this.cornerTiles.includes(i))this.highlightedTiles.push(i);
+                        if(!this.cornerTiles.includes(i) && i != this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos))this.highlightedTiles.push(i);
                 }
                 this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf schießen"});
             }
@@ -1111,7 +1136,7 @@ export default {
                 for(var x = Math.max(this.selectedEntity.xPos - 3); x <= Math.min(this.selectedEntity.xPos + 3, 16);  x++) {
                     for(var y = Math.max(this.selectedEntity.yPos - 3, 0); y <= Math.min(this.selectedEntity.yPos + 3, 16); y ++) {
                         if(this.isFreePath(this.selectedEntity.xPos, this.selectedEntity.yPos, x, y) && !this.cornerTiles.includes(this.getTileId(x, y))) {
-                            this.highlightTile(x, y); 
+                            if(this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos) != this.getTileId(x,))this.highlightTile(x, y); 
                         }
                     }
                 }
@@ -1176,6 +1201,7 @@ export default {
          */
         deltaRequest: function(deltaType, xPosOld, yPosOld, xPosNew, yPosNew, activeEntity, passiveEntity, phase, leftPoints, rightPoints, round){
             this.turnType = null;
+            document.getElementById("chance-view").innerHTML = "";
             this.highlightedTiles = [];
             var timestamp = this.makeTimestamp();
             var payload = {
