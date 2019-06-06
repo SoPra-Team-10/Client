@@ -102,7 +102,7 @@
                 <!-- <game-log :gameLog="gameLog">
                 </game-log> -->
                 <!-- <hr class="normal-separation-line"> -->
-                <div class="info-panel" id="test-functions-panel">
+                <!-- <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Zusatzfunktionen</h3>
 
                     <hr class="inner-separation-line">
@@ -113,7 +113,7 @@
                     <hr class="inner-separation-line">
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
-                </div> -->
+                </div> --> -->
                 <banned-players :teamConfig="matchStart.rightTeamConfig" :bannedPlayers="bannedPlayersTeamRight.players">
                 </banned-players>
 
