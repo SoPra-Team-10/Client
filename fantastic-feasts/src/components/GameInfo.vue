@@ -70,7 +70,7 @@ export default {
     width: 100%;
     top: 0%;
     left: 0%;
-    color: #f0c400;
+    color: #47331b;
     font-size: 3.2vh;
     padding: .5vh 1.5vh 0 1.5vh;
     
@@ -95,7 +95,7 @@ export default {
     width: 100%;
     top: 0%;
     right: 0%;
-    color: #f0c400;
+    color: #47331b;
     font-size: 3.2vh;
     padding: .5vh 1.5vh 0 1.5vh;
 }

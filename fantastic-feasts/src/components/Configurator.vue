@@ -316,7 +316,7 @@ h4.table-header {
     vertical-align: top;
     display: inline-block;
     width: 60%;
-    max-height: 30vh;
+    height: 30vh;
     overflow-y: auto;
 }
 

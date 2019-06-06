@@ -6,12 +6,13 @@
                 <div v-for="(team, index) in configs.teamConfigs" :key="team.name + team.motto" :class="[index === configs.selectedTeam ? 'selected-team' : '']" class="team-overview__team-preview">
                     <li @click="selectTeam(index)" class="team-overview__team-preview-item">{{ team.name }}</li>
                 </div>
+                <button class="app__small-button">Importieren</button>
             </div>
             <app-team-selection v-if="configs.selectedTeam != undefined" :configs="configs" :teamConfig="configs.teamConfigs[configs.selectedTeam]"></app-team-selection> 
-            <div class="app__large-button-container">
-                <!-- function for import is yet to be implemented!! -->
+            <!-- <div class="app__large-button-container">
+                function for import is yet to be implemented!!
                 <button class="app__small-button">Importieren</button>
-            </div>   
+            </div>    -->
         </div>
         <div class="app__footer">
             <hr class="app__footer-separation-line">
@@ -63,9 +64,11 @@ export default {
 <style>
 
 #team-selection__team-list {
-    display: inline-block;
-    margin-top: 40px;
-    width: 20%;
+    position: absolute;
+    width: 25%;
+    left: 5%;
+    height: 80%;
+    top: 12%;
 }
 
 .selected-team {

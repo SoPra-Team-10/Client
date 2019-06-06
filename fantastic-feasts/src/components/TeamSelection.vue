@@ -71,12 +71,14 @@ export default {
             switch(key) {
                 case 'goblins':
                     return 'Goblins';
-                case 'elfs':
+                case 'elves':
                     return 'Elfen';
                 case 'nifflers':
                     return 'Niffler';
                 case 'trolls':
                     return 'Trolle';
+                case 'wombats':
+                    return 'Wombats';
                 default: undefined
             } 
         }
@@ -93,11 +95,14 @@ export default {
 }
 
 #team-overview {
-    margin: 15px;
     padding: 5px 0 20px 0;
     border-radius: 5px;
     display: inline-block;
+    position: absolute;
     width: 60%;
+    left: 35%;
+    height: 80%;
+    top: 10%;
     background: radial-gradient(#ffffff, #f3eddd);
     border-radius: 25px;
     border: 1px solid #e4d8b8;

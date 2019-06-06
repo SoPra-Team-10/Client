@@ -56,6 +56,7 @@ export default {
         localStorage.removeItem('configs');
       }
     }
+
   },
   
 }
