@@ -56,7 +56,7 @@ export default {
             var addr = "ws://"+server+":"+port;
             web.websocket = new WebSocket(addr);
             web.websocket.onerror = function (error) {
-                alert('Connection failed: ' + error.data);
+                alert('Connection failed: ' + error.value);
             };
             var vm = this;
             web.websocket.onopen = function(){
