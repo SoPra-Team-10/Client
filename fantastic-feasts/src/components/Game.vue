@@ -2,8 +2,8 @@
     <div id="game-container">
         <section id="game-panel">
             <header class="header">
-                <div  id="main-menu-button" @click="game.currentState='inMenu'">
-                    Menü
+                <div  id="main-menu-button">
+                    
                 </div>
                 <team-crest v-if="this.snapShot.phase!=='positioning-test'" :teamConfig="matchStart.leftTeamConfig" :active="leftTeamToMove"></team-crest>
                 <game-info :matchStart="matchStart" :snapShot="snapShot">

@@ -26,7 +26,7 @@
         <div class="app__footer">
             <hr class="app__footer-separation-line">
             <button @click="game.currentState = 'inMenu'" class="app__large-button app__footer-button">Zurück zum Menu</button>
-            <button @click="game.currentState = 'inGame'" class="app__large-button app__footer-button">Spielfeld</button>
+            <!-- <button @click="game.currentState = 'inGame'" class="app__large-button app__footer-button">Spielfeld</button> -->
         </div>
         
     </section>
