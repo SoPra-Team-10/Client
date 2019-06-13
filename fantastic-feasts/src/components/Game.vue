@@ -76,7 +76,7 @@
                         </transition-group>
                         <transition-group name="game-players" tag="div" enter-active-class="animated zoomIn" leave-active-class="animated rollOut">
                             <div v-for="(player, key) in activePlayersTeamRight" 
-                                :key="key" :class="['player-tile', 'right-team-player']" 
+                                :key="key" :class="['player-tile', 'right-team-player', { 'player-knockout animated shake': player.knockout }]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
                                 @mouseover="showChance(player.xPos, player.yPos)"
