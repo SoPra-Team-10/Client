@@ -56,7 +56,7 @@ export default {
             var addr = "ws://"+server+":"+port;
             web.websocket = new WebSocket(addr);
             web.websocket.onerror = function (error) {
-                alert('Connection failed!');
+                alert('Verbindung nicht möglich!');
             };
             var vm = this;
             web.websocket.onopen = function(){
@@ -97,6 +97,9 @@ export default {
                             web.websocket.send(JSON.stringify(teamConf));
                         }
                         vm.game.currentState = "inGame";
+                    }
+                    else if(!obj.lobbies && obj.payloadType !== "joinResponse"){
+                        alert("Etwas ist schief gelaufen. Überprüfe deine Eingaben oder versuche einen anderen Nutzernamen.")
                     }
                     //vm.game.currentState = "inGame";
                 }
