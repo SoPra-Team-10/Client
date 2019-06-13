@@ -64,7 +64,7 @@ export default {
 
 <style>
 
-/* @import './../node_modules/animate.css/animate.css'; */
+@import './../node_modules/animate.css/animate.css';
 
 /* Global CSS-styles */
 
