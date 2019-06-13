@@ -18,10 +18,10 @@
             <button @click="game.selectedColorScheme = (game.selectedColorScheme + 1) % 4" class="app__large-button">Farbe ändern</button>
         </div>
         
-        <div class="app__footer">
+        <!-- <div class="app__footer">
             <hr class="app__footer-separation-line">
             <button @click="game.currentState = 'inGame'" class="app__large-button app__footer-button">Spielfeld anzeigen</button>
-        </div>
+        </div> -->
     </div>
 </template>
 

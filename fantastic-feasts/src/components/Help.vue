@@ -5,7 +5,9 @@
             <div class="text-content-container">
                 <h3 class="help__title">Spielanleitung</h3>
                 <h4 class="help__sub-title"></h4>
-                <p class="help__text" style="width: 70vw; height: 60vh; overflow: scroll; position: relative">In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry Potter" bekannte
+                <p class="help__text" style="width: 70vw; height: 60vh; overflow: scroll; position: relative">
+                    Die Spielregeln<br><br>
+                    In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry Potter" bekannte
                     Spiel "Quidditch" in Form eines Brettspiels spielen.<br>
                     Jeder Spieler steuert dabei ein Team aus sieben Spielfiguren:<br>
                     1 Sucher, der für sein Team den Schnatz fängt.<br>
@@ -63,7 +65,50 @@
                     einer Runde auf einem Torring liegt, bekommt ihn der Hüter des jeweiligen Teams wenn, falls er sich in seiner Hüterzone aufhält.
                     Ansonsten wird der Quaffle in die Mitte des Feldes gelegt.
                     Ein Spiel kann jederzeit vom beiden Spieler pausiert bzw. fortgesetzt werden.
-                    </p>
+                    <br><br>
+                    Bedienung des Hauptmenüs
+                    <br><br>
+                    Der Spiel-Client startet im Hauptmenü, das dem Nutzer mehrere Funktionen bietet:<br>
+                    Spielen: Öffnet einen Dialog, in dem sich der Nutzer mit einem Spielserver verbinden kann. Dazu muss er
+                    die IP-Adresse und den Port des Spielservers, sowie einen Benutzernamen, ein Passwort und den Namen der
+                    gewünschten Lobby angeben und auf "Verbiden" klicken. Will er eine Lobby als Zuschauer betreten, muss er die
+                    entsprechende Checkbox anwählen. Ist die Verbindung erfolgreich, öffnet sich automatisch die Spielumgebung. <br>
+                    Team wählen: Öffnet einen Dialog, der es dem Nutzer ermöglicht, ein gespeichertes Team auszuwählen
+                    oder eines aus einer JSON-Datei zu importieren.<br>
+                    Konfigurator: Öffnet den Konfigurator, mit dem der Nutzer Teams erstellen, löschen und bearbeiten kann. Noch Dazu
+                    erlaubt der Konfigurator das Laden eines Teams aus einer und das Herunterladen eines Teams als JSON-Datei.<br>
+                    Hilfe: Öffnet genau diesen Dialog, der genau den Hilfetext anzeigt, den Sie gerade lesen.
+                    Farbe ändern: Ändert das Aussehen des Menüs<br>
+                    <br>
+                    Bedienung der Spielumgebung
+                    <br><br>
+                    Die Bedienung der Spielumgebung erfolgt ausschließlich mit Hilfe des Mauszeigers.<br>
+                    Am Oberen Rand des
+                    Bildschirms werden die Namen der Spieler und der Teams, sowie deren Wappen, die Rundenzahl 
+                    und der Punktestand angezeigt.<br>
+                    In der rechten oberen Ecke befindet sich der Pause-Schalter, mit dem sich eine laufende Partie
+                    pausieren lässt. Ist die Partie bereits pausiert, kann sie mit demselben Schalter fortgesetzt werden.<br>
+                    In der Mitte der Spielumgebung wird das Spielfeld mit dem aktuellen Spielstand angezeigt.
+                    Wenn vom Nutzer eine Aktion gefordert wird, werden gültige Zielfelder markiert. Durch einen Klick
+                    auf ein markiertes Feld, legt der Spieler den gewünschten Zielort für die jeweilige Aktion fest.
+                    Bei einer Aktion, die kein Ziel benötigt, werden alle Felder des Spielfelds markiert und ein Klicken
+                    auf ein markiertes Feld führt die Aktion aus. Die geforderte Aktion wird rechts im Bereich
+                    "Spielhinweise angezeigt". Informationen über die ausführende Spielfigur, wie etwa der Name oder
+                    die Art des verwendeten Besens, werden links im Bereich "Spielerinformationen" angezeigt.
+                    Sollte ein Spieler eine Aktio nicht durchführen und lieber aussetzen wollen,
+                    kann er das durch den entsprechenden Schalter in der unteren rechten Ecke tun.<br>
+                    Rechts und links in der Spielumgebung werden die Symbole der verbannten Spieler angezeigt. Am 
+                    Anfang des Spiels, werden alle Spielfiguren als verbannt betrachtet, wodurch der Nutzer in dem
+                    Bereich sehen kann, welche Spielfiguren noch platziert werden können.<br>
+                    Am unteren Rand werden die für beide Teams noch verfügbaren Fans angezeigt. Außerdem wird dort
+                    die Zeit bis zum Timeout heruntergezählt.<br>
+                    Wenn ein Wurf mit dem Quaffel möglich ist und der Cursor auf ein Feld gezogen wird, wird in einem 
+                    Bereich in der linken unteren Decke die Wahrscheinlichkeit angezeigt, mit der der Wurf auf dieses
+                    Feld erfolgreich ist.<br>
+                    Am Ende des Spiels wird der Sieger der Partie angezeigt, zusammen mit einer Schaltfläche, die eine Rückkehr
+                    ins Menü ermöglicht.
+
+                </p>
             </div>
         </div>
         <div class="app__footer">
