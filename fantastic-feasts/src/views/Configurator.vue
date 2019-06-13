@@ -79,7 +79,16 @@ export default {
     "app-team-overview": TeamOverview,
     "app-match-overview": MatchOverview
   },
-  props: ["game", "configs"],
+  props: {
+    game: {
+      type: Object,
+      required: true
+    },
+    configs: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       state: {

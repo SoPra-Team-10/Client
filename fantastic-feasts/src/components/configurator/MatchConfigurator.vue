@@ -200,7 +200,16 @@
 
 <script>
 export default {
-  props: ["configs", "state"],
+  props: {
+    configs: {
+      type: Object,
+      required: true
+    },
+    state: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       matchConfig: this.configs.matchConfigs[this.state.index]

@@ -45,7 +45,12 @@
 
 <script>
 export default {
-  props: ["game"]
+  props: {
+    game: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>
 

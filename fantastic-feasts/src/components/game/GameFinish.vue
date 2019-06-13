@@ -18,13 +18,18 @@
 </template>
 
 <script>
-import TeamCrest from "./TeamCrest.vue";
+// import TeamCrest from "./TeamCrest.vue";
 
 export default {
   components: {
-    "team-crest": TeamCrest
+    // "team-crest": TeamCrest
   },
-  props: ["matchFinish"]
+  props: {
+    matchFinish: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>
 

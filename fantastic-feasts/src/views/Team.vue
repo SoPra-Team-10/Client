@@ -47,7 +47,16 @@ export default {
   components: {
     "app-team-selection": TeamSelection
   },
-  props: ["game", "configs"],
+  props: {
+    game: {
+      type: Object,
+      required: true
+    },
+    configs: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     readFile: function() {
       var files = document.getElementById("fileChooser").files;

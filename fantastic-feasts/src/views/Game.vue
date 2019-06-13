@@ -196,7 +196,7 @@
 <script>
 import web from "../App.vue";
 import BannedPlayers from "../components/game/BannedPlayers.vue";
-import GameLog from "../components/game/GameLog.vue";
+// import GameLog from "../components/game/GameLog.vue";
 import PlayerDetails from "../components/game/PlayerDetails.vue";
 import GameInfo from "../components/game/GameInfo.vue";
 import GameFans from "../components/game/GameFans.vue";
@@ -224,7 +224,16 @@ export default {
     "game-instructions": GameInstructions,
     "match-finish": MatchFinish
   },
-  props: ["game", "teamConfig"],
+  props: {
+    game: {
+      type: Object,
+      required: true
+    },
+    teamConfig: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       // test matchFinish component
@@ -556,10 +565,10 @@ export default {
     },
     getEntity(entityID) {
       if (entityID.startsWith("left")) {
-        var key = entityID.slice(4).toLowerCase();
+        const key = entityID.slice(4).toLowerCase();
         return this.snapShot.leftTeam.players[key];
       } else if (entityID.startsWith("right")) {
-        var key = entityID.slice(5).toLowerCase();
+        const key = entityID.slice(5).toLowerCase();
         return this.snapShot.rightTeam.players[key];
       } else {
         switch (entityID) {
@@ -654,7 +663,7 @@ export default {
      * Sends a deltaRequest message if an action is required if possible
      */
 
-    targetPlayer(player, key) {
+    targetPlayer(player) {
       var id = this.playerIdOnTile(player.xPos, player.yPos);
 
       var xPos = player.xPos;
@@ -1189,9 +1198,7 @@ export default {
       this.highlightedTiles = [];
       for (var x = xPos - radius; x <= xPos + radius; x++) {
         for (var y = yPos - radius; y <= yPos + radius; y++) {
-          if (true) {
-            this.highlightTile(x, y);
-          }
+          this.highlightTile(x, y);
         }
       }
     },
@@ -1201,7 +1208,7 @@ export default {
     startGame: function() {
       var vm = this;
       if (web.websocket) {
-        web.websocket.onerror = function(error) {
+        web.websocket.onerror = function() {
           alert("Connection lost");
           web.websocket = new WebSocket(web.addr);
           web.websocket.onopen = function() {
@@ -1209,7 +1216,7 @@ export default {
             this.startGame();
             web.websocket.send(web.joinReq);
           };
-          web.websocket.onerror = function(error) {
+          web.websocket.onerror = function() {
             setTimeout(function() {
               if (this.reconnectAttempts < 5) {
                 web.websocket = new WebSocket(web.addr);
@@ -1219,7 +1226,6 @@ export default {
           };
         };
         web.websocket.onmessage = function(msg) {
-          var newText = "";
           var jsonObject = JSON.parse(msg.data);
           // all message types are assigned to their corresponding handlers
           if (jsonObject.payloadType === "matchStart") {
@@ -1400,7 +1406,7 @@ export default {
           ) {
             var cubes = this.snapShot.wombatCubes;
             var cubed = false;
-            for (var i = 0; i < cubes.length; i++) {
+            for (let i = 0; i < cubes.length; i++) {
               if (cubes[i].xPos === x && cubes[i].yPos === y) cubed = true;
             }
             if (
@@ -1421,7 +1427,7 @@ export default {
           obj.payload.turn.includes("Keeper")) &&
         this.selectedEntity.holdsQuaffle
       ) {
-        for (var i = 0; i <= 220; i++) {
+        for (let i = 0; i <= 220; i++) {
           if (
             !cornerTiles.includes(i) &&
             i !=
@@ -1456,8 +1462,8 @@ export default {
         //     return;
         // }
         if (obj.payload.turn.includes("Goblin")) {
-          for (var x = 0; x < 17; x++) {
-            for (var y = 0; y < 13; y++) {
+          for (let x = 0; x < 17; x++) {
+            for (let y = 0; y < 13; y++) {
               if (
                 this.playerIdOnTile(x, y) !== null &&
                 !this.playerIdOnTile(x, y).includes(this.mySide)
@@ -1499,12 +1505,12 @@ export default {
       ) {
         this.highlightedTiles = [];
         for (
-          var x = Math.max(this.selectedEntity.xPos - 3);
+          let x = Math.max(this.selectedEntity.xPos - 3);
           x <= Math.min(this.selectedEntity.xPos + 3, 16);
           x++
         ) {
           for (
-            var y = Math.max(this.selectedEntity.yPos - 3, 0);
+            let y = Math.max(this.selectedEntity.yPos - 3, 0);
             y <= Math.min(this.selectedEntity.yPos + 3, 16);
             y++
           ) {

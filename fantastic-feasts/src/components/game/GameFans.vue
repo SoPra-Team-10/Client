@@ -49,10 +49,12 @@ export default {
       required: true
     },
     selectedFanTypeRightTeam: {
-      type: String
+      type: String,
+      default: ""
     },
     selectedFanTypeLeftTeam: {
-      type: String
+      type: String,
+      default: ""
     }
   },
   computed: {

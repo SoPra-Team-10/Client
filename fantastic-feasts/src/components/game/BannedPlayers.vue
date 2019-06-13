@@ -38,7 +38,16 @@
 <script>
 export default {
   // have to be passed over from paren component
-  props: ["bannedPlayers", "teamConfig"]
+  props: {
+    bannedPlayer: {
+      type: Array,
+      required: true
+    },
+    teamConfig: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>
 

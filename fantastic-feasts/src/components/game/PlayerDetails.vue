@@ -44,7 +44,24 @@
 <script>
 export default {
   // have to be passed over from paren component
-  props: ["matchStart", "selectedEntityId", "selectedEntity", "snapShot"],
+  props: {
+    matchStart: {
+      type: Object,
+      required: true
+    },
+    selectedEntityId: {
+      type: String,
+      required: true
+    },
+    selectedEntity: {
+      type: Object,
+      required: true
+    },
+    snapShot: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
     // returns all required variables that are needed to display player information
     // this computed property combines the different information from above props to

@@ -44,10 +44,19 @@
 
 <script>
 import web from "../App.vue";
-import game from "../App.vue";
-import configs from "../App.vue";
+// import game from "../App.vue";
+// import configs from "../App.vue";
 export default {
-  props: ["game", "teamConfig"],
+  props: {
+    game: {
+      type: Object,
+      required: true
+    },
+    teamConfig: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     makeTimestamp: function() {
       var date = new Date();
@@ -69,7 +78,7 @@ export default {
     },
 
     connect: function() {
-      var date = new Date();
+      // var date = new Date();
       var server = document.getElementById("server").value;
       var port = document.getElementById("port").value;
       //out server for testing
@@ -77,7 +86,7 @@ export default {
       //port = "8080";
       var addr = "ws://" + server + ":" + port;
       web.websocket = new WebSocket(addr);
-      web.websocket.onerror = function(error) {
+      web.websocket.onerror = function() {
         alert("Connection failed!");
       };
       var vm = this;
