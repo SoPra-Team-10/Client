@@ -43,7 +43,7 @@
                         <div v-for="(tile, index) in this.grid" 
                             class="gras-tile" :key="tile.id" 
                             @click="clickEmptyTile(tile.xPos, tile.yPos)"
-                            @wheel="showChance(tile.xPos, tile.yPos)" 
+                            @mouseover="showChance(tile.xPos, tile.yPos)" 
                             :class="[tile.class,
                                 {'highlighted-gras-tile': highlightedTiles.includes(index)
                             }]"
@@ -69,7 +69,7 @@
                                 :key="key" :class="['player-tile', 'left-team-player', { 'player-knockout animated shake': player.knockout }]"
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.leftTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
-                                @wheel="showChance(player.xPos, player.yPos)"
+                                @mouseover="showChance(player.xPos, player.yPos)"
                             >   
                                 <div :class="key.slice(0,6)"></div>
                             </div>
@@ -79,7 +79,7 @@
                                 :key="key" :class="['player-tile', 'right-team-player', { 'player-knockout animated shake': player.knockout }]" 
                                 :style="{ left: 5.88 * player.xPos + '%', top: 7.69 * player.yPos + '%', background: 'radial-gradient(#00000000, #0000003f), #' + matchStart.rightTeamConfig.colors.primary }"
                                 @click="targetPlayer(player, key)"
-                                @wheel="showChance(player.xPos, player.yPos)"
+                                @mouseover="showChance(player.xPos, player.yPos)"
                             > 
                                 <div :class="key.slice(0,6)"></div>
                             </div>
