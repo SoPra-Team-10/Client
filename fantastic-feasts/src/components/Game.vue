@@ -1234,6 +1234,7 @@ export default {
         },
 
         pauseResume: function(){
+            if(!this.mySide) return;
             var jsonObject;
             var timestamp = this.makeTimestamp();
             var jsonObject = {
