@@ -3,7 +3,7 @@
         <section id="game-panel">
             <header class="header">
                 <div  id="main-menu-button">
-                    
+                    Menü
                 </div>
                 <team-crest v-if="this.snapShot.phase!=='positioning-test'" :teamConfig="matchStart.leftTeamConfig" :active="leftTeamToMove"></team-crest>
                 <game-info :matchStart="matchStart" :snapShot="snapShot">
@@ -113,7 +113,7 @@
                     <hr class="inner-separation-line">
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
-                </div> --> -->
+                </div> -->
                 <banned-players :teamConfig="matchStart.rightTeamConfig" :bannedPlayers="bannedPlayersTeamRight.players">
                 </banned-players>
 
