@@ -8,39 +8,52 @@
           <li
             v-for="(team, index) in configs.teamConfigs"
             :key="team.name + team.motto + team.players.chaser1.broom"
-            @click="selectListItem(index)"
             class="overview-list-item"
-            :class="{ 'selected-list-item': index ===  selectedItem}"
-          >{{ team.name }}</li>
+            :class="{ 'selected-list-item': index === selectedItem }"
+            @click="selectListItem(index)"
+          >
+            {{ team.name }}
+          </li>
         </transition-group>
       </div>
       <!-- Buttons on the right -->
       <div class="overview-options">
         <button
-          @click="editTeamConfig(selectedItem)"
           class="app__small-button overview-options-button"
-        >Bearbeiten</button>
-        <button @click="downloadJSON()" class="app__small-button overview-options-button">
+          @click="editTeamConfig(selectedItem)"
+        >
+          Bearbeiten
+        </button>
+        <button
+          class="app__small-button overview-options-button"
+          @click="downloadJSON()"
+        >
           <a id="downloadAnchorElem" style="display:none"></a>Download
         </button>
         <button
-          @click="deleteTeamConfig(selectedItem)"
           class="app__small-button overview-options-button"
-        >Löschen</button>
+          @click="deleteTeamConfig(selectedItem)"
+        >
+          Löschen
+        </button>
       </div>
     </div>
 
     <!-- Buttons at the bottom -->
     <div class="overview__general-options">
-      <hr class="team-config__content-container-hr">
-      <label for="file-import" class="app__small-button app__import-label">Importieren</label>
+      <hr class="team-config__content-container-hr" />
+      <label for="file-import" class="app__small-button app__import-label"
+        >Importieren</label
+      >
       <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
       <input type="file" id="importChooser" @change="readFile()"/>-->
-      <input type="file" id="file-import" @change="readFile()">
+      <input id="file-import" type="file" @change="readFile()" />
       <button
-        @click="createTeamConfig()"
         class="app__small-button overview__general-options-button"
-      >Team erstellen</button>
+        @click="createTeamConfig()"
+      >
+        Team erstellen
+      </button>
     </div>
   </div>
 </template>
@@ -318,9 +331,9 @@ export default {
 }
 
 .team-overview__team-preview-item {
-    list-style: none;
-    text-align: left;
-    padding: .3rem;
+  list-style: none;
+  text-align: left;
+  padding: 0.3rem;
 }
 
 .slide-leave-active {

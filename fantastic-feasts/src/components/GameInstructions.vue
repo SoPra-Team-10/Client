@@ -1,20 +1,17 @@
 <template>
-  <div class="info-panel" id="game-instructions-panel">
+  <div id="game-instructions-panel" class="info-panel">
     <h3 class="panel-title">Spielhinweise</h3>
-    <hr class="inner-separation-line">
+    <hr class="inner-separation-line" />
   </div>
 </template>
 
 <script>
-export default {
-  
-}
+export default {};
 </script>
 
 <style scoped>
 #game-instructions-panel {
-    top: 2%;
-    height: 50%;
+  top: 2%;
+  height: 50%;
 }
-
 </style>

@@ -1,13 +1,25 @@
 <template>
-  <div :class="{'animated delay-1s pulse': active}" class="overflow-wrapper">
-      <div class="team-crest" :class="{'crest-active': active}">
-        <div class="team-crest__segment-top" :style="{background: '#' + teamConfig.colors.primary }"></div>
-        <div class="team-crest__segment-bottom" :style="{background: '#' + teamConfig.colors.secondary }"></div>
-        <div class="team-crest__segment-top" :style="{background: '#' + teamConfig.colors.secondary }"></div>
-        <div class="team-crest__segment-bottom" :style="{background: '#' + teamConfig.colors.primary }"></div>
-        <div class="shadow-overlay"></div>
-      </div>
-      <span class="team-motto-span">{{ teamConfig.motto }}</span>
+  <div :class="{ 'animated delay-1s pulse': active }" class="overflow-wrapper">
+    <div class="team-crest" :class="{ 'crest-active': active }">
+      <div
+        class="team-crest__segment-top"
+        :style="{ background: '#' + teamConfig.colors.primary }"
+      ></div>
+      <div
+        class="team-crest__segment-bottom"
+        :style="{ background: '#' + teamConfig.colors.secondary }"
+      ></div>
+      <div
+        class="team-crest__segment-top"
+        :style="{ background: '#' + teamConfig.colors.secondary }"
+      ></div>
+      <div
+        class="team-crest__segment-bottom"
+        :style="{ background: '#' + teamConfig.colors.primary }"
+      ></div>
+      <div class="shadow-overlay"></div>
+    </div>
+    <span class="team-motto-span">{{ teamConfig.motto }}</span>
   </div>
 </template>
 
@@ -16,19 +28,17 @@ export default {
   props: {
     teamConfig: {
       // required: true,
-      type: Object,
+      type: Object
     },
     active: {
       type: Boolean,
       required: true
     }
   }
-  
-}
+};
 </script>
 
 <style scoped>
-
 .team-motto-span {
   position: absolute;
   display: none;
@@ -37,8 +47,8 @@ export default {
   left: -50%;
   background: #0000006e;
   color: #ffffff;
-  padding: .5rem;
-  border-radius: .3rem;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
 }
 
 .team-crest {
@@ -49,7 +59,7 @@ export default {
   flex-direction: column;
   overflow: hidden;
   flex-wrap: wrap;
-  border-radius: .3rem .3rem 2rem 2rem;
+  border-radius: 0.3rem 0.3rem 2rem 2rem;
   border: 2px solid #e0a500;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.377);
 }
@@ -88,5 +98,4 @@ export default {
   height: 100%;
   background: radial-gradient(#00000000, #0000003f);
 }
-
 </style>

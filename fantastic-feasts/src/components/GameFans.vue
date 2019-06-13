@@ -10,14 +10,28 @@
       >
         <div :class="fan.fanType"></div>
       </div>-->
-      <div v-for="(count, key) in fanCountTeamLeft" :key="key" class="fan" :class="{'fan-active animated pulse': key === selectedFanTypeLeftTeam}">
+      <div
+        v-for="(count, key) in fanCountTeamLeft"
+        :key="key"
+        class="fan"
+        :class="{
+          'fan-active animated pulse': key === selectedFanTypeLeftTeam
+        }"
+      >
         <div :class="key">
           <div class="fan-counter">{{ count }}</div>
         </div>
       </div>
     </div>
     <div class="spectator-stand">
-      <div v-for="(count, key) in fanCountTeamRight" :key="key"  class="fan" :class="{'fan-active animated pulse': key === selectedFanTypeRightTeam}">
+      <div
+        v-for="(count, key) in fanCountTeamRight"
+        :key="key"
+        class="fan"
+        :class="{
+          'fan-active animated pulse': key === selectedFanTypeRightTeam
+        }"
+      >
         <!-- selectedFanTypeRightTeam === key -->
         <div :class="key">
           <div class="fan-counter">{{ count }}</div>
@@ -94,10 +108,7 @@ export default {
 };
 </script>
 
-
 <style scoped animate>
-
-
 .spectator-stand-panel {
   background: radial-gradient(#797979, #525252);
   position: fixed;
@@ -208,7 +219,8 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/niffler.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background: url(../resources/niffler.svg),
+    radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -221,7 +233,8 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/goblin.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background: url(../resources/goblin.svg),
+    radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -235,7 +248,8 @@ export default {
   top: 0;
   border-radius: 0.9vh;
   overflow: hidden;
-  background: url(../resources/wombat.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background: url(../resources/wombat.svg),
+    radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -243,5 +257,3 @@ export default {
   background: radial-gradient(#e7c87300, #e9cf8894);
 }
 </style>
-
-

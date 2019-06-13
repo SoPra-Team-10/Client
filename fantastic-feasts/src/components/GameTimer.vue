@@ -10,8 +10,7 @@
 
 <script>
 export default {
-  props: ['time'],
-
+  props: ["time"]
 };
 </script>
 
@@ -37,8 +36,8 @@ export default {
   max-width: 130px;
   min-height: 40px;
   min-width: 40px;
-  left: 50%; 
-    -webkit-transform: translate(-50%, 0); 
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
   bottom: 1vh;
   display: flex;
   flex-direction: row;
@@ -71,9 +70,9 @@ export default {
   z-index: 152;
   border: 1px solid #ebd18a;
   background: radial-gradient(#ffffff, #e0e0e0);
-  -moz-box-shadow:    inset 0 0 4px #00000086;
+  -moz-box-shadow: inset 0 0 4px #00000086;
   -webkit-box-shadow: inset 0 0 4px #000000;
-  box-shadow:         inset 0 0 4px #000000;
+  box-shadow: inset 0 0 4px #000000;
   border-radius: 50%;
   display: flex;
   flex-direction: row;
@@ -83,6 +82,5 @@ export default {
   align-content: center;
   color: #4b4b4b;
   font-size: 2.7vw;
-
 }
 </style>
