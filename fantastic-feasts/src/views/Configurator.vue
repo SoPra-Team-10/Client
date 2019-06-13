@@ -66,10 +66,10 @@
 </template>
 
 <script>
-import TeamConfig from "./TeamConfigurator.vue";
-import TeamOverview from "./TeamOverview.vue";
-import MatchConfig from "./MatchConfigurator.vue";
-import MatchOverview from "./MatchOverview.vue";
+import TeamConfig from "../components/configurator/TeamConfigurator.vue";
+import TeamOverview from "../components/configurator/TeamOverview.vue";
+import MatchConfig from "../components/configurator/MatchConfigurator.vue";
+import MatchOverview from "../components/configurator/MatchOverview.vue";
 
 export default {
   components: {

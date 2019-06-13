@@ -6,13 +6,13 @@
           Menü
         </div>
         <team-crest
-          v-if="this.snapShot.phase !== 'positioning-test'"
+          v-if="snapShot.phase !== 'positioning-test'"
           :team-config="matchStart.leftTeamConfig"
           :active="leftTeamToMove"
         ></team-crest>
         <game-info :match-start="matchStart" :snap-shot="snapShot"> </game-info>
         <team-crest
-          v-if="this.snapShot.phase !== 'positioning-test'"
+          v-if="snapShot.phase !== 'positioning-test'"
           :team-config="matchStart.rightTeamConfig"
           :active="rightTeamToMove"
         ></team-crest>
@@ -20,23 +20,9 @@
           Pause
         </div>
       </header>
-      <!-- <header class="header">
-                <div class="header__panel" id="main-menu-panel">
-                    <div  id="main-menu-button" @click="game.currentState='inMenu'">
-                        Menü
-                    </div>
-                </div>
-                <game-info :matchStart="matchStart" :snapShot="snapShot">
-                </game-info>
-                <div class="header__panel" id="pause-panel">
-                    <div id="pause-button" @click="pauseResume()">
-                        Pause
-                    </div>
-                </div>
-            </header> -->
       <div class="sidebar-left">
         <player-details
-          v-if="this.selectedEntity && this.selectedEntityId"
+          v-if="selectedEntity && selectedEntityId"
           :snap-shot="snapShot"
           :selected-entity-id="selectedEntityId"
           :match-start="matchStart"
@@ -57,8 +43,8 @@
         <div id="game-container">
           <div id="game-grid-panel">
             <div
-              v-for="(tile, index) in this.grid"
-              :key="tile.id"
+              v-for="(tile, index) in grid"
+              :key="'' + tile.xPos + '-' + tile.yPos"
               class="gras-tile"
               :class="[
                 tile.class,
@@ -66,10 +52,7 @@
               ]"
               @click="clickEmptyTile(tile.xPos, tile.yPos)"
               @mouseover="showChance(tile.xPos, tile.yPos)"
-            >
-              ({{ tile.xPos }} | {{ tile.yPos }}) <br />
-              {{ index }}
-            </div>
+            ></div>
             <!-- <div v-for="(tile, index) in this.grid" 
                             :key="tile.id" 
                             :class="highlightedTiles.includes(index) ? 'highlighted-gras-tile' : 'hidden-tile'"
@@ -176,11 +159,10 @@
       </div>
       <div class="sidebar-right">
         <game-instructions></game-instructions>
-        <!-- <game-log :gameLog="gameLog">
-                </game-log> -->
+        <!-- <game-log :gameLog="gameLog"></game-log> -->
         <!-- <hr class="normal-separation-line"> -->
         <!-- <div class="info-panel" id="test-functions-panel">
-                    <h3 class="panel-title">Zusatzfunktionen</h3>
+                    <h3 class="panel-title">Zusatzfunktionen</h3>åå
 
                     <hr class="inner-separation-line">
                     <hr class="inner-separation-line">
@@ -191,7 +173,6 @@
                     <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
                     </div>
                 </div> -->
-        -->
         <banned-players
           :team-config="matchStart.rightTeamConfig"
           :banned-players="bannedPlayersTeamRight.players"
@@ -214,15 +195,23 @@
 
 <script>
 import web from "../App.vue";
-import BannedPlayers from "./BannedPlayers.vue";
-import GameLog from "./GameLog.vue";
-import PlayerDetails from "./PlayerDetails.vue";
-import GameInfo from "./GameInfo.vue";
-import GameFans from "./GameFans.vue";
-import GameTimer from "./GameTimer.vue";
-import TeamCrest from "./TeamCrest.vue";
-import GameInstructions from "./GameInstructions.vue";
-import MatchFinish from "./MatchFinish.vue";
+import BannedPlayers from "../components/game/BannedPlayers.vue";
+import GameLog from "../components/game/GameLog.vue";
+import PlayerDetails from "../components/game/PlayerDetails.vue";
+import GameInfo from "../components/game/GameInfo.vue";
+import GameFans from "../components/game/GameFans.vue";
+import GameTimer from "../components/game/GameTimer.vue";
+import TeamCrest from "../components/game/TeamCrest.vue";
+import GameInstructions from "../components/game/GameInstructions.vue";
+import MatchFinish from "../components/game/GameFinish.vue";
+
+import {
+  rightAttackTiles,
+  centerTiles,
+  leftAttackTiles,
+  cornerTiles,
+  goalTiles
+} from "../util/quidditchField";
 
 export default {
   components: {
@@ -475,124 +464,6 @@ export default {
         type: undefined,
         timeout: undefined
       },
-
-      // game grid setup
-      centerTiles: [92, 93, 94, 109, 110, 111, 126, 127, 128],
-      leftAttackTiles: [
-        19,
-        35,
-        36,
-        37,
-        52,
-        53,
-        54,
-        68,
-        69,
-        70,
-        71,
-        72,
-        85,
-        86,
-        87,
-        88,
-        89,
-        102,
-        103,
-        104,
-        105,
-        106,
-        119,
-        120,
-        121,
-        122,
-        123,
-        136,
-        137,
-        138,
-        139,
-        140,
-        154,
-        155,
-        156,
-        171,
-        172,
-        173,
-        189
-      ],
-      rightAttackTiles: [
-        31,
-        47,
-        48,
-        49,
-        64,
-        65,
-        66,
-        80,
-        81,
-        82,
-        83,
-        84,
-        97,
-        98,
-        99,
-        100,
-        101,
-        114,
-        115,
-        116,
-        117,
-        118,
-        131,
-        132,
-        133,
-        134,
-        135,
-        147,
-        148,
-        149,
-        150,
-        151,
-        152,
-        166,
-        167,
-        168,
-        183,
-        184,
-        185,
-        201
-      ],
-      cornerTiles: [
-        0,
-        1,
-        2,
-        14,
-        15,
-        16,
-        17,
-        18,
-        34,
-        51,
-        32,
-        33,
-        50,
-        67,
-        153,
-        170,
-        187,
-        204,
-        188,
-        205,
-        206,
-        218,
-        219,
-        220,
-        202,
-        203,
-        186,
-        169
-      ],
-      goalTiles: [70, 104, 138, 82, 116, 150],
-
       reconnect: {
         matchStart: undefined,
         snapshot: undefined
@@ -639,8 +510,8 @@ export default {
       for (var i = 0; i < 221; i++) {
         var column = i % 17;
         if (column < 8) {
-          if (!this.centerTiles.includes(i)) {
-            if (!this.cornerTiles.includes(i)) {
+          if (!centerTiles.includes(i)) {
+            if (!cornerTiles.includes(i)) {
               tiles.push(i);
             }
           }
@@ -654,21 +525,14 @@ export default {
       for (var i = 0; i < 221; i++) {
         var column = i % 17;
         if (column > 8) {
-          if (!this.centerTiles.includes(i)) {
-            if (!this.cornerTiles.includes(i)) {
+          if (!centerTiles.includes(i)) {
+            if (!cornerTiles.includes(i)) {
               tiles.push(i);
             }
           }
         }
       }
       return tiles;
-    },
-    lowerLeftHeader() {
-      if (this.gameState === "teamFormation") {
-        return "Verfügbare Spieler";
-      } else if (this.gameState === "inGame") {
-        return "Verbannte Spieler";
-      }
     },
     activePlayersTeamLeft() {
       var players = this.snapShot.leftTeam.players;
@@ -737,9 +601,7 @@ export default {
         }
       }
       return { players: bannedPlayers, number: i };
-    },
-    playerInfo() {},
-    gameInfo() {}
+    }
   },
   /**Is automatically called when the component loaded */
   mounted() {
@@ -1277,12 +1139,12 @@ export default {
     generateGrid() {
       var grid = [];
       for (var i = 0; i < 221; i++) {
-        if (this.cornerTiles.includes(i)) {
+        if (cornerTiles.includes(i)) {
           grid.push({ class: "corner-tile" });
         } else {
           var xPos = i % 17;
           var yPos = (i - xPos) / 17;
-          if (this.centerTiles.includes(i)) {
+          if (centerTiles.includes(i)) {
             if (i % 2 === 0) {
               grid.push({
                 class: "darker-center-gras-tile",
@@ -1297,8 +1159,8 @@ export default {
               });
             }
           } else if (
-            this.leftAttackTiles.includes(i) ||
-            this.rightAttackTiles.includes(i)
+            leftAttackTiles.includes(i) ||
+            rightAttackTiles.includes(i)
           ) {
             if (i % 2 === 0) {
               grid.push({
@@ -1421,7 +1283,7 @@ export default {
         this.highlightedTiles = this.rightHalfTiles;
       }
       for (let i = 0; i < this.highlightedTiles.length; i++) {
-        if (this.goalTiles.includes(this.highlightedTiles[i]))
+        if (goalTiles.includes(this.highlightedTiles[i]))
           this.highlightedTiles.splice(i, 1);
       }
     },
@@ -1543,7 +1405,7 @@ export default {
             }
             if (
               !cubed &&
-              !this.cornerTiles.includes(this.getTileId(x, y)) &&
+              !cornerTiles.includes(this.getTileId(x, y)) &&
               !(this.selectedEntity.xPos == x && this.selectedEntity.yPos == y)
             ) {
               this.highlightTile(x, y);
@@ -1561,7 +1423,7 @@ export default {
       ) {
         for (var i = 0; i <= 220; i++) {
           if (
-            !this.cornerTiles.includes(i) &&
+            !cornerTiles.includes(i) &&
             i !=
               this.getTileId(this.selectedEntity.xPos, this.selectedEntity.yPos)
           )
@@ -1616,7 +1478,7 @@ export default {
             for (y = 0; y < 13; y++) {
               if (
                 this.isFreeTile(x, y) &&
-                !this.cornerTiles.includes(this.getTileId(x, y))
+                !cornerTiles.includes(this.getTileId(x, y))
               )
                 this.highlightTile(x, y);
             }
@@ -1624,7 +1486,7 @@ export default {
           this.gameLog.unshift({ message: "ein Wombat kann eingreifen" });
         } else {
           for (var i = 0; i <= 220; i++) {
-            if (!this.cornerTiles.includes(i)) this.highlightedTiles.push(i);
+            if (!cornerTiles.includes(i)) this.highlightedTiles.push(i);
           }
           if (obj.payload.turn.includes("Troll"))
             this.gameLog.unshift({ message: "ein Troll kann eingreifen" });
@@ -1653,7 +1515,7 @@ export default {
                 x,
                 y
               ) &&
-              !this.cornerTiles.includes(this.getTileId(x, y))
+              !cornerTiles.includes(this.getTileId(x, y))
             ) {
               if (
                 this.getTileId(
@@ -1679,7 +1541,7 @@ export default {
       //         this.highlightedTiles = this.rightHalfTiles;
       //     }
       //     for(let i = 0; i < this.highlightedTiles.length; i++){
-      //          if(this.goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);
+      //          if(goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);
       //     }
       //     this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
       // }
@@ -1689,24 +1551,24 @@ export default {
             var id = this.getTileId(x, y);
             // if((this.mySide === "left" && this.leftHalfTiles.includes(id)) ||
             //     (this.mySide === "right" && this.rightHalfTiles.includes(id)) &&
-            //     !this.goalTiles.includes(id) && this.isFreeTile(x, y))
+            //     !goalTiles.includes(id) && this.isFreeTile(x, y))
             //     this.highlightTiles(x, y);
             if (this.mySide === "left") {
               if (
                 x < 8 &&
-                !this.cornerTiles.includes(id) &&
-                !this.goalTiles.includes(id) &&
+                !cornerTiles.includes(id) &&
+                !goalTiles.includes(id) &&
                 this.isFreeTile(x, y) &&
-                !this.centerTiles.includes(id)
+                !centerTiles.includes(id)
               )
                 this.highlightTile(x, y);
             } else if (this.mySide === "right") {
               if (
                 x > 8 &&
-                !this.cornerTiles.includes(id) &&
-                !this.goalTiles.includes(id) &&
+                !cornerTiles.includes(id) &&
+                !goalTiles.includes(id) &&
                 this.isFreeTile(x, y) &&
-                !this.centerTiles.includes(id)
+                !centerTiles.includes(id)
               )
                 this.highlightTile(x, y);
             }
@@ -1800,7 +1662,6 @@ export default {
     },
 
     pauseResume: function() {
-      var jsonObject;
       var timestamp = this.makeTimestamp();
       var jsonObject = {
         timestamp: timestamp,

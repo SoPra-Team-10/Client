@@ -43,12 +43,12 @@
 </template>
 
 <script>
-import Game from "./components/Game.vue";
-import Help from "./components/Help.vue";
-import Lobby from "./components/Lobby.vue";
-import Team from "./components/Team.vue";
-import Menu from "./components/Menu.vue";
-import Config from "./components/Configurator.vue";
+import Game from "./views/Game.vue";
+import Help from "./views/Help.vue";
+import Lobby from "./views/Lobby.vue";
+import Team from "./views/Team.vue";
+import Menu from "./views/Menu.vue";
+import Config from "./views/Configurator.vue";
 
 export default {
   name: "App",

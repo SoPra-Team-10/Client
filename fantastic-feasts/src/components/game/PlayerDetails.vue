@@ -147,14 +147,6 @@ export default {
   text-align: center;
 }
 
-.chaser-detail-icon {
-  margin: 0.5vw;
-  width: 8vw;
-  height: 8vw;
-  display: inline-block;
-  background: url("../resources/chaser.svg");
-}
-
 .player-detail-icon {
   display: inline-block;
   position: relative;

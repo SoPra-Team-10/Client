@@ -193,7 +193,8 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/troll.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background: url(../../resources/troll.svg),
+    radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -206,7 +207,8 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/elf.svg), radial-gradient(#ffffffcb, #ffffff00);
+  background: url(../../resources/elf.svg),
+    radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
 
@@ -219,7 +221,7 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/niffler.svg),
+  background: url(../../resources/niffler.svg),
     radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
@@ -233,7 +235,7 @@ export default {
   left: 0;
   top: 0;
   overflow: hidden;
-  background: url(../resources/goblin.svg),
+  background: url(../../resources/goblin.svg),
     radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
@@ -248,7 +250,7 @@ export default {
   top: 0;
   border-radius: 0.9vh;
   overflow: hidden;
-  background: url(../resources/wombat.svg),
+  background: url(../../resources/wombat.svg),
     radial-gradient(#ffffffcb, #ffffff00);
   background-repeat: no-repeat;
 }
