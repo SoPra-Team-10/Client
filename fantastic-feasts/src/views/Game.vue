@@ -6,13 +6,19 @@
           Menü
         </div>
         <team-crest
-          v-if="snapShot.phase !== 'positioning-test'"
+          v-if="
+            snapShot.phase !== 'positioning-test' &&
+              matchStart.leftTeamConfig.colors
+          "
           :team-config="matchStart.leftTeamConfig"
           :active="leftTeamToMove"
         ></team-crest>
         <game-info :match-start="matchStart" :snap-shot="snapShot"> </game-info>
         <team-crest
-          v-if="snapShot.phase !== 'positioning-test'"
+          v-if="
+            snapShot.phase !== 'positioning-test' &&
+              matchStart.rightTeamConfig.colors
+          "
           :team-config="matchStart.rightTeamConfig"
           :active="rightTeamToMove"
         ></team-crest>
@@ -44,7 +50,7 @@
           <div id="game-grid-panel">
             <div
               v-for="(tile, index) in grid"
-              :key="'' + tile.xPos + '-' + tile.yPos"
+              :key="index"
               class="gras-tile"
               :class="[
                 tile.class,
@@ -186,7 +192,7 @@
     </section>
 
     <match-finish
-      v-of="matchFinish"
+      v-if="matchFinish"
       :match-finish="matchFinish"
       @to-lobby="game.currentState = 'inLobby'"
     ></match-finish>

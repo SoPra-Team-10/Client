@@ -27,7 +27,7 @@
 export default {
   props: {
     teamConfig: {
-      // required: true,
+      required: true,
       type: Object
     },
     active: {

@@ -39,8 +39,8 @@
 export default {
   // have to be passed over from paren component
   props: {
-    bannedPlayer: {
-      type: Array,
+    bannedPlayers: {
+      type: Object,
       required: true
     },
     teamConfig: {
