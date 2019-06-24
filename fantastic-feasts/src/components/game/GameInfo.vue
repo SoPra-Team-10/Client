@@ -14,7 +14,7 @@
     <div id="round-panel" class="header__panel">
       <div class="round-panel-content">
         <div class="round-label">Runde {{ snapShot.round }}</div>
-        <div class="round-phase-label">{{ snapShot.phase }}</div>
+        <!-- <div class="round-phase-label">{{ snapShot.phase }}</div> -->
       </div>
     </div>
     <div id="round-phase-panel" class="header__panel">
@@ -117,7 +117,7 @@ export default {
   position: absolute;
   width: 20%;
   left: 40%;
-  top: 72%;
+  top: 65%;
   padding: 0;
   margin: 0;
   background: radial-gradient(#ffffff, #e7e7e7);
@@ -148,7 +148,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 35%;
-  top: 44%;
+  top: 54%;
   padding-top: 0.2vh;
   font-size: 2.8vh;
   color: #4b4b4b;

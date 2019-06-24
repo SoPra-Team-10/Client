@@ -2,8 +2,12 @@
   <div id="game-container">
     <section id="game-panel">
       <header class="header">
-        <div id="main-menu-button" @click="game.currentState = 'inMenu'">
-          Menü
+        <div id="mute-button" @click="muteAudio">
+          <font-awesome-icon
+            class="favorite-icon"
+            :icon="muted ? 'volume-up' : 'volume-mute'"
+            color="#e0a500"
+          />
         </div>
         <team-crest
           v-if="
@@ -25,7 +29,11 @@
           @toggle-color="toggleColorsTeamRight"
         ></team-crest>
         <div id="pause-button" @click="pauseResume()">
-          Pause
+          <font-awesome-icon
+            class="favorite-icon"
+            :icon="paused ? 'pause' : 'play'"
+            color="#e0a500"
+          />
         </div>
       </header>
       <div class="sidebar-left">
@@ -167,8 +175,10 @@
         <game-timer :time="timeout"></game-timer>
       </div>
       <div class="sidebar-right">
-        <game-instructions></game-instructions>
-        <!-- <game-log :gameLog="gameLog"></game-log> -->
+        <game-instructions
+          :game-instruction="[gameInstruction[0]]"
+        ></game-instructions>
+        <!-- <game-log :gameInstruction="gameInstruction"></game-log> -->
         <!-- <hr class="normal-separation-line"> -->
         <!-- <div class="info-panel" id="test-functions-panel">
                     <h3 class="panel-title">Zusatzfunktionen</h3>åå
@@ -267,6 +277,8 @@ export default {
       gameLogTest: "Enter log entry",
       // just for testing (end)
 
+      muted: false,
+
       gameState: "inGame",
       grid: [],
 
@@ -291,8 +303,11 @@ export default {
 
       turnType: String,
 
-      // Use unshift({message: 'String'}) to add log entries to top of Gamelog-Panel. Will be automatically updated.
-      gameLog: [{ message: "", time: "" }, { message: "", time: "" }],
+      // Use unshift({message: 'String'}) to add log entries to top of gameInstruction-Panel. Will be automatically updated.
+      gameInstruction: [
+        { message: "test", time: "" },
+        { message: "", time: "" }
+      ],
 
       // can later be changed to undefined.
       matchStart: {
@@ -653,6 +668,16 @@ export default {
       }, 1000);
     },
 
+    muteAudio() {
+      const audio = document.getElementById("background-music");
+      if (this.muted) {
+        audio.volume = 1.0;
+      } else {
+        audio.volume = 0;
+      }
+      this.muted = !this.muted;
+    },
+
     toggleColorsTeamLeft() {
       console.log("Hi");
       const primary = this.matchStart.leftTeamConfig.colors.primary;
@@ -671,10 +696,10 @@ export default {
       this.matchStart.rightTeamConfig.colors.secondary = primary;
     },
 
-    logMessage(message) {
+    showInstruction(message) {
       console.log(message);
       const time = new Date();
-      this.gameLog.unshift({
+      this.gameInstruction.unshift({
         message: "new message",
         time:
           time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds()
@@ -1264,27 +1289,27 @@ export default {
           // all message types are assigned to their corresponding handlers
           if (jsonObject.payloadType === "matchStart") {
             // debugging:
-            vm.logMessage(jsonObject.payload);
+            //vm.logMessage(jsonObject.payload);
 
             vm.handleMatchStart(jsonObject);
           } else if (jsonObject.payloadType === "matchFinish") {
             // debugging:
-            vm.logMessage(jsonObject.payload);
+            //vm.logMessage(jsonObject.payload);
 
             vm.handleMatchFinish(jsonObject);
           } else if (jsonObject.payloadType === "snapshot") {
             // debugging:
-            vm.logMessage(jsonObject.payload);
+            //vm.logMessage(jsonObject.payload);
 
             vm.handleSnapshot(jsonObject);
           } else if (jsonObject.payloadType === "next") {
             // debugging:
-            vm.logMessage(jsonObject.payload);
+            //vm.logMessage(jsonObject.payload);
 
             vm.handleNext(jsonObject);
           } else if (jsonObject.payloadType === "reconnect") {
             // debugging:
-            vm.logMessage(jsonObject.payload);
+            //vm.logMessage(jsonObject.payload);
 
             vm.handleReconnect(jsonObject);
           } else if (jsonObject.payloadType === "pauseResponse") {
@@ -1342,7 +1367,7 @@ export default {
       }
       this.snapShot = obj.payload;
       // if(obj.payload.goalWasThrownThisRound)
-      //     this.gameLog.unshift({message: 'Server sent: next'});
+      //     this.gameInstruction.unshift({message: 'Server sent: next'});
     },
     /**Finds out which action is required from which entity and gives the player feedback */
     handleNext: function(obj) {
@@ -1425,7 +1450,7 @@ export default {
       else return;
       //Move is possible
       if (obj.payload.type === "move") {
-        this.gameLog.unshift({
+        this.gameInstruction.unshift({
           message: this.getPlayerName(this.selectedEntityId) + " darf ziehen"
         });
         for (
@@ -1469,7 +1494,7 @@ export default {
           )
             this.highlightedTiles.push(i);
         }
-        this.gameLog.unshift({
+        this.gameInstruction.unshift({
           message: this.getPlayerName(this.selectedEntityId) + " darf schießen"
         });
       }
@@ -1482,7 +1507,7 @@ export default {
           this.snapShot.balls.quaffle.xPos,
           this.snapShot.balls.quaffle.yPos
         );
-        this.gameLog.unshift({
+        this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
             " darf den Quaffel stehlen"
@@ -1505,14 +1530,16 @@ export default {
                 this.highlightTile(x, y);
             }
           }
-          this.gameLog.unshift({ message: "Ein Goblin kann eingreifen" });
+          this.gameInstruction.unshift({
+            message: "Ein Goblin kann eingreifen"
+          });
         } else if (obj.payload.turn.includes("Elf")) {
           for (x = 0; x < 17; x++) {
             for (y = 0; y < 13; y++) {
               if (this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
             }
           }
-          this.gameLog.unshift({ message: "ein Elf kann eingreifen" });
+          this.gameInstruction.unshift({ message: "ein Elf kann eingreifen" });
         } else if (obj.payload.turn.includes("Wombat")) {
           for (x = 0; x < 17; x++) {
             for (y = 0; y < 13; y++) {
@@ -1523,15 +1550,21 @@ export default {
                 this.highlightTile(x, y);
             }
           }
-          this.gameLog.unshift({ message: "ein Wombat kann eingreifen" });
+          this.gameInstruction.unshift({
+            message: "ein Wombat kann eingreifen"
+          });
         } else {
           for (var i = 0; i <= 220; i++) {
             if (!cornerTiles.includes(i)) this.highlightedTiles.push(i);
           }
           if (obj.payload.turn.includes("Troll"))
-            this.gameLog.unshift({ message: "ein Troll kann eingreifen" });
+            this.gameInstruction.unshift({
+              message: "ein Troll kann eingreifen"
+            });
           else if (obj.payload.turn.includes("Niffler"))
-            this.gameLog.unshift({ message: "ein Niffler kann eingreifen" });
+            this.gameInstruction.unshift({
+              message: "ein Niffler kann eingreifen"
+            });
         }
       } else if (
         obj.payload.type === "action" &&
@@ -1567,7 +1600,7 @@ export default {
             }
           }
         }
-        this.gameLog.unshift({
+        this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
             " darf auf die Fresse geben"
@@ -1583,7 +1616,7 @@ export default {
       //     for(let i = 0; i < this.highlightedTiles.length; i++){
       //          if(goalTiles.includes(this.highlightedTiles[i])) this.highlightedTiles.splice(i, 1);
       //     }
-      //     this.gameLog.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
+      //     this.gameInstruction.unshift({message: this.getPlayerName(this.selectedEntityId) + " darf wieder mitspielen"});
       // }
       else if (this.turnType === "removeBan") {
         for (x = 0; x < 17; x++) {
@@ -1614,7 +1647,7 @@ export default {
             }
           }
         }
-        this.gameLog.unshift({
+        this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
             " darf wieder mitspielen"
@@ -1632,9 +1665,10 @@ export default {
     /**Sets the paused variable */
     handlePauseResponse: function(obj) {
       this.paused = obj.payload.pause;
-      if (this.paused)
-        document.getElementById("pause-button").innerHTML = "Weiter";
-      else document.getElementById("pause-button").innerHTML = "Pause";
+      // not needed since rendering of button is reactive
+      // if (this.paused)
+      //   document.getElementById("pause-button").innerHTML = "Weiter";
+      // else document.getElementById("pause-button").innerHTML = "Pause";
     },
     /**increases displayed score of given team by given amount */
     scorePoints(increment, team) {
@@ -1986,9 +2020,10 @@ export default {
   height: 8%;
   width: 100%;
   background: radial-gradient(#5e3d19, #503315);
+  background: radial-gradient(#5a3814, #3f270e);
   z-index: 100;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
-  border-bottom: 2px solid #533515;
+  border-bottom: 2px solid #3f270e;
   padding: 0 1rem;
 }
 
@@ -2007,14 +2042,20 @@ export default {
   top: 0;
 }
 
-#main-menu-button {
+#mute-button {
   background: radial-gradient(#bb3434, #802020);
+  height: 60%;
+  width: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
   border: 1px solid #e0a500;
   color: #e0a500;
   border-radius: 5px;
   text-align: center;
   font-size: 2.5vh;
-  padding: 1.5vh 0.5vh;
   padding: 0.7rem 1rem;
 }
 
@@ -2034,6 +2075,13 @@ export default {
 } */
 
 #pause-button {
+  height: 60%;
+  width: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
   background: radial-gradient(#5e923f, #406d24);
   border: 1px solid #e0a500;
   color: #e0a500;
@@ -2074,6 +2122,7 @@ export default {
   width: 17%;
   color: 583b1b;
   background: radial-gradient(#684521, #583b1b);
+  background: radial-gradient(#5a3814, #3f270e);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   z-index: 90;
   min-width: 173px;
@@ -2087,6 +2136,7 @@ export default {
   top: 8%;
   width: 17%;
   background: radial-gradient(#684521, #583b1b);
+  background: radial-gradient(#5a3814, #3f270e);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   z-index: 90;
   min-width: 173px;
@@ -2543,7 +2593,7 @@ h1 {
   height: 50%;
 }
 
-#game-log-panel {
+#game-instructions-panel {
   top: 2%;
 }
 

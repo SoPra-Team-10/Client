@@ -172,7 +172,11 @@ button:focus {
 
 .app__large-button {
   background: #502d16;
-  display: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
   color: #e0a500;
   font-family: "Alice";
   font-size: 2.3vh;
@@ -192,6 +196,15 @@ button:focus {
   background: #5f361a;
   box-shadow: 0 0 10px 0 rgba(255, 228, 110, 0.534);
   color: #f8c22d;
+}
+
+.app__large-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .app__small-button {
@@ -247,6 +260,11 @@ button:focus {
   width: 100%;
   height: 10vh;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 .app__footer-separation-line {

@@ -30,6 +30,19 @@
         Farbe ändern
       </button>
     </div>
+    <div class="app__large-button-container">
+      <button
+        id="menu-mute-button"
+        class="app__large-button"
+        @click="muteAudio"
+      >
+        <font-awesome-icon
+          class="favorite-icon"
+          :icon="muted ? 'volume-up' : 'volume-mute'"
+          color="#e0a500"
+        />
+      </button>
+    </div>
 
     <div class="app__footer">
       <hr class="app__footer-separation-line" />
@@ -50,6 +63,22 @@ export default {
       type: Object,
       required: true
     }
+  },
+  data() {
+    return {
+      muted: false
+    };
+  },
+  methods: {
+    muteAudio() {
+      const audio = document.getElementById("background-music");
+      if (this.muted) {
+        audio.volume = 1.0;
+      } else {
+        audio.volume = 0;
+      }
+      this.muted = !this.muted;
+    }
   }
 };
 </script>
@@ -61,5 +90,13 @@ export default {
   font-size: 10vh;
   text-shadow: 1px 1px 2px #1b1b1ba6;
   /* text-shadow: 0px 0px 3px #FFD938; */
+}
+
+#menu-mute-button {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: 3rem;
+  height: 2.5rem;
 }
 </style>
