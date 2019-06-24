@@ -50,11 +50,17 @@ export default {
   props: {
     game: {
       type: Object,
-      required: true
+      required: false,
+      default() {
+        return {};
+      }
     },
     teamConfig: {
       type: Object,
-      required: true
+      required: false,
+      default() {
+        return {};
+      }
     }
   },
   methods: {

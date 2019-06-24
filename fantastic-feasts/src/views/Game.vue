@@ -37,6 +37,7 @@
         </player-details>
         <!-- <hr class="normal-separation-line"> -->
         <banned-players
+          v-if="matchStart.leftTeamConfig.colors != undefined"
           :team-config="matchStart.leftTeamConfig"
           :banned-players="bannedPlayersTeamLeft.players"
         >
@@ -180,6 +181,7 @@
                     </div>
                 </div> -->
         <banned-players
+          v-if="matchStart.rightTeamConfig.colors != undefined"
           :team-config="matchStart.rightTeamConfig"
           :banned-players="bannedPlayersTeamRight.players"
         >
@@ -233,11 +235,17 @@ export default {
   props: {
     game: {
       type: Object,
-      required: true
+      required: false,
+      default() {
+        return {};
+      }
     },
     teamConfig: {
       type: Object,
-      required: true
+      required: false,
+      default() {
+        return {};
+      }
     }
   },
   data() {
@@ -622,9 +630,9 @@ export default {
   mounted() {
     this.startTimer();
     this.grid = this.generateGrid();
-    this.startGame();
     this.matchStart.leftTeamConfig = this.teamConfig;
     this.matchStart.rightTeamConfig = this.teamConfig;
+    this.startGame();
     for (let player in this.snapShot.leftTeam.players) {
       this.snapShot.leftTeam.players[player].banned = true;
     }

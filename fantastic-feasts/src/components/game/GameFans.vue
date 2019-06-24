@@ -163,8 +163,8 @@ export default {
 }
 
 .fan-active {
-  border: 2px solid #e9e0c9;
-  transform: scale(1.1);
+  border: 4px solid #ffffff;
+  transform: scale(1.3);
   box-shadow: 0 0 3px 3px #e9e0c93a;
 }
 
