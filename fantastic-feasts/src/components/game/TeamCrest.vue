@@ -17,7 +17,7 @@
         class="team-crest__segment-bottom"
         :style="{ background: '#' + teamConfig.colors.primary }"
       ></div>
-      <div class="shadow-overlay"></div>
+      <div class="shadow-overlay" @click="$emit('toggle-color')"></div>
     </div>
     <span class="team-motto-span">{{ teamConfig.motto }}</span>
   </div>

@@ -12,6 +12,7 @@
           "
           :team-config="matchStart.leftTeamConfig"
           :active="leftTeamToMove"
+          @toggle-color="toggleColorsTeamLeft"
         ></team-crest>
         <game-info :match-start="matchStart" :snap-shot="snapShot"> </game-info>
         <team-crest
@@ -21,6 +22,7 @@
           "
           :team-config="matchStart.rightTeamConfig"
           :active="rightTeamToMove"
+          @toggle-color="toggleColorsTeamRight"
         ></team-crest>
         <div id="pause-button" @click="pauseResume()">
           Pause
@@ -649,6 +651,24 @@ export default {
           this.timeout--;
         }
       }, 1000);
+    },
+
+    toggleColorsTeamLeft() {
+      console.log("Hi");
+      const primary = this.matchStart.leftTeamConfig.colors.primary;
+      console.log(primary);
+      const secondary = this.matchStart.leftTeamConfig.colors.secondary;
+      console.log(secondary);
+      this.matchStart.leftTeamConfig.colors.primary = secondary;
+      this.matchStart.leftTeamConfig.colors.secondary = primary;
+    },
+
+    toggleColorsTeamRight() {
+      console.log("Hi");
+      const primary = this.matchStart.rightTeamConfig.colors.primary;
+      const secondary = this.matchStart.rightTeamConfig.colors.secondary;
+      this.matchStart.rightTeamConfig.colors.primary = secondary;
+      this.matchStart.rightTeamConfig.colors.secondary = primary;
     },
 
     logMessage(message) {
