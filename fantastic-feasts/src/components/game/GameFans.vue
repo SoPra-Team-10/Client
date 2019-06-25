@@ -110,7 +110,7 @@ export default {
 };
 </script>
 
-<style scoped animate>
+<style animate>
 .spectator-stand-panel {
   background: radial-gradient(#797979, #525252);
   position: fixed;

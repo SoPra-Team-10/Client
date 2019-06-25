@@ -3,24 +3,87 @@
     <h1 class="app__header">Hilfe</h1>
     <div class="app__content">
       <div class="text-content-container">
-        <h3 class="help__title">Spielanleitung</h3>
+        <h2 class="help__title">Spielanleitung</h2>
         <h4 class="help__sub-title"></h4>
-        <p
-          class="help__text"
-          style="width: 70vw; height: 60vh; overflow: scroll; position: relative"
-        >
+        <p>
           In "Fantastc Feasts" können zwei Spieler gegeneinander das aus "Harry
-          Potter" bekannte Spiel "Quidditch" in Form eines Brettspiels
-          spielen.<br />
-          Jeder Spieler steuert dabei ein Team aus sieben Spielfiguren:<br />
-          1 Sucher, der für sein Team den Schnatz fängt.<br />
-          1 Hüter, der die eigenen Torringe verteidigt.<br />
-          3 Jäger, die das Runde ins Runde befördern.<br />
-          2 Treiber, die mit den Klatschern auf die Fresse geben.<br />
-          Das Spiel entwickelt sich um vier Bälle:<br />
-          1 Quaffel.<br />
-          2 Klatscher.<br />
-          1 Schnatz.<br />
+          Potter" bekannte Spiel "Quidditch" in Form eines Brettspiels spielen.
+        </p>
+        <p>Jeder Spieler steuert dabei ein Team aus sieben Spielfiguren:</p>
+        <div class="help__description-block">
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="seeker"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="keeper"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="chaser"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="chaser"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="chaser"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="beater"></div>
+          </div>
+          <div
+            style="background: radial-gradient( #cc6565, #861111)"
+            class="fan help__icon"
+          >
+            <div class="beater"></div>
+          </div>
+        </div>
+
+        <ul>
+          <li>1 <b>Sucher</b> , der für sein Team den Schnatz fängt.</li>
+          <li>1 <b>Hüter</b> , der die eigenen Torringe verteidigt.</li>
+          <li>3 <b>Jäger</b> , die das Runde ins Runde befördern.</li>
+          <li>
+            2 <b>Treiber</b> , die mit den Klatschern auf die Fresse geben.
+          </li>
+        </ul>
+        <p>Das Spiel dreht sich um vier Bälle:</p>
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="help__quaffle"></div>
+          </div>
+          <div class="fan help__icon">
+            <div class="help__bludger"></div>
+          </div>
+          <div class="fan help__icon">
+            <div class="help__bludger"></div>
+          </div>
+          <div class="fan help__icon">
+            <div class="help__snitch"></div>
+          </div>
+        </div>
+        <ul>
+          <li>1 <b>Quaffel</b> .</li>
+          <li>2 <b>Klatscher</b> .</li>
+          <li>1 <b>Schnatz</b> .</li>
+        </ul>
+        <p>
           Das Spiel ist Rundenbasiert. Die Spieler sind abwechselnd an der Reihe
           und können jedes Mal eine zufällige Spielfigur steuern, die in dieser
           Runde noch nicht dran war. Am Anfang einer Runde bewegen sich die
@@ -35,12 +98,27 @@
           nimmt er diesen mit. Es besteht eine Chance, dass die Spielfigur
           danach ein weiteres Mal ziehen kann. Die Wahrscheinlichkeit davon ist
           abhängig von ihrem Besen. Es gibt davon fünf verschiedene. In
-          aufsteigender Reihenfolge:<br />
-          Zunderfauch,<br />
-          Sauberwisch 11,<br />
-          Comet 2-60,<br />
-          Nimbus 2001,<br />
-          Feuerblitz.<br />
+          aufsteigender Reihenfolge:
+        </p>
+        <ul>
+          <li>
+            Zunderfauch
+          </li>
+          <li>
+            Sauberwisch 11
+          </li>
+          <li>
+            Sauberwisch 11
+          </li>
+          <li>Comet 2-60</li>
+          <li>
+            Nimbus 2001
+          </li>
+          <li>
+            Feuerblitz
+          </li>
+        </ul>
+        <p>
           Jeder Besen muss in einem Team mindestens einmal vertreten sein. Nach
           dem Ziehen darf eine Spielfigur eine Aktion ausführen, wenn das in der
           jeweiligen Situation möglich ist. Jäger und Hüter können den Quaffel
@@ -55,29 +133,77 @@
           erkannt. Eine Spielfigur, die beim foulen erwischt wird, wird
           verbannt. Am Ende einer Runde, in der ein Tor gefallen ist, dürfen
           gebannte Spielfiguren wieder auf der eigenen Spielfeldhälfte platziert
-          werden. Fouls sind:<br />
-          Auf ein Feld ziehen, auf dem eine gegnerische Spielfigur steht.<br />
-          Auf einen Torring des eigenen Teams ziehen.<br />
-          Mit dem Quaffle auf einen gegnerischen Torring ziehen, um ein Tor zu
-          garantieren.<br />
-          Mit einer Spielfigur auf den Schnatz ziehen, die kein Sucher ist.<br />
-          Wenn am Ende einer Runde drei Spielfiguren eines Teams gebannt sind,
-          verliert der Spieler die Partie.<br /><br />
+          werden. Fouls sind:
+        </p>
 
+        <p>Auf ein Feld ziehen, auf dem eine gegnerische Spielfigur steht.</p>
+        <p>Auf einen Torring des eigenen Teams ziehen.</p>
+        <p>
+          Mit dem Quaffle auf einen gegnerischen Torring ziehen, um ein Tor zu
+          garantieren.
+        </p>
+        <p>Mit einer Spielfigur auf den Schnatz ziehen, die kein Sucher ist.</p>
+        <p>
+          Wenn am Ende einer Runde drei Spielfiguren eines Teams gebannt sind,
+          verliert der Spieler die Partie.
+        </p>
+
+        <p>
           Nachdem jede Spielfigur einmal dran war, ist es möglich, mit Fans in
           das Geschehen einzugreifen. Jedes Team bringt sieben Fans mit, die
-          folgenden Spezies angehören können:<br />
-          Elfen: Sie teleportieren eine Ausgewählte Spielfigur auf ein
+          folgenden Spezies angehören können:
+        </p>
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="elf"></div>
+          </div>
+        </div>
+        <p>
+          <b>Elfen:</b> Sie teleportieren eine Ausgewählte Spielfigur auf ein
           zufälliges Feld. Sie sind der bei weitem nützlichste Fan-Typ.
-          Ernsthaft, sie machen das Spiel kaputt.<br />
-          Kobolde: Greifen eine Spielfigur an, die dadurch den Quaffel verliert
-          und auf ein zufälliges freies, benachbartes Feld gestoßen wird.<br />
-          Trolle: Brüllen, was dazu führt, dass eine Spielfigur, die den Quaffel
-          hält, diesen verliert. Sie sind also wie Kobolde, nur schlechter.<br />
-          Niffler: Treiben den Schnatz auf ein zufälliges freies Nachbarfeld.<br />
-          Wombats: Markieren für die nächste Runde ein Feld, auf das
-          Spielfiguren nicht absichtlich ziehen können. Ziemlich nutzlos.<br /><br />
+          Ernsthaft, sie machen das Spiel kaputt.
+        </p>
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="goblin"></div>
+          </div>
+        </div>
+        <p>
+          <b>Kobolde:</b> Greifen eine Spielfigur an, die dadurch den Quaffel
+          verliert und auf ein zufälliges freies, benachbartes Feld gestoßen
+          wird.
+        </p>
 
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="troll"></div>
+          </div>
+        </div>
+        <p>
+          <b>Trolle:</b> Brüllen, was dazu führt, dass eine Spielfigur, die den
+          Quaffel hält, diesen verliert. Sie sind also wie Kobolde, nur
+          schlechter.
+        </p>
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="niffler"></div>
+          </div>
+        </div>
+        <p>
+          <b>Niffler:</b> Treiben den Schnatz auf ein zufälliges freies
+          Nachbarfeld.
+        </p>
+        <div class="help__description-block">
+          <div class="fan help__icon">
+            <div class="wombat"></div>
+          </div>
+        </div>
+        <p>
+          <b>Wombats:</b> Markieren für die nächste Runde ein Feld, auf das
+          Spielfiguren nicht absichtlich ziehen können. Ziemlich nutzlos.
+        </p>
+
+        <p>
           Eine Partie endet auf reguläre weise, sobald es dem Sucher eines Teams
           gelingt, den Schnatz zu fangen. Ziel des Spiels ist, zu diesem
           Zeitpunkt mehr Punkte zu haben als der Gegner. Das Fangen des
@@ -118,4 +244,82 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.text-content-container {
+  padding: 2rem 10%;
+  overflow: scroll;
+  height: 90%;
+  position: absolute;
+  top: 5%;
+  width: 100%;
+  left: 0;
+  text-align: left;
+}
+
+.help__title {
+  text-align: center;
+}
+
+.help__sub-title {
+  text-align: center;
+}
+
+.help__icon {
+  width: 4rem;
+  height: 4rem;
+  position: relative;
+}
+
+.help__description-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: center;
+}
+
+.help__snitch {
+  background: url(../resources/snitch.svg);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 63;
+  pointer-events: none;
+}
+
+.help__snitch:hover {
+  border: 1px solid #dddddd;
+}
+
+.help__quaffle {
+  background: url(../resources/quaffle.svg);
+  height: 100%;
+  width: 100%;
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.help__quaffle:hover {
+  border: 1px solid #dddddd;
+}
+
+.help__bludger {
+  background: url(../resources/bludger.svg);
+  height: 100%;
+  width: 100%;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  z-index: 61;
+  pointer-events: none;
+}
+
+.help__bludger:hover {
+  border: 1px solid #dddddd;
+}
+</style>

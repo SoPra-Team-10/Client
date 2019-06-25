@@ -1,5 +1,5 @@
 <template>
-  <div id="team-overview">
+  <div v-if="teamConfig" id="team-overview">
     <h3>{{ teamConfig.name }}</h3>
     <em id="team-motto">{{ teamConfig.motto }}</em>
     <p>~</p>

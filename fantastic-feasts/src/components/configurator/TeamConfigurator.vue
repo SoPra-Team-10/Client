@@ -11,7 +11,6 @@
       maxlength="40"
       class="team-config__team-name-input"
     />
-    />
     <label class="team-config__team-label" for="team-motto">Motto</label>
     <input
       id="team-motto"
@@ -19,7 +18,6 @@
       type="text"
       maxlength="80"
       class="team-config__team-motto-input"
-    />
     />
     <br />
     <label
@@ -35,7 +33,6 @@
       maxlength="6"
       class="team-config__team-color-input"
     />
-    />
     <label
       class="team-config__team-label"
       :style="{ color: '#' + teamConfig.colors.secondary }"
@@ -48,7 +45,6 @@
       type="text"
       maxlength="6"
       class="team-config__team-color-input"
-    />
     />
 
     <label class="team-config__team-label" for="team-color-secondary"
@@ -94,7 +90,6 @@
           maxlength="30"
           class="team-config__player-name-input"
         />
-        />
       </div>
 
       <!-- <label 
@@ -107,7 +102,6 @@
           v-model="player.broom"
           class="team-config__player-broom-input"
         >
-          >
           <optgroup class="broom-options">
             <option
               v-for="broom in brooms"
@@ -538,7 +532,6 @@ export default {
 #broom-select-wrapper option.broom-options {
   font-size: 14px;
   padding: 5px;
-  background: #5c5c5c;
 }
 
 .broom-options {

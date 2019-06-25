@@ -177,6 +177,7 @@
       <div class="sidebar-right">
         <game-instructions
           :game-instruction="[gameInstruction[0]]"
+          :phase="snapShot.phase"
         ></game-instructions>
         <!-- <game-log :gameInstruction="gameInstruction"></game-log> -->
         <!-- <hr class="normal-separation-line"> -->
@@ -2106,7 +2107,7 @@ export default {
     padding: 1.5vh 0.5vh;
 } */
 
-#main-menu-button:hover {
+#mute-button:hover {
   background: #81623e;
 }
 
@@ -2595,6 +2596,7 @@ h1 {
 
 #game-instructions-panel {
   top: 2%;
+  height: 50%;
 }
 
 .banned-players-panel {

@@ -5,6 +5,31 @@
     <!-- <h5 id="game-instructions"></h5> -->
     <div class="instruction-entry-container">
       <transition-group name="slide">
+        <div :key="renderedPhase.phaseName" class="game-phase-entry">
+          <div
+            :style="{
+              background:
+                'radial-gradient(' +
+                renderedPhase.phaseColorLight +
+                ',' +
+                renderedPhase.phaseColorDark +
+                ')'
+            }"
+            class="game-phase-entry__icon-container"
+          >
+            <font-awesome-icon
+              size="2x"
+              :icon="renderedPhase.phaseIcon"
+              color="#00000083"
+            />
+          </div>
+          <div class="game-phase-entry__name-container">
+            <p>{{ renderedPhase.phaseName }}</p>
+          </div>
+          <div class="game-phase-entry__description-container">
+            <p>{{ renderedPhase.phaseDescription }}</p>
+          </div>
+        </div>
         <div
           v-for="(instruction, i) in gameInstruction"
           :key="instruction.message"
@@ -23,11 +48,120 @@
 
 <script>
 export default {
-  props: ["gameInstruction"],
+  props: {
+    gameInstruction: {
+      required: false,
+      type: Array,
+      default() {
+        return {};
+      }
+    },
+    phase: {
+      required: false,
+      type: String,
+      default() {
+        return "";
+      }
+    }
+  },
   data() {
     return {
       //gameInstruction: [{message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'}, {message: 'moved player from x to y'} ]
     };
+  },
+  computed: {
+    renderedPhase() {
+      let phaseName = "";
+      let phaseDescription = "";
+      let phaseIcon = "";
+      let phaseColorLight = "";
+      let phaseColorDark = "";
+      switch (this.phase) {
+        case "positioning":
+          phaseName = "Spielerpositionierung";
+          phaseDescription = `In dieser Phase werden die Spieler auf dem Spielfeld positioniert.`;
+          phaseIcon = "street-view";
+          phaseColorLight = "#874b8f";
+          phaseColorDark = "#5d2764";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        case "ballPhase":
+          phaseName = "Ballphase";
+          phaseDescription = `In dieser Phase können Bälle geworfen oder geschlagen werden.`;
+          phaseIcon = "circle";
+          phaseColorLight = "#306fe4";
+          phaseColorDark = "#0044c2";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        case "playerPhase":
+          phaseName = "Spielerphase";
+          phaseDescription = `In dieser Phase können die Spieler auf dem Feld bewegt werden.
+           Ein Spieler kann auch aussetzen, muss also nicht immer ziehen.`;
+          phaseIcon = "users";
+          phaseColorLight = "#3fb16b";
+          phaseColorDark = "#086d2f";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        case "fanPhase":
+          phaseName = "Fanphase";
+          phaseDescription = `In dieser Phase können die Fans eingesetzt werden.
+          Durch ihre Spezialfähigkeiten kann auf den Verlauf des Spiels Einfluss genommen werden. 
+          Aber obacht: werden sie bei ihrem Foul erwischt, sind sie aus dem Spiel verbannt.`;
+          phaseIcon = "fist-raised";
+          phaseColorLight = "#e2a64b";
+          phaseColorDark = "#d17e01";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        case "gameFinish":
+          phaseName = "Spielende";
+          phaseDescription = `Das Spiel ist zu Ende. Es gibt einen Gewinner!`;
+          phaseIcon = "flag-checkered";
+          phaseColorLight = "#cfcfcf";
+          phaseColorDark = "#4d4d4d";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        case "unbanPhase":
+          phaseName = "Rückkehr der Spieler";
+          phaseDescription = `Verbannte Spieler können jetzt wieder auf dem Feld positioniert werden.`;
+          phaseIcon = "undo-alt";
+          phaseColorLight = "#3edfd1";
+          phaseColorDark = "#00a799";
+          return {
+            phaseName,
+            phaseDescription,
+            phaseIcon,
+            phaseColorLight,
+            phaseColorDark
+          };
+        default:
+          return "Testphase";
+      }
+    }
   }
 };
 </script>
@@ -52,6 +186,57 @@ export default {
   margin: 0.4vw 0;
   border-radius: 0.5vw;
   overflow-x: hidden;
+}
+
+.game-phase-entry {
+  background: radial-gradient(#ffffff, #eeeeee);
+  border-radius: 0.5rem;
+  display: flex;
+  color: #3edfd1;
+  color: #00a799;
+  color: #644627;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 3px #00000056;
+  align-content: center;
+  overflow-x: hidden;
+  justify-content: space-between;
+  overflow-y: auto;
+  font-size: 1rem;
+}
+
+.game-phase-entry__icon-container {
+  display: flex;
+  padding: 0.5rem;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.game-phase-entry__name-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.game-phase-entry__name-container p {
+  margin: 0.5rem;
+}
+
+.game-phase-entry__description-container p {
+  margin: 0.5rem;
+  margin-top: 0;
+}
+
+.game-phase-entry__description-container {
+  text-align: left;
+  width: 100%;
+  font-size: 0.8rem;
 }
 
 .highlighted-instruction-entry {

@@ -16,7 +16,13 @@
             {{ team.name }}
           </li>
         </div>
-        <button class="app__small-button">Importieren</button>
+        <br />
+        <label for="file-import" class="app__small-button app__import-label"
+          >Importieren</label
+        >
+        <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
+      <input type="file" id="importChooser" @change="readFile()"/>-->
+        <input id="file-import" type="file" @change="readFile()" />
       </div>
       <app-team-selection
         v-if="configs.selectedTeam != undefined"
@@ -58,9 +64,10 @@ export default {
     }
   },
   methods: {
-    readFile: function() {
-      var files = document.getElementById("fileChooser").files;
+    readFile() {
+      var files = document.getElementById("file-import").files;
       var file = files[0];
+      //check if the selected file is a single json file
       if (files.length !== 1) {
         alert("Please choose one file only");
       } else if (file.type !== "application/json") {
@@ -69,15 +76,29 @@ export default {
         var reader = new FileReader();
         reader.readAsText(file);
         var data;
+        var vm = this;
+        //The reading process is asynchron
         reader.onload = function() {
           data = JSON.parse(reader.result);
-          alert(data.name);
+          //vm.validate = ajv.compile(vm.teamConfigSchema);
+          var valid = true;
+          if (valid) {
+            alert("Valides JSON-Schema");
+            vm.configs.teamConfigs.unshift(data);
+            vm.storeConfigs();
+          } else {
+            alert("Kein valides JSON-Schema.");
+          }
         };
       }
     },
     selectTeam(index) {
       this.configs.selectedTeam = index;
       console.log(this.configs.selectedTeam);
+      const parsed = JSON.stringify(this.configs);
+      localStorage.setItem("configs", parsed);
+    },
+    storeConfigs() {
       const parsed = JSON.stringify(this.configs);
       localStorage.setItem("configs", parsed);
     }
