@@ -14,6 +14,8 @@
           id="config__header-button-left"
           :class="{ selected: state.currentState === 'inTeamOverview' }"
           class="config__header-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="state.currentState = 'inTeamOverview'"
         >
           Team
@@ -22,6 +24,8 @@
           id="config__header-button-right"
           :class="{ selected: state.currentState === 'inMatchOverview' }"
           class="config__header-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="state.currentState = 'inMatchOverview'"
         >
           Partie
@@ -57,6 +61,8 @@
       <hr class="app__footer-separation-line" />
       <button
         class="app__large-button app__footer-button"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
         @click="game.currentState = 'inMenu'"
       >
         Hauptmenü
@@ -70,6 +76,7 @@ import TeamConfig from "../components/configurator/TeamConfigurator.vue";
 import TeamOverview from "../components/configurator/TeamOverview.vue";
 import MatchConfig from "../components/configurator/MatchConfigurator.vue";
 import MatchOverview from "../components/configurator/MatchOverview.vue";
+import { clickSound, hoverSound } from "../util/sounds";
 
 export default {
   components: {
@@ -98,6 +105,14 @@ export default {
         isNew: false
       }
     };
+  },
+  methods: {
+    clickSound() {
+      clickSound();
+    },
+    hoverSound() {
+      hoverSound();
+    }
   }
 };
 </script>

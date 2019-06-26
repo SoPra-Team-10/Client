@@ -182,10 +182,20 @@
     </div>
     <div>
       <!-- Buttons at the bottom -->
-      <button class="app__small-button" @click="saveTeamConfig()">
+      <button
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
+        class="app__small-button"
+        @click="saveTeamConfig()"
+      >
         Speichern
       </button>
-      <button class="app__small-button" @click="discardChanges()">
+      <button
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
+        class="app__small-button"
+        @click="discardChanges()"
+      >
         Verwerfen
       </button>
     </div>
@@ -193,6 +203,8 @@
 </template>
 
 <script>
+import { clickSound, hoverSound } from "../../util/sounds";
+
 export default {
   props: ["configs", "state"],
   data() {
@@ -322,6 +334,12 @@ export default {
     }
   },
   methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     //Translates role names to German for display
     mapRole(index) {
       switch (index) {

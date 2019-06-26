@@ -228,9 +228,6 @@ export default {
 </script>
 
 <style scoped>
-#game.instruction-panel {
-}
-
 .instruction-entry-container {
   overflow-y: auto;
   padding: 0.2vw 0.2vw;
@@ -360,9 +357,6 @@ export default {
   text-align: left;
   width: 100%;
   font-size: 0.9rem;
-}
-
-.highlighted-instruction-entry {
 }
 
 .instruction-entry:hover {

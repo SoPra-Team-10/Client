@@ -11,6 +11,8 @@
             class="overview-list-item"
             :class="{ 'selected-list-item': index === selectedItem }"
             @click="selectListItem(index)"
+            @mouseenter="hoverSound()"
+            @mousedown="clickSound()"
           >
             {{ team.name }}
           </li>
@@ -20,18 +22,24 @@
       <div class="overview-options">
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="editTeamConfig(selectedItem)"
         >
           Bearbeiten
         </button>
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="downloadJSON()"
         >
           <a id="downloadAnchorElem" style="display:none"></a>Download
         </button>
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="deleteTeamConfig(selectedItem)"
         >
           Löschen
@@ -42,14 +50,20 @@
     <!-- Buttons at the bottom -->
     <div class="overview__general-options">
       <hr class="team-config__content-container-hr" />
-      <label for="file-import" class="app__small-button app__import-label"
+      <label
+        for="file-import"
+        class="app__small-button app__import-label"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
         >Importieren</label
       >
-      <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
+      <!-- <button @mouseenter="hoverSound()"             @mousedown="clickSound()" @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
       <input type="file" id="importChooser" @change="readFile()"/>-->
       <input id="file-import" type="file" @change="readFile()" />
       <button
         class="app__small-button overview__general-options-button"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
         @click="createTeamConfig()"
       >
         Team erstellen
@@ -61,6 +75,7 @@
 <script>
 var Ajv = require("ajv");
 var ajv = new Ajv();
+import { clickSound, hoverSound } from "../../util/sounds";
 
 export default {
   props: ["configs", "state"],
@@ -164,6 +179,12 @@ export default {
     };
   },
   methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     //Downloads the json file from the cache, writing it to the hard drive
     downloadJSON() {
       var dataStr =

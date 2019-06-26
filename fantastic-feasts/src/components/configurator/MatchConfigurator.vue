@@ -190,8 +190,20 @@
 
     <!-- The two buttons on the bottom -->
     <div>
-      <button class="app__small-button" @click="saveConfig()">Speichern</button>
-      <button class="app__small-button" @click="discardChanges()">
+      <button
+        class="app__small-button"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
+        @click="saveConfig()"
+      >
+        Speichern
+      </button>
+      <button
+        class="app__small-button"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
+        @click="discardChanges()"
+      >
         Verwerfen
       </button>
     </div>
@@ -199,6 +211,8 @@
 </template>
 
 <script>
+import { clickSound, hoverSound } from "../../util/sounds";
+
 export default {
   props: {
     configs: {
@@ -216,6 +230,12 @@ export default {
     };
   },
   methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     //Stores the configuration into the browser cache
     saveConfig() {
       this.storeConfigs();

@@ -49,6 +49,8 @@ import Lobby from "./views/Lobby.vue";
 import Team from "./views/Team.vue";
 import Menu from "./views/Menu.vue";
 import Config from "./views/Configurator.vue";
+import { mapState, mapMutations } from "vuex";
+import { backgroundMusic } from "./util/sounds";
 
 export default {
   name: "App",
@@ -85,6 +87,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(["backgroundMusic"])
+  },
   mounted() {
     if (localStorage.getItem("configs")) {
       try {
@@ -93,6 +98,17 @@ export default {
         localStorage.removeItem("configs");
       }
     }
+    const music = new Audio(backgroundMusic);
+    music.play();
+    this.loadBackgroundMusic(music);
+    try {
+      music.play();
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  methods: {
+    ...mapMutations(["loadBackgroundMusic"])
   }
 };
 </script>

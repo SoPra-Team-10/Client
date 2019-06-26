@@ -224,7 +224,9 @@
       <hr class="app__footer-separation-line" />
       <button
         class="app__large-button app__footer-button"
-        @click="game.currentState = 'inMenu'"
+        @click="changeState('inMenu')"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
       >
         Zurück zum Menü
       </button>
@@ -234,11 +236,25 @@
 </template>
 
 <script>
+import { hoverSound, clickSound } from "../util/sounds";
+
 export default {
   props: {
     game: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    changeState(newState) {
+      //clickSound();
+      this.game.currentState = newState;
+    },
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
     }
   }
 };

@@ -20,7 +20,14 @@
         <input id="spectator" type="Checkbox" class="app__lobby-input" />
       </div>
       <div class="app__lobby-footer">
-        <button class="app__small-button" @click="connect()">Verbinden</button>
+        <button
+          class="app__small-button"
+          @mousedown="clickSound"
+          @mouseenter="hoverSound()"
+          @click="connect()"
+        >
+          Verbinden
+        </button>
       </div>
     </div>
 
@@ -28,13 +35,17 @@
       <hr class="app__footer-separation-line" />
       <button
         class="app__large-button app__footer-button"
-        @click="game.currentState = 'inMenu'"
+        @mousedown="clickSound"
+        @mouseenter="hoverSound()"
+        @click="changeState('inMenu')"
       >
         Zurück zum Menu
       </button>
       <button
         class="app__large-button app__footer-button"
-        @click="game.currentState = 'inGame'"
+        @mousedown="clickSound"
+        @mouseenter="hoverSound()"
+        @click="changeState('inGame')"
       >
         Spielfeld
       </button>
@@ -44,6 +55,8 @@
 
 <script>
 import web from "../App.vue";
+import { hoverSound, clickSound } from "../util/sounds";
+
 // import game from "../App.vue";
 // import configs from "../App.vue";
 export default {
@@ -64,6 +77,16 @@ export default {
     }
   },
   methods: {
+    changeState(newState) {
+      //clickSound();
+      this.game.currentState = newState;
+    },
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     makeTimestamp: function() {
       var date = new Date();
       return (

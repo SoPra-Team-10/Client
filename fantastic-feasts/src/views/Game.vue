@@ -2,7 +2,12 @@
   <div id="game-container">
     <section id="game-panel">
       <header class="header">
-        <div id="mute-button" @click="muteAudio">
+        <div
+          id="mute-button"
+          @click="muteAudio"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
+        >
           <font-awesome-icon
             class="favorite-icon"
             :icon="muted ? 'volume-up' : 'volume-mute'"
@@ -28,7 +33,12 @@
           :active="rightTeamToMove"
           @toggle-color="toggleColorsTeamRight"
         ></team-crest>
-        <div id="pause-button" @click="pauseResume()">
+        <div
+          id="pause-button"
+          @click="pauseResume()"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
+        >
           <font-awesome-icon
             class="favorite-icon"
             :icon="paused ? 'pause' : 'play'"
@@ -54,6 +64,7 @@
         </banned-players>
         <div class="skip-button-container">
           <h3 id="chance-view" class="panel-title"></h3>
+          <span>{{ successChance }}</span>
         </div>
       </div>
       <div class="center">
@@ -203,7 +214,14 @@
         </banned-players>
 
         <div class="skip-button-container">
-          <button class="skip-button" @click="skip()">Aussetzen</button>
+          <button
+            class="skip-button"
+            @mouseenter="hoverSound()"
+            @mousedown="clickSound()"
+            @click="skip()"
+          >
+            Aussetzen
+          </button>
         </div>
       </div>
     </section>
@@ -227,6 +245,35 @@ import GameTimer from "../components/game/GameTimer.vue";
 import TeamCrest from "../components/game/TeamCrest.vue";
 import GameInstructions from "../components/game/GameInstructions.vue";
 import MatchFinish from "../components/game/GameFinish.vue";
+import {
+  broomSound,
+  hoverSound,
+  clickSound,
+  cheerLongSound,
+  cheerLongSound2,
+  cheerShortSound,
+  goblinSound,
+  goblinSound2,
+  goblinSound3,
+  hitSound,
+  hitSound2,
+  hitSound3,
+  hitSound4,
+  hurtSound,
+  magicalSound,
+  matchStartSound,
+  matchStartSound2,
+  nifflerSound,
+  pooPooMommySound,
+  refereeSound,
+  toggleSound,
+  toggleSound2,
+  trollSound,
+  trollSound2,
+  wombatDisgustingSound,
+  wombatSound
+} from "../util/sounds";
+import { mapState } from "vuex";
 
 import {
   rightAttackTiles,
@@ -273,7 +320,12 @@ export default {
       //     winnerUserName: "user1",
       //     victoryReason: "mostPoints",
       // },
+      initialSnapshotSent: false,
       matchFinish: null,
+
+      successChance: "–",
+
+      muted: false,
 
       warnings: [
         {
@@ -563,7 +615,40 @@ export default {
       }
     };
   },
+  watch: {
+    "snapShot.leftTeam.points": function(newPoints, oldPoints) {
+      console.log(oldPoints);
+      console.log(newPoints);
+      if (newPoints > oldPoints) {
+        cheerLongSound();
+      }
+    },
+    "bannedPlayersTeamLeft.number": function(newNumber, oldNumber) {
+      if (newNumber > oldNumber) {
+        refereeSound();
+      }
+    },
+    "bannedPlayersTeamRight.number": function(newNumber, oldNumber) {
+      if (newNumber > oldNumber) {
+        refereeSound();
+      }
+    },
+    "snapShot.rightTeam.points": function(newPoints, oldPoints) {
+      console.log(oldPoints);
+      console.log(newPoints);
+      if (newPoints > oldPoints) {
+        cheerLongSound();
+      }
+    },
+    "snapShot.wombatCubes": function(newCubes, oldCubes) {
+      if (newCubes.length > oldCubes.length) {
+        wombatSound();
+      }
+    }
+    // "snapShot.balls": function(newBalls, oldBalls) {}
+  },
   computed: {
+    ...mapState(["backgroundMusic"]),
     /**Adds left half tiles to highlighted tiles */
     leftHalfTiles() {
       var tiles = [];
@@ -665,6 +750,7 @@ export default {
   },
   /**Is automatically called when the component loaded */
   mounted() {
+    this.muted = this.backgroundMusic.volume === 0;
     this.startTimer();
     this.grid = this.generateGrid();
     this.matchStart.leftTeamConfig = this.teamConfig;
@@ -680,6 +766,12 @@ export default {
     //this.highlightedTiles = this.rightHalfTiles;
   },
   methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     startTimer() {
       setInterval(() => {
         if (this.timeout != 0 && !this.paused) {
@@ -689,13 +781,13 @@ export default {
     },
 
     muteAudio() {
-      const audio = document.getElementById("background-music");
-      if (this.muted) {
-        audio.volume = 1.0;
+      if (this.backgroundMusic.volume === 0) {
+        this.muted = false;
+        this.backgroundMusic.volume = 1.0;
       } else {
-        audio.volume = 0;
+        this.backgroundMusic.volume = 0;
+        this.muted = true;
       }
-      this.muted = !this.muted;
     },
 
     toggleColorsTeamLeft() {
@@ -751,6 +843,7 @@ export default {
       if (this.paused) return;
       if (!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
       if (this.turnType === "move") {
+        broomSound();
         this.deltaRequest(
           "move",
           null,
@@ -770,6 +863,8 @@ export default {
             this.selectedEntityId.includes("Keeper")) &&
           this.selectedEntity.holdsQuaffle
         ) {
+          /// ballSound !!!
+          hitSound();
           this.deltaRequest(
             "quaffleThrow",
             null,
@@ -784,6 +879,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Chaser")) {
+          hitSound4();
           this.deltaRequest(
             "wrestQuaffle",
             null,
@@ -806,6 +902,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger1.xPos &&
             this.selectedEntity.yPos === balls.bludger1.yPos
           ) {
+            hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger1.xPos,
@@ -823,6 +920,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger2.xPos &&
             this.selectedEntity.yPos === balls.bludger2.yPos
           ) {
+            hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger2.xPos,
@@ -846,6 +944,7 @@ export default {
         }
 
         if (this.selectedEntityId.includes("Elf")) {
+          magicalSound();
           this.deltaRequest(
             "elfTeleportation",
             null,
@@ -860,6 +959,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Goblin")) {
+          goblinSound();
           this.deltaRequest(
             "goblinShock",
             null,
@@ -874,6 +974,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Niffler")) {
+          nifflerSound();
           this.deltaRequest(
             "snitchSnatch",
             null,
@@ -888,6 +989,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Troll")) {
+          trollSound();
           this.deltaRequest(
             "trollRoar",
             null,
@@ -932,6 +1034,7 @@ export default {
                 if (this.highlightedTiles[i] === this.getTileId(xPos, yPos))
                   this.highlightedTiles.splice(i, 1);
               }
+              broomSound();
               break;
             }
           }
@@ -954,6 +1057,7 @@ export default {
                 if (this.highlightedTiles[i] === this.getTileId(xPos, yPos))
                   this.highlightedTiles.splice(i, 1);
               }
+              broomSound();
               break;
             }
           }
@@ -964,7 +1068,7 @@ export default {
             }
           }
         }
-        //when all players a placed on the field
+        //when all players are placed on the field
         if (!myTeam.players.beater2.banned) {
           this.started = true;
           this.selectedEntity = undefined;
@@ -980,6 +1084,7 @@ export default {
           Math.abs(xPos - this.selectedEntity.xPos) < 2 &&
           Math.abs(yPos - this.selectedEntity.yPos) < 2
         ) {
+          broomSound();
           this.deltaRequest(
             "move",
             null,
@@ -1000,6 +1105,8 @@ export default {
             this.selectedEntityId.includes("Keeper")) &&
           this.selectedEntity.holdsQuaffle
         ) {
+          // ballSound !!!
+          hitSound();
           this.deltaRequest(
             "quaffleThrow",
             null,
@@ -1022,6 +1129,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger1.xPos &&
             this.selectedEntity.yPos === balls.bludger1.yPos
           ) {
+            hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger1.xPos,
@@ -1039,6 +1147,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger2.xPos &&
             this.selectedEntity.yPos === balls.bludger2.yPos
           ) {
+            hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger2.xPos,
@@ -1061,6 +1170,7 @@ export default {
           this.selectedFanTypeLeftTeam = "";
         }
         if (this.selectedEntityId.includes("Niffler")) {
+          nifflerSound();
           this.deltaRequest(
             "snitchSnatch",
             null,
@@ -1075,6 +1185,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Troll")) {
+          trollSound();
           this.deltaRequest(
             "trollRoar",
             null,
@@ -1089,6 +1200,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Wombat")) {
+          wombatSound();
           this.deltaRequest(
             "wombatPoo",
             null,
@@ -1104,6 +1216,7 @@ export default {
           );
         }
       } else if (this.turnType === "removeBan") {
+        broomSound();
         this.deltaRequest(
           "unban",
           null,
@@ -1127,7 +1240,10 @@ export default {
 
     /**Displays the success chance for certain actions */
     showChance: function(xPos, yPos) {
-      if (!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
+      if (!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) {
+        this.successChance = "–";
+        return;
+      }
       if (this.turnType === "action") {
         //Quaffle throw
         if (
@@ -1166,6 +1282,7 @@ export default {
               dist
             );
           chance = Math.round(chance * 100);
+          this.successChance = "Chance für erfolgreichen Wurf: " + chance + "%";
           document.getElementById("chance-view").innerHTML =
             "Chance für erfolgreichen Wurf: " + chance + "%";
         }
@@ -1380,6 +1497,10 @@ export default {
     },
     /**Update local snapShot */
     handleSnapshot: function(obj) {
+      if (!this.initialSnapshotSent) {
+        matchStartSound2();
+        this.initialSnapshotSent = true;
+      }
       if (this.mySide === "right") {
         this.selectedFanTypeLeftTeam = "";
       } else {
@@ -1571,7 +1692,7 @@ export default {
             }
           }
           this.gameInstruction.unshift({
-            message: "ein Wombat kann eingreifen"
+            message: "Ein Wombat kann eingreifen"
           });
         } else {
           for (var i = 0; i <= 220; i++) {
@@ -1579,11 +1700,11 @@ export default {
           }
           if (obj.payload.turn.includes("Troll"))
             this.gameInstruction.unshift({
-              message: "ein Troll kann eingreifen"
+              message: "Ein Troll kann eingreifen"
             });
           else if (obj.payload.turn.includes("Niffler"))
             this.gameInstruction.unshift({
-              message: "ein Niffler kann eingreifen"
+              message: "Ein Niffler kann eingreifen"
             });
         }
       } else if (
@@ -1691,8 +1812,8 @@ export default {
       // else document.getElementById("pause-button").innerHTML = "Pause";
     },
     /**increases displayed score of given team by given amount */
-    scorePoints(increment, team) {
-      this.snapShot[team].points += increment;
+    scorePoints(increment) {
+      this.snapShot.leftTeam.points += increment;
     },
     /**Creates and sends a deltaRequest.
      * Resets variables required for actions.

@@ -24,32 +24,145 @@ const troll2 = require("../sounds/troll2.mp3");
 const wombatDisgusting = require("../sounds/wombat-disgusting.mp3");
 const wombat = require("../sounds/wombat.mp3");
 const backgroundMusic = require("../sounds/quidditch_long.mp3");
+const broom = require("../sounds/broom.mp3");
+
+const broomSound = () => {
+  // console.log("Hi");
+  const audio = new Audio(broom);
+  audio.play();
+};
+
+const hoverSound = () => {
+  // console.log("Hi");
+  const audio = new Audio(hover);
+  audio.play();
+};
+const clickSound = () => {
+  const audio = new Audio(click);
+  audio.play();
+};
+
+const cheerLongSound = () => {
+  const audio = new Audio(cheerLong);
+  audio.play();
+};
+
+const cheerLongSound2 = () => {
+  const audio = new Audio(cheerLong2);
+  audio.play();
+};
+
+const cheerShortSound = () => {
+  const audio = new Audio(cheerShort);
+  audio.play();
+};
+const goblinSound = () => {
+  const audio = new Audio(goblin);
+  audio.play();
+};
+const goblinSound2 = () => {
+  const audio = new Audio(goblin2);
+  audio.play();
+};
+const goblinSound3 = () => {
+  const audio = new Audio(goblin3);
+  audio.play();
+};
+const hitSound = () => {
+  const audio = new Audio(hit);
+  audio.play();
+};
+const hitSound2 = () => {
+  const audio = new Audio(hit2);
+  audio.play();
+};
+const hitSound3 = () => {
+  const audio = new Audio(hit3);
+  audio.play();
+};
+const hitSound4 = () => {
+  const audio = new Audio(hit4);
+  audio.play();
+};
+const hurtSound = () => {
+  const audio = new Audio(hurt);
+  audio.play();
+};
+const magicalSound = () => {
+  const audio = new Audio(magical);
+  audio.play();
+};
+const matchStartSound = () => {
+  const audio = new Audio(matchStart);
+  audio.play();
+};
+const matchStartSound2 = () => {
+  const audio = new Audio(matchStart2);
+  audio.play();
+};
+const nifflerSound = () => {
+  const audio = new Audio(niffler);
+  audio.play();
+};
+const pooPooMommySound = () => {
+  const audio = new Audio(pooPooMommy);
+  audio.play();
+};
+const refereeSound = () => {
+  const audio = new Audio(referee);
+  audio.play();
+};
+const toggleSound = () => {
+  const audio = new Audio(toggle);
+  audio.play();
+};
+const toggleSound2 = () => {
+  const audio = new Audio(toggle2);
+  audio.play();
+};
+const trollSound = () => {
+  const audio = new Audio(troll);
+  audio.play();
+};
+const trollSound2 = () => {
+  const audio = new Audio(troll2);
+  audio.play();
+};
+const wombatDisgustingSound = () => {
+  const audio = new Audio(wombatDisgusting);
+  audio.play();
+};
+const wombatSound = () => {
+  const audio = new Audio(wombat);
+  audio.play();
+};
 
 export {
-  hover,
-  cheerLong,
-  cheerLong2,
-  cheerShort,
-  goblin,
-  goblin2,
-  goblin3,
-  hit,
-  hit2,
-  hit3,
-  hit4,
-  hurt,
-  magical,
-  matchStart,
-  matchStart2,
-  click,
-  niffler,
-  pooPooMommy,
-  referee,
-  toggle,
-  toggle2,
-  troll,
-  troll2,
-  wombatDisgusting,
-  wombat,
+  broomSound,
+  hoverSound,
+  clickSound,
+  cheerLongSound,
+  cheerLongSound2,
+  cheerShortSound,
+  goblinSound,
+  goblinSound2,
+  goblinSound3,
+  hitSound,
+  hitSound2,
+  hitSound3,
+  hitSound4,
+  hurtSound,
+  magicalSound,
+  matchStartSound,
+  matchStartSound2,
+  nifflerSound,
+  pooPooMommySound,
+  refereeSound,
+  toggleSound,
+  toggleSound2,
+  trollSound,
+  trollSound2,
+  wombatDisgustingSound,
+  wombatSound,
   backgroundMusic
 };

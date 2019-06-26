@@ -17,13 +17,20 @@
         class="team-crest__segment-bottom"
         :style="{ background: '#' + teamConfig.colors.primary }"
       ></div>
-      <div class="shadow-overlay" @click="$emit('toggle-color')"></div>
+      <div
+        class="shadow-overlay"
+        @click="$emit('toggle-color')"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
+      ></div>
     </div>
     <span class="team-motto-span">{{ teamConfig.motto }}</span>
   </div>
 </template>
 
 <script>
+import { clickSound, hoverSound } from "../../util/sounds";
+
 export default {
   props: {
     teamConfig: {
@@ -33,6 +40,14 @@ export default {
     active: {
       type: Boolean,
       required: true
+    }
+  },
+  methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
     }
   }
 };

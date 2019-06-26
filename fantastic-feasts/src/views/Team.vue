@@ -12,12 +12,18 @@
           <li
             class="team-overview__team-preview-item"
             @click="selectTeam(index)"
+            @mouseenter="hoverSound()"
+            @mousedown="clickSound()"
           >
             {{ team.name }}
           </li>
         </div>
         <br />
-        <label for="file-import" class="app__small-button app__import-label"
+        <label
+          for="file-import"
+          class="app__small-button app__import-label"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           >Importieren</label
         >
         <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
@@ -39,6 +45,8 @@
       <button
         class="app__large-button app__footer-button"
         @click="game.currentState = 'inMenu'"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
       >
         Zurück zum Menü
       </button>
@@ -48,6 +56,7 @@
 
 <script>
 import TeamSelection from "../components/configurator/TeamSelection.vue";
+import { clickSound, hoverSound } from "../util/sounds";
 
 export default {
   components: {
@@ -101,6 +110,12 @@ export default {
     storeConfigs() {
       const parsed = JSON.stringify(this.configs);
       localStorage.setItem("configs", parsed);
+    },
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
     }
   }
 };

@@ -5,8 +5,9 @@
     <div class="app__large-button-container">
       <button
         class="app__large-button"
-        @mouseenter="hover"
-        @click="game.currentState = 'inLobby'"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeState('inLobby')"
       >
         Spielen
       </button>
@@ -14,8 +15,9 @@
     <div class="app__large-button-container">
       <button
         class="app__large-button"
-        @mouseenter="hover"
-        @click="game.currentState = 'inTeam'"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeState('inTeam')"
       >
         Team wählen
       </button>
@@ -23,8 +25,9 @@
     <div class="app__large-button-container">
       <button
         class="app__large-button"
-        @mouseenter="hover"
-        @click="game.currentState = 'inConfig'"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeState('inConfig')"
       >
         Konfigurator
       </button>
@@ -32,8 +35,9 @@
     <div class="app__large-button-container">
       <button
         class="app__large-button"
-        @mouseenter="hover"
-        @click="game.currentState = 'inHelp'"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeState('inHelp')"
       >
         Hilfe
       </button>
@@ -41,8 +45,9 @@
     <div class="app__large-button-container">
       <button
         class="app__large-button"
-        @mouseenter="hover"
-        @click="game.selectedColorScheme = (game.selectedColorScheme + 1) % 4"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeColor"
       >
         Farbe ändern
       </button>
@@ -51,7 +56,8 @@
       <button
         id="menu-mute-button"
         class="app__large-button"
-        @mouseenter="hover"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
         @click="muteAudio"
       >
         <font-awesome-icon
@@ -66,8 +72,9 @@
       <hr class="app__footer-separation-line" />
       <button
         class="app__large-button app__footer-button"
-        @mouseenter="hover"
-        @click="game.currentState = 'inGame'"
+        @mousedown="clickSound()"
+        @mouseenter="hoverSound"
+        @click="changeState('inGame')"
       >
         Spielfeld anzeigen
       </button>
@@ -76,7 +83,8 @@
 </template>
 
 <script>
-import { hover, backgroundMusic } from "../util/sounds";
+import { hoverSound, clickSound } from "../util/sounds";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {
@@ -90,25 +98,38 @@ export default {
       muted: false
     };
   },
-  mounted() {
-    const music = new Audio(backgroundMusic);
-    music.play();
+  computed: {
+    ...mapState(["backgroundMusic"])
   },
   methods: {
+    ...mapMutations([
+      "loadBackgroundMusic",
+      "playBackgroundMusic",
+      "pauseBackgroundMusic"
+    ]),
+    changeState(newState) {
+      //clickSound();
+      this.game.currentState = newState;
+    },
     muteAudio() {
-      const audio = document.getElementById("background-music");
+      //clickSound();
       if (this.muted) {
-        audio.volume = 1.0;
+        this.backgroundMusic.volume = 1.0;
       } else {
-        audio.volume = 0;
+        this.backgroundMusic.volume = 0;
       }
       this.muted = !this.muted;
     },
-    hover() {
-      // console.log("Hi");
-      // const audio = new Audio(require("../../sounds/hover.mp3"));
-      const audio = new Audio(hover);
-      audio.play();
+    hoverSound() {
+      console.log(hoverSound);
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
+    changeColor() {
+      //clickSound();
+      this.game.selectedColorScheme = (this.game.selectedColorScheme + 1) % 4;
     }
   }
 };

@@ -11,6 +11,8 @@
             class="overview-list-item"
             :class="{ 'selected-list-item': index === selectedItem }"
             @click="selectListItem(index)"
+            @mouseenter="hoverSound()"
+            @mousedown="clickSound()"
           >
             {{ match.name }}
           </li>
@@ -20,18 +22,24 @@
       <div class="overview-options">
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="editConfig(selectedItem)"
         >
           Bearbeiten
         </button>
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="downloadJSON()"
         >
           <a id="downloadAnchorElem" style="display:none"></a>Download
         </button>
         <button
           class="app__small-button overview-options-button"
+          @mouseenter="hoverSound()"
+          @mousedown="clickSound()"
           @click="deleteConfig(selectedItem)"
         >
           Löschen
@@ -45,11 +53,13 @@
       <label for="file-import" class="app__small-button app__import-label"
         >Importieren</label
       >
-      <!-- <button @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
+      <!-- <button @mouseenter="hoverSound()"             @mousedown="clickSound()" @click="readFile()" class="app__small-button team-overview__general-options-button">Importieren</button>
                 <input type="file" id="importChooser" @change="readFile()"/> -->
       <input id="file-import" type="file" @change="readFile()" />
       <button
         class="app__small-button overview__general-options-button"
+        @mouseenter="hoverSound()"
+        @mousedown="clickSound()"
         @click="createMatchConfig()"
       >
         Partiekonfiguration erstellen
@@ -59,6 +69,8 @@
 </template>
 
 <script>
+import { clickSound, hoverSound } from "../../util/sounds";
+
 var Ajv = require("ajv");
 var ajv = new Ajv();
 
@@ -163,6 +175,12 @@ export default {
     this.validate = ajv.compile(this.matchConfigSchema);
   },
   methods: {
+    hoverSound() {
+      hoverSound();
+    },
+    clickSound() {
+      clickSound();
+    },
     //Downloads the configuration as a json file, writing it to the hard drive
     downloadJSON() {
       var dataStr =
