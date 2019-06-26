@@ -3,28 +3,45 @@
     <h1 class="main-title">Fantastic Feasts</h1>
     <h2 class="app__header">Hauptmenü</h2>
     <div class="app__large-button-container">
-      <button class="app__large-button" @click="game.currentState = 'inLobby'">
+      <button
+        class="app__large-button"
+        @mouseenter="hover"
+        @click="game.currentState = 'inLobby'"
+      >
         Spielen
       </button>
     </div>
     <div class="app__large-button-container">
-      <button class="app__large-button" @click="game.currentState = 'inTeam'">
+      <button
+        class="app__large-button"
+        @mouseenter="hover"
+        @click="game.currentState = 'inTeam'"
+      >
         Team wählen
       </button>
     </div>
     <div class="app__large-button-container">
-      <button class="app__large-button" @click="game.currentState = 'inConfig'">
+      <button
+        class="app__large-button"
+        @mouseenter="hover"
+        @click="game.currentState = 'inConfig'"
+      >
         Konfigurator
       </button>
     </div>
     <div class="app__large-button-container">
-      <button class="app__large-button" @click="game.currentState = 'inHelp'">
+      <button
+        class="app__large-button"
+        @mouseenter="hover"
+        @click="game.currentState = 'inHelp'"
+      >
         Hilfe
       </button>
     </div>
     <div class="app__large-button-container">
       <button
         class="app__large-button"
+        @mouseenter="hover"
         @click="game.selectedColorScheme = (game.selectedColorScheme + 1) % 4"
       >
         Farbe ändern
@@ -34,6 +51,7 @@
       <button
         id="menu-mute-button"
         class="app__large-button"
+        @mouseenter="hover"
         @click="muteAudio"
       >
         <font-awesome-icon
@@ -48,6 +66,7 @@
       <hr class="app__footer-separation-line" />
       <button
         class="app__large-button app__footer-button"
+        @mouseenter="hover"
         @click="game.currentState = 'inGame'"
       >
         Spielfeld anzeigen
@@ -57,6 +76,8 @@
 </template>
 
 <script>
+import { hover, backgroundMusic } from "../util/sounds";
+
 export default {
   props: {
     game: {
@@ -69,6 +90,10 @@ export default {
       muted: false
     };
   },
+  mounted() {
+    const music = new Audio(backgroundMusic);
+    music.play();
+  },
   methods: {
     muteAudio() {
       const audio = document.getElementById("background-music");
@@ -78,6 +103,12 @@ export default {
         audio.volume = 0;
       }
       this.muted = !this.muted;
+    },
+    hover() {
+      // console.log("Hi");
+      // const audio = new Audio(require("../../sounds/hover.mp3"));
+      const audio = new Audio(hover);
+      audio.play();
     }
   }
 };

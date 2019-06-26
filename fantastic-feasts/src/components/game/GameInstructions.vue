@@ -5,6 +5,29 @@
     <!-- <h5 id="game-instructions"></h5> -->
     <div class="instruction-entry-container">
       <transition-group name="slide">
+        <div v-for="error in errors" :key="error.code" class="warning-entry">
+          <div
+            style="
+              background: radial-gradient(#b43333, #7e1111)
+            ;"
+            class="warning-entry__icon-container"
+          >
+            <font-awesome-icon
+              size="2x"
+              :icon="'exclamation-circle'"
+              color="#00000083"
+            />
+          </div>
+          <div class="warning-entry__code-container">
+            <p>
+              {{ error.code }}
+              <span v-if="error.triggerMatchFinish"> – Spielende!</span>
+            </p>
+          </div>
+          <div class="warning-entry__information-container">
+            <p>{{ error.information }}</p>
+          </div>
+        </div>
         <div :key="renderedPhase.phaseName" class="game-phase-entry">
           <div
             :style="{
@@ -31,6 +54,30 @@
           </div>
         </div>
         <div
+          v-for="warning in warnings"
+          :key="warning.code"
+          class="warning-entry"
+        >
+          <div
+            style="
+              background: radial-gradient(#fde974, #e7c500)
+            ;"
+            class="warning-entry__icon-container"
+          >
+            <font-awesome-icon
+              size="2x"
+              :icon="'exclamation-triangle'"
+              color="#00000083"
+            />
+          </div>
+          <div class="warning-entry__code-container">
+            <p>{{ warning.code }}</p>
+          </div>
+          <div class="warning-entry__information-container">
+            <p>{{ warning.information }}</p>
+          </div>
+        </div>
+        <div
           v-for="(instruction, i) in gameInstruction"
           :key="instruction.message"
           :class="[
@@ -53,7 +100,7 @@ export default {
       required: false,
       type: Array,
       default() {
-        return {};
+        return [{}];
       }
     },
     phase: {
@@ -61,6 +108,20 @@ export default {
       type: String,
       default() {
         return "";
+      }
+    },
+    warnings: {
+      required: false,
+      type: Array,
+      default() {
+        return [{}];
+      }
+    },
+    errors: {
+      required: false,
+      type: Array,
+      default() {
+        return [{}];
       }
     }
   },
@@ -173,8 +234,7 @@ export default {
 .instruction-entry-container {
   overflow-y: auto;
   padding: 0.2vw 0.2vw;
-  max-height: 30vh;
-  height: 100%;
+  height: 94%;
 }
 
 .instruction-entry {
@@ -192,8 +252,10 @@ export default {
   background: radial-gradient(#ffffff, #eeeeee);
   border-radius: 0.5rem;
   display: flex;
-  color: #3edfd1;
-  color: #00a799;
+  color: #c7a900;
+  color: #fde974;
+  color: #b43333;
+  color: #7e1111;
   color: #644627;
   flex-direction: column;
   align-items: center;
@@ -203,6 +265,17 @@ export default {
   justify-content: space-between;
   overflow-y: auto;
   font-size: 1rem;
+  margin: 0.4vw 0;
+}
+
+.game-phase-entry:hover {
+  background: radial-gradient(#ffffff, #f5f5f5);
+  box-shadow: 0 0 3px #0000008c;
+}
+
+.warning-entry:hover {
+  background: radial-gradient(#ffffff, #f5f5f5);
+  box-shadow: 0 0 3px #0000008c;
 }
 
 .game-phase-entry__icon-container {
@@ -236,7 +309,57 @@ export default {
 .game-phase-entry__description-container {
   text-align: left;
   width: 100%;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.warning-entry {
+  background: radial-gradient(#ffffff, #eeeeee);
+  border-radius: 0.5rem;
+  display: flex;
+  color: #644627;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 3px #00000056;
+  align-content: center;
+  overflow-x: hidden;
+  justify-content: space-between;
+  overflow-y: auto;
+  font-size: 1rem;
+  margin: 0.4vw 0;
+}
+
+.warning-entry__icon-container {
+  display: flex;
+  padding: 0.5rem;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.warning-entry__code-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.warning-entry__code-container p {
+  margin: 0.5rem;
+}
+
+.warning-entry__information-container p {
+  margin: 0.5rem;
+  margin-top: 0;
+}
+
+.warning-entry__information-container {
+  text-align: left;
+  width: 100%;
+  font-size: 0.9rem;
 }
 
 .highlighted-instruction-entry {

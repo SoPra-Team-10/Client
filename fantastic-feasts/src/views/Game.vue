@@ -178,6 +178,8 @@
         <game-instructions
           :game-instruction="[gameInstruction[0]]"
           :phase="snapShot.phase"
+          :warnings="warnings"
+          :errors="errors"
         ></game-instructions>
         <!-- <game-log :gameInstruction="gameInstruction"></game-log> -->
         <!-- <hr class="normal-separation-line"> -->
@@ -272,6 +274,23 @@ export default {
       //     victoryReason: "mostPoints",
       // },
       matchFinish: null,
+
+      warnings: [
+        {
+          code: 302,
+          information:
+            "Warning: joinRequest-doublelogin: User logs in from two clients at the same time. The last login is always executed. Error goes to the old logon, Warning goes to the new logon."
+        }
+      ],
+
+      errors: [
+        {
+          code: 152,
+          information:
+            "Error:  Server could parse a json but it is not in the Container format.",
+          triggerMatchFinish: true
+        }
+      ],
 
       timeout: 0,
       // just for testing (start)
