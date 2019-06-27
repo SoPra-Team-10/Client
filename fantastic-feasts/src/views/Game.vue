@@ -41,7 +41,7 @@
         >
           <font-awesome-icon
             class="favorite-icon"
-            :icon="paused ? 'pause' : 'play'"
+            :icon="paused ? 'play' : 'pause'"
             color="#e0a500"
           />
         </div>
@@ -63,7 +63,10 @@
         >
         </banned-players>
         <div class="skip-button-container">
-          <h3 id="chance-view" class="panel-title"></h3>
+          <!-- <h3 id="chance-view" class="panel-title"></h3> -->
+          <label for="autoSkipFans" id="autp-skip-fans-label">Fanphase überspringen:</label>
+          <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
+          <br />
           <span>{{ successChance }}</span>
         </div>
       </div>
@@ -328,20 +331,20 @@ export default {
       muted: false,
 
       warnings: [
-        {
-          code: 302,
-          information:
-            "Warning: joinRequest-doublelogin: User logs in from two clients at the same time. The last login is always executed. Error goes to the old logon, Warning goes to the new logon."
-        }
+        // {
+        //   code: 302,
+        //   information:
+        //     "Warning: joinRequest-doublelogin: User logs in from two clients at the same time. The last login is always executed. Error goes to the old logon, Warning goes to the new logon."
+        // }
       ],
 
       errors: [
-        {
-          code: 152,
-          information:
-            "Error:  Server could parse a json but it is not in the Container format.",
-          triggerMatchFinish: true
-        }
+        // {
+        //   code: 152,
+        //   information:
+        //     "Error:  Server could parse a json but it is not in the Container format.",
+        //   triggerMatchFinish: true
+        // }
       ],
 
       timeout: 0,
@@ -377,8 +380,8 @@ export default {
 
       // Use unshift({message: 'String'}) to add log entries to top of gameInstruction-Panel. Will be automatically updated.
       gameInstruction: [
-        { message: "test", time: "" },
-        { message: "", time: "" }
+        // { message: "test", time: "" },
+        // { message: "", time: "" }
       ],
 
       // can later be changed to undefined.
@@ -1282,9 +1285,9 @@ export default {
               dist
             );
           chance = Math.round(chance * 100);
-          this.successChance = "Chance für erfolgreichen Wurf: " + chance + "%";
-          document.getElementById("chance-view").innerHTML =
-            "Chance für erfolgreichen Wurf: " + chance + "%";
+          this.successChance = "Erfolgschance (Wurf): " + chance + "%";
+          // document.getElementById("chance-view").innerHTML =
+          //   "Chance für erfolgreichen Wurf: " + chance + "%";
         }
 
         // else if(this.selectedEntityId.includes("Beater") && this.selectedEntity.holdsBludger){
@@ -2391,6 +2394,11 @@ h1 {
 .hidden-tile {
   background: none;
   pointer-events: none;
+}
+
+#autp-skip-fans-label {
+  font-size: 1.2rem;
+  color: #412409;
 }
 
 .gras-tile {

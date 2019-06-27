@@ -113,4 +113,11 @@ export default {
   height: 100%;
   background: radial-gradient(#00000000, #0000003f);
 }
+
+.shadow-overlay:hover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(#ffffff00, #ffffff3b);
+}
 </style>
