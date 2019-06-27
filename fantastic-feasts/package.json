@@ -9,9 +9,13 @@
     "build-dev": "vue-cli-service build --mode development"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "animate.css": "^3.7.2",
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.6.0",
@@ -19,22 +23,14 @@
     "@vue/cli-service": "^3.6.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
+    "vue-template-compiler": "^2.5.21",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-vue": "^5.0.0",
-    "vue-template-compiler": "^2.5.21"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
+    "prettier": "^1.18.2",
+    "sass": "^1.18.0",
+    "sass-loader": "^7.1.0"
   },
   "postcss": {
     "plugins": {
