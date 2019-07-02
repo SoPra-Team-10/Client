@@ -78,7 +78,7 @@
           </div>
         </div>
         <div
-          v-for="(instruction, i) in gameInstruction"
+          v-for="(instruction, i) in limitedGameInstruction"
           :key="instruction.message"
           :class="[
             'instruction-entry',
@@ -131,6 +131,9 @@ export default {
     };
   },
   computed: {
+    limitedGameInstruction() {
+      return this.gameInstruction.slice(-2, -1);
+    },
     renderedPhase() {
       let phaseName = "";
       let phaseDescription = "";

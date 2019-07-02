@@ -108,10 +108,10 @@ export default {
   },
   methods: {
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     }
   }
 };

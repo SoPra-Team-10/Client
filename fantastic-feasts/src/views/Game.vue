@@ -21,6 +21,7 @@
           "
           :team-config="matchStart.leftTeamConfig"
           :active="leftTeamToMove"
+          :muted="muted"
           @toggle-color="toggleColorsTeamLeft"
         ></team-crest>
         <game-info :match-start="matchStart" :snap-shot="snapShot"> </game-info>
@@ -31,6 +32,7 @@
           "
           :team-config="matchStart.rightTeamConfig"
           :active="rightTeamToMove"
+          :muted="muted"
           @toggle-color="toggleColorsTeamRight"
         ></team-crest>
         <div
@@ -64,8 +66,10 @@
         </banned-players>
         <div class="skip-button-container">
           <!-- <h3 id="chance-view" class="panel-title"></h3> -->
-          <label for="autoSkipFans" id="autp-skip-fans-label">Fanphase überspringen:</label>
-          <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
+          <label id="autp-skip-fans-label" for="autoSkipFans"
+            >Fanphase überspringen:</label
+          >
+          <input id="autoSkipFans" type="Checkbox" class="app__lobby-input" />
           <br />
           <span>{{ successChance }}</span>
         </div>
@@ -190,7 +194,7 @@
       </div>
       <div class="sidebar-right">
         <game-instructions
-          :game-instruction="[gameInstruction[0]]"
+          :game-instruction="gameInstruction"
           :phase="snapShot.phase"
           :warnings="warnings"
           :errors="errors"
@@ -583,6 +587,7 @@ export default {
         matchStart: undefined,
         snapshot: undefined
       },
+      wombatCubes: [],
 
       teamFormation: {
         players: {
@@ -622,29 +627,29 @@ export default {
     "snapShot.leftTeam.points": function(newPoints, oldPoints) {
       console.log(oldPoints);
       console.log(newPoints);
-      if (newPoints > oldPoints) {
+      if (newPoints > oldPoints && !this.muted) {
         cheerLongSound();
       }
     },
     "bannedPlayersTeamLeft.number": function(newNumber, oldNumber) {
-      if (newNumber > oldNumber) {
+      if (newNumber > oldNumber && !this.muted) {
         refereeSound();
       }
     },
     "bannedPlayersTeamRight.number": function(newNumber, oldNumber) {
-      if (newNumber > oldNumber) {
+      if (newNumber > oldNumber && !this.muted) {
         refereeSound();
       }
     },
     "snapShot.rightTeam.points": function(newPoints, oldPoints) {
       console.log(oldPoints);
       console.log(newPoints);
-      if (newPoints > oldPoints) {
+      if (newPoints > oldPoints && !this.muted) {
         cheerLongSound();
       }
     },
     "snapShot.wombatCubes": function(newCubes, oldCubes) {
-      if (newCubes.length > oldCubes.length) {
+      if (newCubes.length > oldCubes.length && !this.muted) {
         wombatSound();
       }
     }
@@ -753,7 +758,7 @@ export default {
   },
   /**Is automatically called when the component loaded */
   mounted() {
-    this.muted = this.backgroundMusic.volume === 0;
+    this.muted = this.game.muted;
     this.startTimer();
     this.grid = this.generateGrid();
     this.matchStart.leftTeamConfig = this.teamConfig;
@@ -770,10 +775,10 @@ export default {
   },
   methods: {
     hoverSound() {
-      hoverSound();
+      if (!this.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.muted) clickSound();
     },
     startTimer() {
       setInterval(() => {
@@ -787,9 +792,11 @@ export default {
       if (this.backgroundMusic.volume === 0) {
         this.muted = false;
         this.backgroundMusic.volume = 1.0;
+        this.game.muted = !this.game.muted;
       } else {
         this.backgroundMusic.volume = 0;
         this.muted = true;
+        this.game.muted = !this.game.muted;
       }
     },
 
@@ -846,7 +853,7 @@ export default {
       if (this.paused) return;
       if (!this.highlightedTiles.includes(this.getTileId(xPos, yPos))) return;
       if (this.turnType === "move") {
-        broomSound();
+        if (!this.muted) broomSound();
         this.deltaRequest(
           "move",
           null,
@@ -867,7 +874,7 @@ export default {
           this.selectedEntity.holdsQuaffle
         ) {
           /// ballSound !!!
-          hitSound();
+          if (!this.muted) broomSound();
           this.deltaRequest(
             "quaffleThrow",
             null,
@@ -947,7 +954,7 @@ export default {
         }
 
         if (this.selectedEntityId.includes("Elf")) {
-          magicalSound();
+          if (!this.muted) magicalSound();
           this.deltaRequest(
             "elfTeleportation",
             null,
@@ -962,7 +969,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Goblin")) {
-          goblinSound();
+          if (!this.muted) goblinSound();
           this.deltaRequest(
             "goblinShock",
             null,
@@ -977,7 +984,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Niffler")) {
-          nifflerSound();
+          if (!this.muted) nifflerSound();
           this.deltaRequest(
             "snitchSnatch",
             null,
@@ -992,7 +999,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Troll")) {
-          trollSound();
+          if (!this.muted) trollSound();
           this.deltaRequest(
             "trollRoar",
             null,
@@ -1037,7 +1044,7 @@ export default {
                 if (this.highlightedTiles[i] === this.getTileId(xPos, yPos))
                   this.highlightedTiles.splice(i, 1);
               }
-              broomSound();
+              if (!this.muted) broomSound();
               break;
             }
           }
@@ -1060,7 +1067,7 @@ export default {
                 if (this.highlightedTiles[i] === this.getTileId(xPos, yPos))
                   this.highlightedTiles.splice(i, 1);
               }
-              broomSound();
+              if (!this.muted) broomSound();
               break;
             }
           }
@@ -1087,7 +1094,7 @@ export default {
           Math.abs(xPos - this.selectedEntity.xPos) < 2 &&
           Math.abs(yPos - this.selectedEntity.yPos) < 2
         ) {
-          broomSound();
+          if (!this.muted) broomSound();
           this.deltaRequest(
             "move",
             null,
@@ -1109,7 +1116,7 @@ export default {
           this.selectedEntity.holdsQuaffle
         ) {
           // ballSound !!!
-          hitSound();
+          if (!this.muted) hitSound();
           this.deltaRequest(
             "quaffleThrow",
             null,
@@ -1173,7 +1180,7 @@ export default {
           this.selectedFanTypeLeftTeam = "";
         }
         if (this.selectedEntityId.includes("Niffler")) {
-          nifflerSound();
+          if (!this.muted) nifflerSound();
           this.deltaRequest(
             "snitchSnatch",
             null,
@@ -1188,7 +1195,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Troll")) {
-          trollSound();
+          if (!this.muted) trollSound();
           this.deltaRequest(
             "trollRoar",
             null,
@@ -1203,7 +1210,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Wombat")) {
-          wombatSound();
+          if (!this.muted) wombatSound();
           this.deltaRequest(
             "wombatPoo",
             null,
@@ -1219,7 +1226,7 @@ export default {
           );
         }
       } else if (this.turnType === "removeBan") {
-        broomSound();
+        if (!this.muted) broomSound();
         this.deltaRequest(
           "unban",
           null,
@@ -1501,7 +1508,7 @@ export default {
     /**Update local snapShot */
     handleSnapshot: function(obj) {
       if (!this.initialSnapshotSent) {
-        matchStartSound2();
+        if (!this.muted) matchStartSound2();
         this.initialSnapshotSent = true;
       }
       if (this.mySide === "right") {
@@ -1835,7 +1842,7 @@ export default {
       round
     ) {
       this.turnType = null;
-      document.getElementById("chance-view").innerHTML = "";
+      //document.getElementById("chance-view").innerHTML = "";
       this.highlightedTiles = [];
       var timestamp = this.makeTimestamp();
       var payload = {

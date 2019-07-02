@@ -40,14 +40,18 @@ export default {
     active: {
       type: Boolean,
       required: true
+    },
+    muted: {
+      type: Boolean,
+      required: true
     }
   },
   methods: {
     hoverSound() {
-      hoverSound();
+      if (!this.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.muted) clickSound();
     }
   }
 };
