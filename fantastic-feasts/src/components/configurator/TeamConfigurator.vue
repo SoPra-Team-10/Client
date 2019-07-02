@@ -183,17 +183,17 @@
     <div>
       <!-- Buttons at the bottom -->
       <button
+        class="app__small-button"
         @mouseenter="hoverSound()"
         @mousedown="clickSound()"
-        class="app__small-button"
         @click="saveTeamConfig()"
       >
         Speichern
       </button>
       <button
+        class="app__small-button"
         @mouseenter="hoverSound()"
         @mousedown="clickSound()"
-        class="app__small-button"
         @click="discardChanges()"
       >
         Verwerfen
@@ -206,7 +206,7 @@
 import { clickSound, hoverSound } from "../../util/sounds";
 
 export default {
-  props: ["configs", "state"],
+  props: ["configs", "state", "game"],
   data() {
     return {
       //define viable options
@@ -334,11 +334,12 @@ export default {
     }
   },
   methods: {
+    // methods to play interface sound
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     //Translates role names to German for display
     mapRole(index) {

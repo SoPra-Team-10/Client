@@ -4,6 +4,7 @@ import store from "./store/store";
 
 Vue.config.productionTip = false;
 
+// import SVG-icons from the Fontawesome package as needed
 import {
   faPlay,
   faPause,
@@ -21,6 +22,8 @@ import {
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+// adding SVG-icons to local library
+
 library.add(faPlay);
 library.add(faPause);
 library.add(faVolumeMute);
@@ -34,16 +37,11 @@ library.add(faFistRaised);
 library.add(faExclamationCircle);
 library.add(faExclamationTriangle);
 
+// registering Fontawesome as global component
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
-//var websocket;
+// instantiate main Vue instance
 new Vue({
   store,
   render: h => h(App)
 }).$mount("#app");
-
-/*
-"@fortawesome/fontawesome-svg-core": "^1.2.19",
-    "@fortawesome/free-solid-svg-icons": "^5.9.0",
-    "@fortawesome/vue-fontawesome": "^0.1.6",
-*/

@@ -73,6 +73,7 @@ export default {
     }
   },
   methods: {
+    // reads a file from the filesystem of the user and stores valid files as object in app store
     readFile() {
       var files = document.getElementById("file-import").files;
       var file = files[0];
@@ -101,6 +102,7 @@ export default {
         };
       }
     },
+    // user can select one of the listed teams
     selectTeam(index) {
       this.configs.selectedTeam = index;
       //console.log(this.configs.selectedTeam);

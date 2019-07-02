@@ -1,4 +1,5 @@
 <template>
+  <!-- This components displays instrutcions and tips for the player -->
   <div id="game-instructions-panel" class="info-panel">
     <h3 class="panel-title">Spielhinweise</h3>
     <hr class="inner-separation-line" />

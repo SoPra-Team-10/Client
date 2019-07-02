@@ -2,7 +2,63 @@
   <section>
     <h1 class="app__header">Hilfe</h1>
     <div class="app__content">
-      <div class="text-content-container">
+      <div id="help-container" class="text-content-container">
+        <h2 class="help__title">Wie benutze ich den Client?</h2>
+        Im Client zu <i>Fantastic Feasts</i> sind alle Nutzeraktionen gebündelt.
+        Sowohl Spielen und Zuschauen, als auch das Erstellen jeglicher
+        Spielkonfigurationen sind inbegriffen. Auch eine detaillierte
+        Spielanleitung ist weiter unten vorhanden. Die Funktionen werden nun der
+        Reihe nach vorgestellt.<br />
+        <br />
+
+        <h3>Konfigurator</h3>
+
+        Team- und Spielkonfigurationen können erstellt, bearbeitet, hoch- und
+        runtergeladen werden. Diese Funktionen finden sich im Menü unter
+        <i>Konfigurator</i>. <br />
+        <br />
+
+        Wenn der Nutzer lediglich als Zuschauer an einer Partie teilnehmen
+        möchte, kann der folgende Abschnitt übersprungen werden. <br />
+        <br />
+
+        <h3>Team wählen</h3>
+
+        Zum Spielen muss unter <i>Team wählen</i> ein zuvor erstelltes Team
+        ausgewählt werden. Alternativ kann dort auch eine gültige
+        Teamkonfiguration importiert werden. Ist ein Team ausgewählt, kann sich
+        der Nutzer im Client mit einem Server verbinden. <br />
+        <br />
+
+        <h3>Lobby: Verbindung mit einem Server herstellen</h3>
+
+        Zum verbinden mit einem Server müssen IP-Adresse und Port angegeben
+        werden. Dann muss ein Spielername gewählt werden. Das Passwort spielt in
+        der aktuellen Implementierung keine Rolle, es muss allerdings ein
+        beliebiger String eingegeben werden. Zu guter letzt ist schließlich die
+        Lobby anzugeben. Der Name der Lobby muss unter den Teilnehemrn
+        ausgemacht werden, da natürlich alle Teilnehmer der gleichen Lobby
+        beitreten müssen. Alternativ kann das Häkchen für den Zuschauermodus
+        gesetzt werden.
+        <br />
+
+        <b>Wichtig:</b> Spielername und Lobby dürfen
+        <i>nur alpha-numerische Werte</i> enthalten. Leer- und Sonderzeichen
+        werden nicht unterstützt. <br />
+        <br />
+
+        <h3>Das Spiel beginnt</h3>
+
+        Wenn die Verbindung fehlerfrei abgelaufen ist, landet der Spieler oder
+        Zuschauer auf dem Spielfeld. Ein Spieler muss nun seine
+        Quidditch-Figuren positionieren. Dazu muss er einfach auf die
+        hervorgehobenen Spielfeld-Kacheln klicken. Es wird der hervorgehobene
+        (jeweils vorderste) Spieler platziert. <br />
+        <br />
+
+        Alle weiteren Spielregeln werden im nächsten Abschnitt erläutert.
+        <br />
+
         <h2 class="help__title">Spielanleitung</h2>
         <h4 class="help__sub-title"></h4>
         <p>
@@ -284,6 +340,10 @@ export default {
   width: 4rem;
   height: 4rem;
   position: relative;
+}
+
+#help-container {
+  font-size: 1.3rem;
 }
 
 .help__description-block {

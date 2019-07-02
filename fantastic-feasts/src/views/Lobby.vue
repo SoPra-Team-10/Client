@@ -1,4 +1,5 @@
 <template>
+  <!-- The lobby is the view from which a user can join games (as player or spectator) -->
   <section>
     <h1 class="app__header">Lobby</h1>
     <div class="app__content">
@@ -77,10 +78,11 @@ export default {
     }
   },
   methods: {
+    // changes state of application to the value of given string
     changeState(newState) {
-      //clickSound();
       this.game.currentState = newState;
     },
+    // sounds-methods for interface
     hoverSound() {
       if (!this.game.muted) hoverSound();
     },
@@ -105,7 +107,7 @@ export default {
         ("0" + date.getMilliseconds()).slice(-3)
       );
     },
-
+    // connects a client to the specified server
     connect: function() {
       // var date = new Date();
       var server = document.getElementById("server").value;

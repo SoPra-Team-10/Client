@@ -1,4 +1,5 @@
 <template>
+  <!-- This is the main view of the configurator. Different configurations (team/game) can be chosen from here-->
   <section>
     <h1 class="app__header">Konfigurator</h1>
     <div class="app__content">

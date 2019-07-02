@@ -1,6 +1,9 @@
 <template>
+  <!-- This is the component responsible for displaying the main view of the game -->
+  <!-- It contains all other components that make up specific parts of the game interface -->
   <div id="game-container">
     <section id="game-panel">
+      <!-- The header displays important information about the teams as well as some buttons to pause/mute the game -->
       <header class="header">
         <div
           id="mute-button"
@@ -24,6 +27,7 @@
           :muted="muted"
           @toggle-color="toggleColorsTeamLeft"
         ></team-crest>
+        <!-- A component displaying score and game phase as well as team names/user names -->
         <game-info :match-start="matchStart" :snap-shot="snapShot"> </game-info>
         <team-crest
           v-if="
@@ -66,7 +70,7 @@
         </banned-players>
         <div class="skip-button-container">
           <!-- <h3 id="chance-view" class="panel-title"></h3> -->
-          <label id="autp-skip-fans-label" for="autoSkipFans"
+          <label id="auto-skip-fans-label" for="autoSkipFans"
             >Fanphase überspringen:</label
           >
           <input id="autoSkipFans" type="Checkbox" class="app__lobby-input" />
@@ -76,6 +80,7 @@
       </div>
       <div class="center">
         <div id="game-container">
+          <!-- This panel contains the grid for the quidditch field -->
           <div id="game-grid-panel">
             <div
               v-for="(tile, index) in grid"
@@ -88,17 +93,14 @@
               @click="clickEmptyTile(tile.xPos, tile.yPos)"
               @mouseover="showChance(tile.xPos, tile.yPos)"
             ></div>
-            <!-- <div v-for="(tile, index) in this.grid" 
-                            :key="tile.id" 
-                            :class="highlightedTiles.includes(index) ? 'highlighted-gras-tile' : 'hidden-tile'"
-                            >
-                        </div> -->
+            <!-- The goal posts in the field -->
             <div class="goal-post-right-top"></div>
             <div class="goal-post-right-center"></div>
             <div class="goal-post-right-bottom"></div>
             <div class="goal-post-left-top"></div>
             <div class="goal-post-left-center"></div>
             <div class="goal-post-left-bottom"></div>
+            <!-- The animated group of balls -->
             <transition-group name="game-balls" tag="div">
               <div
                 v-for="(ball, key) in snapShot.balls"
@@ -112,6 +114,7 @@
                 @click="Old(ball.xPos, ball.yPos)"
               ></div>
             </transition-group>
+            <!-- The animated group of players on the left -->
             <transition-group
               name="game-players"
               tag="div"
@@ -139,6 +142,7 @@
                 <div :class="key.slice(0, 6)"></div>
               </div>
             </transition-group>
+            <!-- The animated group of players on the right -->
             <transition-group
               name="game-players"
               tag="div"
@@ -166,6 +170,7 @@
                 <div :class="key.slice(0, 6)"></div>
               </div>
             </transition-group>
+            <!-- The animated group of wombat cubes -->
             <transition-group
               name="wombat-cubes"
               enter-active-class="animated bounceInDown"
@@ -184,42 +189,32 @@
             </transition-group>
           </div>
         </div>
+        <!-- A component displaying the fans on both sides -->
         <game-fans
           :snap-shot="snapShot"
           :selected-fan-type-right-team="selectedFanTypeRightTeam"
           :selected-fan-type-left-team="selectedFanTypeLeftTeam"
         >
         </game-fans>
+        <!-- A component displaying the timer for a turn -->
         <game-timer :time="timeout"></game-timer>
       </div>
       <div class="sidebar-right">
+        <!-- A component displaying the game instructions -->
         <game-instructions
           :game-instruction="gameInstruction"
           :phase="snapShot.phase"
           :warnings="warnings"
           :errors="errors"
         ></game-instructions>
-        <!-- <game-log :gameInstruction="gameInstruction"></game-log> -->
-        <!-- <hr class="normal-separation-line"> -->
-        <!-- <div class="info-panel" id="test-functions-panel">
-                    <h3 class="panel-title">Zusatzfunktionen</h3>åå
-
-                    <hr class="inner-separation-line">
-                    <hr class="inner-separation-line">
-                    <label for="autoSkipFans">Fans automatisch überspringen</label>
-                    <input id="autoSkipFans" type="Checkbox" class="app__lobby-input">
-                    
-                    <hr class="inner-separation-line">
-                    <div class="info-text">{{ this.selectedEntity }}, {{ this.selectedEntityId }} {{ this.gameState }}, {{ this.turnType }}
-                    </div>
-                </div> -->
+        <!-- A component displaying banned players -->
         <banned-players
           v-if="matchStart.rightTeamConfig.colors != undefined"
           :team-config="matchStart.rightTeamConfig"
           :banned-players="bannedPlayersTeamRight.players"
         >
         </banned-players>
-
+        <!-- Some more options during gameplay -->
         <div class="skip-button-container">
           <button
             class="skip-button"
@@ -232,7 +227,7 @@
         </div>
       </div>
     </section>
-
+    <!-- A component displayed at the end of a match -->
     <match-finish
       v-if="matchFinish"
       :match-finish="matchFinish"
@@ -244,7 +239,6 @@
 <script>
 import web from "../App.vue";
 import BannedPlayers from "../components/game/BannedPlayers.vue";
-// import GameLog from "../components/game/GameLog.vue";
 import PlayerDetails from "../components/game/PlayerDetails.vue";
 import GameInfo from "../components/game/GameInfo.vue";
 import GameFans from "../components/game/GameFans.vue";
@@ -282,6 +276,7 @@ import {
 } from "../util/sounds";
 import { mapState } from "vuex";
 
+// importing quidditch field dimensions from external module
 import {
   rightAttackTiles,
   centerTiles,
@@ -355,8 +350,6 @@ export default {
       // just for testing (start)
       gameLogTest: "Enter log entry",
       // just for testing (end)
-
-      muted: false,
 
       gameState: "inGame",
       grid: [],
@@ -623,6 +616,7 @@ export default {
       }
     };
   },
+  // watchers to play sounds when game data changes
   watch: {
     "snapShot.leftTeam.points": function(newPoints, oldPoints) {
       // console.log(oldPoints);
@@ -774,6 +768,7 @@ export default {
     //this.highlightedTiles = this.rightHalfTiles;
   },
   methods: {
+    // methods to play game sounds
     hoverSound() {
       if (!this.muted) hoverSound();
     },
@@ -787,7 +782,7 @@ export default {
         }
       }, 1000);
     },
-
+    // mutes all sound in game
     muteAudio() {
       if (this.backgroundMusic.volume === 0) {
         this.muted = false;
@@ -799,7 +794,8 @@ export default {
         this.game.muted = !this.game.muted;
       }
     },
-
+    // toggles to colors of the teams
+    // this can be helpful in case some colors are very similar
     toggleColorsTeamLeft() {
       // console.log("Hi");
       const primary = this.matchStart.leftTeamConfig.colors.primary;
@@ -1667,10 +1663,10 @@ export default {
       //Interference is possible
       else if (obj.payload.type === "fan") {
         // Just for debugging
-        // if(document.getElementById("autoSkipFans").checked){
-        //     this.skip();
-        //     return;
-        // }
+        if (document.getElementById("autoSkipFans").checked) {
+          this.skip();
+          return;
+        }
         if (obj.payload.turn.includes("Goblin")) {
           for (let x = 0; x < 17; x++) {
             for (let y = 0; y < 13; y++) {

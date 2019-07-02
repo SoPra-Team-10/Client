@@ -1,4 +1,6 @@
 <template>
+  <!-- This component provides an overview for different options to create, delete, edit,  
+  download or import team configs -->
   <div class="main-content-window-overview">
     <h3 class="config-submenu-title">Teams</h3>
     <div class="team-container">

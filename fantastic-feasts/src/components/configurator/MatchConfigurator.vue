@@ -1,4 +1,5 @@
 <template>
+  <!-- This component is responsible for displaying the interface to configure a match config -->
   <div id="match-config-editor" class="main-content-window-editor">
     <!-- Central area that includes all the configuration options -->
     <div id="match-config__left-panel">
@@ -215,11 +216,17 @@ import { clickSound, hoverSound } from "../../util/sounds";
 
 export default {
   props: {
+    // the object containing all the configs
     configs: {
       type: Object,
       required: true
     },
+    // the state of the application
     state: {
+      type: Object,
+      required: true
+    },
+    game: {
       type: Object,
       required: true
     }
@@ -230,17 +237,19 @@ export default {
     };
   },
   methods: {
+    // methods to play interface sounds
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     //Stores the configuration into the browser cache
     saveConfig() {
       this.storeConfigs();
       this.state.currentState = "inMatchOverview";
     },
+    // removes the newly created config
     discardChanges() {
       if (this.state.isNew) {
         this.configs.matchConfigs.splice(0, 1);
@@ -260,6 +269,7 @@ export default {
         }
       }
     },
+    // checks if the input is in allowed range, changes to max/min bound if out of bounds
     checkInput(event, item, key) {
       const max = event.target.max;
       const min = event.target.min;

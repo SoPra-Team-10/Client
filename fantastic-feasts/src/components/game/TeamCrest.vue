@@ -1,4 +1,5 @@
 <template>
+  <!-- This component displays the crest of a team as well as a given motto -->
   <div :class="{ 'animated delay-1s pulse': active }" class="overflow-wrapper">
     <div class="team-crest" :class="{ 'crest-active': active }">
       <div
@@ -17,6 +18,7 @@
         class="team-crest__segment-bottom"
         :style="{ background: '#' + teamConfig.colors.primary }"
       ></div>
+      <!-- When clicked, primary and secondary color can be toggled -->
       <div
         class="shadow-overlay"
         @click="$emit('toggle-color')"

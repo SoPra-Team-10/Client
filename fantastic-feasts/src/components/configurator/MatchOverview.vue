@@ -75,7 +75,7 @@ var Ajv = require("ajv");
 var ajv = new Ajv();
 
 export default {
-  props: ["configs", "state"],
+  props: ["configs", "state", "game"],
   data() {
     return {
       test: {
@@ -86,6 +86,8 @@ export default {
       testvar: { test: "Hi" },
       selectedItem: 0,
       validate: undefined,
+      // a schema to validate for correct input config
+      // currently not used, but can later be implemented easily
       matchConfigSchema: {
         properties: {
           maxRounds: { type: "number" },
@@ -175,11 +177,12 @@ export default {
     this.validate = ajv.compile(this.matchConfigSchema);
   },
   methods: {
+    // methods for sound effects
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     //Downloads the configuration as a json file, writing it to the hard drive
     downloadJSON() {

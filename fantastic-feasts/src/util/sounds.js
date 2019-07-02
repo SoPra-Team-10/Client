@@ -1,3 +1,7 @@
+/*
+This module contains all sound effects that are used throughout the application
+*/
+
 const hover = require("../sounds/hover.mp3");
 const cheerLong = require("../sounds/cheer-long.mp3");
 const cheerLong2 = require("../sounds/cheer-long2.mp3");
