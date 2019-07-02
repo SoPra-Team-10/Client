@@ -73,7 +73,8 @@ export default {
           "ravenclaw-color-scheme"
         ],
         selectedColorScheme: 1,
-        userName: ""
+        userName: "",
+        muted: false
       },
       web: {
         websocket: WebSocket,

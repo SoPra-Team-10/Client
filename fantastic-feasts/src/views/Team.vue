@@ -112,10 +112,10 @@ export default {
       localStorage.setItem("configs", parsed);
     },
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     }
   }
 };

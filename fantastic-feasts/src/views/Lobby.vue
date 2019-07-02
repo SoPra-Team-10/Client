@@ -82,10 +82,10 @@ export default {
       this.game.currentState = newState;
     },
     hoverSound() {
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     makeTimestamp: function() {
       var date = new Date();

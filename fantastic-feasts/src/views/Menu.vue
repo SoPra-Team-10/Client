@@ -119,13 +119,14 @@ export default {
         this.backgroundMusic.volume = 0;
       }
       this.muted = !this.muted;
+      this.game.muted = !this.game.muted;
     },
     hoverSound() {
       console.log(hoverSound);
-      hoverSound();
+      if (!this.game.muted) hoverSound();
     },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
     },
     changeColor() {
       //clickSound();
