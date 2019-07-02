@@ -96,5 +96,8 @@ Das genaue Setup für Linting und Formatierung ist von [diesem](https://medium.c
 Als Texteditor kam für den Client ausschließ VisualStudio Code zum Einsatz.
 [Mehr zu VS Code](https://code.visualstudio.com/)
 
+## Weitere Software
 
-  
+Zum Erstellen von Spielgrafiken wurde die kommerzielle Software *Affinity Designer v1.7.1* von Serif verwendet.
+
+[Mehr zu Affinity Designer](https://affinity.serif.com/de/designer/)
