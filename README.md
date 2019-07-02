@@ -46,7 +46,7 @@ Animated.css bietet eine Sammlung vorgefertigter CSS-Animationen, die sich einfa
 - animate.css: ^3.7.2
 
 #### Umfassendes JavaScript
-Mit diesem Package lassen sich auch die neuesten Features von JavaScript in die Anwendung integrieren. Babel (siehe unten), erlaubt es dann, diese Features in von allen Browsern unterstütztes JavaScript zu übersetzen.
+Mit diesem Package lassen sich auch die neuesten Features von JavaScript bis hin zu ES2018 in die Anwendung integrieren. Babel (siehe unten), erlaubt es dann, diese Features in von allen Browsern unterstütztes JavaScript zu übersetzen.
 [Mehr zu core-js](https://www.npmjs.com/package/core-js)
 - core-js: ^2.6.5
 
