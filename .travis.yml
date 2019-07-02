@@ -19,3 +19,5 @@ deploy:
   on:
     all_branches: true
 
+notifications:
+  slack: soprateam10:VZTkLGCdekl9mruMlJivbk5q
