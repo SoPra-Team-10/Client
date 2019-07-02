@@ -625,8 +625,8 @@ export default {
   },
   watch: {
     "snapShot.leftTeam.points": function(newPoints, oldPoints) {
-      console.log(oldPoints);
-      console.log(newPoints);
+      // console.log(oldPoints);
+      // console.log(newPoints);
       if (newPoints > oldPoints && !this.muted) {
         cheerLongSound();
       }
@@ -642,8 +642,8 @@ export default {
       }
     },
     "snapShot.rightTeam.points": function(newPoints, oldPoints) {
-      console.log(oldPoints);
-      console.log(newPoints);
+      // console.log(oldPoints);
+      // console.log(newPoints);
       if (newPoints > oldPoints && !this.muted) {
         cheerLongSound();
       }
@@ -801,17 +801,17 @@ export default {
     },
 
     toggleColorsTeamLeft() {
-      console.log("Hi");
+      // console.log("Hi");
       const primary = this.matchStart.leftTeamConfig.colors.primary;
-      console.log(primary);
+      // console.log(primary);
       const secondary = this.matchStart.leftTeamConfig.colors.secondary;
-      console.log(secondary);
+      // console.log(secondary);
       this.matchStart.leftTeamConfig.colors.primary = secondary;
       this.matchStart.leftTeamConfig.colors.secondary = primary;
     },
 
     toggleColorsTeamRight() {
-      console.log("Hi");
+      // console.log("Hi");
       const primary = this.matchStart.rightTeamConfig.colors.primary;
       const secondary = this.matchStart.rightTeamConfig.colors.secondary;
       this.matchStart.rightTeamConfig.colors.primary = secondary;
@@ -819,7 +819,7 @@ export default {
     },
 
     showInstruction(message) {
-      console.log(message);
+      // console.log(message);
       const time = new Date();
       this.gameInstruction.unshift({
         message: "new message",

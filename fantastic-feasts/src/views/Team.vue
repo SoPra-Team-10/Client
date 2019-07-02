@@ -103,7 +103,7 @@ export default {
     },
     selectTeam(index) {
       this.configs.selectedTeam = index;
-      console.log(this.configs.selectedTeam);
+      //console.log(this.configs.selectedTeam);
       const parsed = JSON.stringify(this.configs);
       localStorage.setItem("configs", parsed);
     },

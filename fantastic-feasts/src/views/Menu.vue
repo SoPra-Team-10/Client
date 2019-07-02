@@ -122,7 +122,6 @@ export default {
       this.game.muted = !this.game.muted;
     },
     hoverSound() {
-      console.log(hoverSound);
       if (!this.game.muted) hoverSound();
     },
     clickSound() {

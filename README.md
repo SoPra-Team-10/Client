@@ -93,7 +93,7 @@ Das genaue Setup für Linting und Formatierung ist von [diesem](https://medium.c
 
 ## Texteditor
 
-Als Texteditor kam für den Client ausschließ VisualStudio Code zum Einsatz.
+Als Texteditor kam für den Client ausschließlich VisualStudio Code zum Einsatz.
 [Mehr zu VS Code](https://code.visualstudio.com/)
 
 ## Weitere Software
