@@ -764,8 +764,6 @@ export default {
     for (let player in this.snapShot.rightTeam.players) {
       this.snapShot.rightTeam.players[player].banned = true;
     }
-    //this.mySide = "right";
-    //this.highlightedTiles = this.rightHalfTiles;
   },
   methods: {
     // methods to play game sounds
@@ -1894,7 +1892,7 @@ export default {
       if (this.paused) {
         jsonObject.payloadType = "continueRequest";
       }
-
+      if(this.mySide === "right" || this.mySide === "left")
       web.websocket.send(JSON.stringify(jsonObject));
     },
     /**finds the playerId of the entity standing in the given tile.
