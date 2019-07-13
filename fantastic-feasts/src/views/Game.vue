@@ -2100,7 +2100,7 @@ export default {
         ":" +
         ("0" + date.getSeconds()).slice(-2) +
         "." +
-        ("0" + date.getMilliseconds()).slice(-3)
+        ("00" + date.getMilliseconds()).slice(-3)
       );
     },
 
