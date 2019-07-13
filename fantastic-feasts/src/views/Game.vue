@@ -1599,7 +1599,8 @@ export default {
       //Move is possible
       if (obj.payload.type === "move") {
         this.gameInstruction.unshift({
-          message: this.getPlayerName(this.selectedEntityId) + " darf ziehen."
+          message: this.getPlayerName(this.selectedEntityId) + " darf ziehen.",
+          key: Math.random()
         });
         for (
           var x = Math.max(this.selectedEntity.xPos - 1, 0);
@@ -1645,7 +1646,8 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf den Quaffel schießen."
+            " darf den Quaffel schießen.",
+          key: Math.random()
         });
       }
       //WrestQuaffle is possible
@@ -1660,7 +1662,8 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf den Quaffel stehlen."
+            " darf den Quaffel stehlen.",
+          key: Math.random()
         });
       }
       //Interference is possible
@@ -1681,7 +1684,8 @@ export default {
             }
           }
           this.gameInstruction.unshift({
-            message: "Ein Goblin kann eingreifen"
+            message: "Ein Goblin kann eingreifen",
+            key: Math.random()
           });
         } else if (obj.payload.turn.includes("Elf")) {
           for (x = 0; x < 17; x++) {
@@ -1689,7 +1693,10 @@ export default {
               if (this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
             }
           }
-          this.gameInstruction.unshift({ message: "Ein Elf kann eingreifen." });
+          this.gameInstruction.unshift({
+            message: "Ein Elf kann eingreifen.",
+            key: Math.random()
+          });
         } else if (obj.payload.turn.includes("Wombat")) {
           for (x = 0; x < 17; x++) {
             for (y = 0; y < 13; y++) {
@@ -1701,7 +1708,8 @@ export default {
             }
           }
           this.gameInstruction.unshift({
-            message: "Ein Wombat kann eingreifen."
+            message: "Ein Wombat kann eingreifen.",
+            key: Math.random()
           });
         } else {
           for (var i = 0; i <= 220; i++) {
@@ -1709,11 +1717,13 @@ export default {
           }
           if (obj.payload.turn.includes("Troll"))
             this.gameInstruction.unshift({
-              message: "Ein Troll kann eingreifen."
+              message: "Ein Troll kann eingreifen.",
+              key: Math.random()
             });
           else if (obj.payload.turn.includes("Niffler"))
             this.gameInstruction.unshift({
-              message: "Ein Niffler kann eingreifen."
+              message: "Ein Niffler kann eingreifen.",
+              key: Math.random()
             });
         }
       } else if (
@@ -1753,7 +1763,8 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf den Klatscher schlagen."
+            " darf den Klatscher schlagen.",
+          key: Math.random()
         });
       }
       // else if(this.turnType === "removeBan"){
@@ -1800,7 +1811,8 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf wieder mitspielen."
+            " darf wieder mitspielen.",
+          key: Math.random()
         });
       }
     },
@@ -1894,13 +1906,14 @@ export default {
           message: ""
         }
       };
-      if (!this.snapShot.phase === "positioning") {
-        if (this.paused) {
-          jsonObject.payloadType = "continueRequest";
-        }
-        if (this.mySide === "right" || this.mySide === "left")
-          web.websocket.send(JSON.stringify(jsonObject));
+      if (this.snapShot.phase === "positioning") {
+        return;
       }
+      if (this.paused) {
+        jsonObject.payloadType = "continueRequest";
+      }
+      if (this.mySide === "right" || this.mySide === "left")
+        web.websocket.send(JSON.stringify(jsonObject));
     },
 
     /**finds the playerId of the entity standing in the given tile.
@@ -2779,7 +2792,7 @@ h1 {
   min-height: 8%;
   min-width: 142px;
   padding: 2vh;
-  font-size: 2.5vh;
+  font-size: 1.5vh;
   padding: 1.5vh 0.5vh;
   width: 92%;
   left: 4%;

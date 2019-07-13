@@ -80,7 +80,7 @@
         </div>
         <div
           v-for="(instruction, i) in limitedGameInstruction"
-          :key="instruction.message"
+          :key="instruction.key"
           :class="[
             'instruction-entry',
             { 'highlighted-instruction-entry': i % 2 === 0 }
@@ -227,6 +227,11 @@ export default {
         default:
           return "Testphase";
       }
+    }
+  },
+  methods: {
+    generateRandomKey() {
+      return Math.random();
     }
   }
 };
