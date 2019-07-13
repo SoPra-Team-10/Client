@@ -27,7 +27,7 @@ Als Frontend-Framwork wurde Vue.js verwendet, das es u. a. erlaubt, umfangreiche
 [Mehr zu Vue.js](https://vuejs.org/)
 - vue: ^2.6.10
 - vue-template-compiler: ^2.5.21
-
+- The MIT License (MIT)
 
 #### Fontawesome
 Fontawesome bietet eine umfangreiche Sammlung kostenloser SVG-Grafiken zur Gestaltunge von UIs, die sich einfach einbinden und konfigurieren lassen.
@@ -35,21 +35,27 @@ Fontawesome bietet eine umfangreiche Sammlung kostenloser SVG-Grafiken zur Gesta
 - @fortawesome/fontawesome-svg-core: ^1.2.19
 - @fortawesome/free-solid-svg-icons: ^5.9.0
 - @fortawesome/vue-fontawesome: ^0.1.6
+- CC BY 4.0 License
 
 #### Animate.css
 Animated.css bietet eine Sammlung vorgefertigter CSS-Animationen, die sich einfach in die Anwendung einbinden lassen.
 [Mehr zu Animate.css](https://daneden.github.io/animate.css/)
 - animate.css: ^3.7.2
+- The MIT License (MIT)
 
 #### Umfassendes JavaScript
 Mit diesem Package lassen sich auch die neuesten Features von JavaScript bis hin zu ES2018 in die Anwendung integrieren. Babel (siehe unten), erlaubt es dann, diese Features in von allen Browsern unterstütztes JavaScript zu übersetzen.
 [Mehr zu core-js](https://www.npmjs.com/package/core-js)
 - core-js: ^2.6.5
+- The MIT License (MIT)
+
 
 #### vuex
 Vuex ist eine Erweiterung für Vue, die Features für application state management nach dem Vorbild von Redux zur Verfügung stellt.
 [Mehr zu vuex](https://vuex.vuejs.org/)
 - vuex: ^3.1.1
+- The MIT License (MIT)
+
 
 ### Dev-Dependencies
 
@@ -59,6 +65,8 @@ Um den Entwicklungsprozess möglichst produktiv zu gestalten, wurden einige Dev-
 Die Vue CLI erlaubt ein schnelles Setup von neuen Vue-Projketen über die Kommandozeile. Dabei können vorab oder nachträglich über einfache Befehle Konfigurationen vorgenommen werden.
 [Mehr zu Vue CLI](https://cli.vuejs.org/)
 - @vue/cli-service: ^3.6.0
+- The MIT License (MIT)
+
 
 #### ESLint
 Da JavaScript eine dynamische Programmiersprache ist, kann die Fehlersuche von Zeit zu Zeit recht umständlich sein.
@@ -72,17 +80,23 @@ Mit ESLint, einem JavaScript Linter, können viele Fehler (und spezifizierte Sti
 - eslint-plugin-prettier: ^3.1.0
 - babel-eslint: ^10.0.1
 - @vue/cli-plugin-eslint: ^3.6.0
+- The MIT License (MIT)
+
 
 #### Babel
 Babel erlaubt es, die neuesten Features von JavaScript (ECMA Script) zu verwenden, ohne auf eine vollständige Browser-Unterstützung angewiesen zu sein. Babel übersetzt die neuesten Features in Code mit einer von allen Browsern unterstützten Version von ECMA Script.
 [Mehr zu Babel](https://babeljs.io/)
 - @babel/core: 7.4.4
+- The MIT License (MIT)
+
 
 #### Prettier
 Prettier ist ein Style Formatter, der hier im Zusammenspiel mit ESLint zum Einsatz kommt. Bei jedem Speichervorgang werden die Style-Guides des Vue-Core-Teams automatisch umgesetzt. Es entsteht eine saubere und einheitliche code base.
 [Mehr zu Prettier](https://prettier.io/)
 - prettier: ^1.18.2
 - @vue/cli-plugin-babel: ^3.6.0
+- The MIT License (MIT)
+
 
 Das genaue Setup für Linting und Formatierung ist von [diesem](https://medium.com/@gogl.alex/how-to-properly-set-up-eslint-with-prettier-for-vue-or-nuxt-in-vscode-e42532099a9c) Medium-Artikel inspiriert.
 

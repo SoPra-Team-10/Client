@@ -41,6 +41,9 @@
         ></team-crest>
         <div
           id="pause-button"
+          :style="
+            snapShot.phase === 'positioning' ? 'background: #81623e;' : ''
+          "
           @click="pauseResume()"
           @mouseenter="hoverSound()"
           @mousedown="clickSound()"
@@ -883,7 +886,7 @@ export default {
             null
           );
         } else if (this.selectedEntityId.includes("Chaser")) {
-          hitSound4();
+          if (!this.muted) hitSound4();
           this.deltaRequest(
             "wrestQuaffle",
             null,
@@ -906,7 +909,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger1.xPos &&
             this.selectedEntity.yPos === balls.bludger1.yPos
           ) {
-            hitSound2();
+            if (!this.muted) hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger1.xPos,
@@ -924,7 +927,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger2.xPos &&
             this.selectedEntity.yPos === balls.bludger2.yPos
           ) {
-            hitSound2();
+            if (!this.muted) hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger2.xPos,
@@ -1133,7 +1136,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger1.xPos &&
             this.selectedEntity.yPos === balls.bludger1.yPos
           ) {
-            hitSound2();
+            if (!this.muted) hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger1.xPos,
@@ -1151,7 +1154,7 @@ export default {
             this.selectedEntity.xPos === balls.bludger2.xPos &&
             this.selectedEntity.yPos === balls.bludger2.yPos
           ) {
-            hitSound2();
+            if (!this.muted) hitSound2();
             this.deltaRequest(
               "bludgerBeating",
               balls.bludger2.xPos,
@@ -1596,7 +1599,7 @@ export default {
       //Move is possible
       if (obj.payload.type === "move") {
         this.gameInstruction.unshift({
-          message: this.getPlayerName(this.selectedEntityId) + " darf ziehen"
+          message: this.getPlayerName(this.selectedEntityId) + " darf ziehen."
         });
         for (
           var x = Math.max(this.selectedEntity.xPos - 1, 0);
@@ -1640,7 +1643,9 @@ export default {
             this.highlightedTiles.push(i);
         }
         this.gameInstruction.unshift({
-          message: this.getPlayerName(this.selectedEntityId) + " darf schießen"
+          message:
+            this.getPlayerName(this.selectedEntityId) +
+            " darf den Quaffel schießen."
         });
       }
       //WrestQuaffle is possible
@@ -1655,7 +1660,7 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf den Quaffel stehlen"
+            " darf den Quaffel stehlen."
         });
       }
       //Interference is possible
@@ -1684,7 +1689,7 @@ export default {
               if (this.playerIdOnTile(x, y) !== null) this.highlightTile(x, y);
             }
           }
-          this.gameInstruction.unshift({ message: "ein Elf kann eingreifen" });
+          this.gameInstruction.unshift({ message: "Ein Elf kann eingreifen." });
         } else if (obj.payload.turn.includes("Wombat")) {
           for (x = 0; x < 17; x++) {
             for (y = 0; y < 13; y++) {
@@ -1696,7 +1701,7 @@ export default {
             }
           }
           this.gameInstruction.unshift({
-            message: "Ein Wombat kann eingreifen"
+            message: "Ein Wombat kann eingreifen."
           });
         } else {
           for (var i = 0; i <= 220; i++) {
@@ -1704,11 +1709,11 @@ export default {
           }
           if (obj.payload.turn.includes("Troll"))
             this.gameInstruction.unshift({
-              message: "Ein Troll kann eingreifen"
+              message: "Ein Troll kann eingreifen."
             });
           else if (obj.payload.turn.includes("Niffler"))
             this.gameInstruction.unshift({
-              message: "Ein Niffler kann eingreifen"
+              message: "Ein Niffler kann eingreifen."
             });
         }
       } else if (
@@ -1748,7 +1753,7 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf auf die Fresse geben"
+            " darf den Klatscher schlagen."
         });
       }
       // else if(this.turnType === "removeBan"){
@@ -1795,7 +1800,7 @@ export default {
         this.gameInstruction.unshift({
           message:
             this.getPlayerName(this.selectedEntityId) +
-            " darf wieder mitspielen"
+            " darf wieder mitspielen."
         });
       }
     },
@@ -1889,12 +1894,15 @@ export default {
           message: ""
         }
       };
-      if (this.paused) {
-        jsonObject.payloadType = "continueRequest";
+      if (!this.snapShot.phase === "positioning") {
+        if (this.paused) {
+          jsonObject.payloadType = "continueRequest";
+        }
+        if (this.mySide === "right" || this.mySide === "left")
+          web.websocket.send(JSON.stringify(jsonObject));
       }
-      if(this.mySide === "right" || this.mySide === "left")
-      web.websocket.send(JSON.stringify(jsonObject));
     },
+
     /**finds the playerId of the entity standing in the given tile.
      * Returns null if there is no player on the tile
      */

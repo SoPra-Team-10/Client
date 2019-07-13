@@ -116,7 +116,8 @@
           <li>1 <b>Hüter</b> , der die eigenen Torringe verteidigt.</li>
           <li>3 <b>Jäger</b> , die das Runde ins Runde befördern.</li>
           <li>
-            2 <b>Treiber</b> , die mit den Klatschern auf die Fresse geben.
+            2 <b>Treiber</b> , die mit den Klatschern auf andere ausknocken
+            können.
           </li>
         </ul>
         <p>Das Spiel dreht sich um vier Bälle:</p>

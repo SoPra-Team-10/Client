@@ -133,7 +133,8 @@ export default {
   },
   computed: {
     limitedGameInstruction() {
-      return this.gameInstruction.slice(-2, -1);
+      const l = this.gameInstruction.length;
+      return this.gameInstruction.slice(0, 10);
     },
     renderedPhase() {
       let phaseName = "";

@@ -80,7 +80,7 @@ var ajv = new Ajv();
 import { clickSound, hoverSound } from "../../util/sounds";
 
 export default {
-  props: ["configs", "state"],
+  props: ["configs", "state", "game"],
   data() {
     return {
       selectedItem: 0,
@@ -181,11 +181,11 @@ export default {
     };
   },
   methods: {
-    hoverSound() {
-      hoverSound();
-    },
     clickSound() {
-      clickSound();
+      if (!this.game.muted) clickSound();
+    },
+    hoverSound() {
+      if (!this.game.muted) hoverSound();
     },
     //Downloads the json file from the cache, writing it to the hard drive
     downloadJSON() {
@@ -225,8 +225,8 @@ export default {
         name: "Name",
         motto: "Motto",
         colors: {
-          primary: "bb3434",
-          secondary: "f8c22d"
+          primary: "BB3434",
+          secondary: "F8C22D"
         },
         image: "",
         fans: {

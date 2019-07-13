@@ -32,6 +32,9 @@
       type="text"
       maxlength="6"
       class="team-config__team-color-input"
+      @change="
+        teamConfig.colors.primary = teamConfig.colors.primary.toUpperCase()
+      "
     />
     <label
       class="team-config__team-label"
@@ -45,6 +48,9 @@
       type="text"
       maxlength="6"
       class="team-config__team-color-input"
+      @change="
+        teamConfig.colors.secondary = teamConfig.colors.secondary.toUpperCase()
+      "
     />
 
     <label class="team-config__team-label" for="team-color-secondary"

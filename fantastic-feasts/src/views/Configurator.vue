@@ -302,7 +302,7 @@ h4.table-header {
   border: 0.5px solid #ebd18a;
   color: #795a46;
   text-align: left;
-  width: 60px;
+  width: 70px;
 }
 
 .team-config__player-label {
