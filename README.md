@@ -5,10 +5,6 @@ Aktuelle Releases können für die verschiedenen Branches genutzt werden:
  * [Develop-Branch](http://sopra-10-client.team-onestone.net/Develop/)
  * Andere Branches http://sopra-10-client.team-onestone.net/BRANCH_NAME
 
-
-Um die Anwendung in einem neueren Browser zu nutzen muss mixed content erlaubt werden, dies ist z.B. in Chrome/Chromium mit dem Flag `--allow-running-insecure-content` möglich.
-
-
 ## Installation
 
 Die Implementierung des Clients ist als Web-Anwendung gedacht und bedarf daher im Allgemeinen keiner eigenhändigen Installation. Das Spiel kann über die oben aufgelisteten Links gestartet werden.
