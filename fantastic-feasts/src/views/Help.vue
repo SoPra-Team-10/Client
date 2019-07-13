@@ -112,11 +112,11 @@
         </div>
 
         <ul>
-          <li>1 <b>Sucher</b> , der für sein Team den Schnatz fängt.</li>
-          <li>1 <b>Hüter</b> , der die eigenen Torringe verteidigt.</li>
-          <li>3 <b>Jäger</b> , die das Runde ins Runde befördern.</li>
+          <li>1 <b>Sucher</b>, der für sein Team den Schnatz fängt.</li>
+          <li>1 <b>Hüter</b>, der die eigenen Torringe verteidigt.</li>
+          <li>3 <b>Jäger</b>, die das Runde ins Runde befördern.</li>
           <li>
-            2 <b>Treiber</b> , die mit den Klatschern auf andere ausknocken
+            2 <b>Treiber</b>, die mit den Klatschern auf andere ausknocken
             können.
           </li>
         </ul>
@@ -136,9 +136,9 @@
           </div>
         </div>
         <ul>
-          <li>1 <b>Quaffel</b> .</li>
-          <li>2 <b>Klatscher</b> .</li>
-          <li>1 <b>Schnatz</b> .</li>
+          <li>1 <b>Quaffel</b>.</li>
+          <li>2 <b>Klatscher</b>.</li>
+          <li>1 <b>Schnatz</b>.</li>
         </ul>
         <p>
           Das Spiel ist Rundenbasiert. Die Spieler sind abwechselnd an der Reihe
