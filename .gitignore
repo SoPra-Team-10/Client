@@ -1,2 +1,4 @@
 node_modules
 .scannerwork
+.vscode
+.DS_Store
